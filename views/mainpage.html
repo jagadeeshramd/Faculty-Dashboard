@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Dashboard</title>
     <link rel="stylesheet" href="../public/css/user_profile.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
+    
 </head>
 <body>
     <!-- <div class="header">
@@ -24,19 +24,26 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown" style="margin-left: 75%;">
             <ul class="navbar-nav navbar-right">
+                
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     <img src = "../public/images/user_icon.png" width="50px" height="50px" alt = "user_icon"></a>
+                      <img src = "../public/images/user_icon.png" width="50px" height="50px" alt = "user_icon">
+                    </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                      <a class="dropdown-item" href="#">Profile</a>
+                      <!-- <form action="/../profile" method="GET" id="formpro"> -->
+                      <a class="dropdown-item" href="#" >Profile</a>
+                      <!-- <p name="email">{{email}}</p> -->
+                      <!-- <a class="dropdown-item" href="{% url 'about' %}">About</a> -->
+                      <!-- </form> -->
                       <a class="dropdown-item" href="#">About</a>
+                      
                       <a class="dropdown-item" href="#">Log out</a>
                     </div>
                   </li>
             </ul>
         </div>
       </nav>
-     
+                    
       <div id="disp-content">
           <div id="course-text" class="disp-text">
             
@@ -44,9 +51,11 @@
                 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                   <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button type="button" id="search" class="btn btn-light" type="submit">Search</button>
-                  </form>
+                      <div>
+                    <input class="form-control mr-sm-2" id="search-box" type="search" placeholder="Search" aria-label="Search">
+                    <button type="button" id="search-utton" class="btn btn-light" type="submit">Search</button>
+                </div>
+                </form>
                 </div>
             </nav>
             <div>
@@ -99,7 +108,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </nav>
-            <div class="row">
+            <div class="row-tabs">
                 <div class="tab">
                     <img src="../public/images/list.png" width="50px" height="50px">
                     <br>
@@ -116,7 +125,7 @@
                     <h6><strong>Course information</strong></h6>
                 </div>
             </div>
-            <div class="row">
+            <div class="row-tabs">
                 <div class="tab">
                     <img src="../public/images/res.png" width="50px" height="50px">
                     <br>

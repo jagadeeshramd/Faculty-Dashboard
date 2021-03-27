@@ -1,0 +1,18 @@
+.disptab{
+    float: left;
+    margin-left: 30px;
+    margin-bottom: 20px;
+    border-radius: 9px;
+    height: 250px;
+    width: 500px;
+    border:2px solid #45b1ef ;
+}
+
+a{
+    text-decoration: none;
+}
+
+#content-header{
+    font-family: 'Poppins', sans-serif;
+    margin-top: 20px;
+}

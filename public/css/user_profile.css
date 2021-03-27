@@ -3,6 +3,7 @@
 
 body{
     background-color: #fffaef;
+    font-family: 'Poppins', sans-serif;
     margin: 0%;
 }
 
@@ -62,9 +63,18 @@ padding-right: 20px;
     border-radius: 8px;
 }
 
-#search{
-    position: relative;
-    margin-left: 30px;
+#search-box{
+    
+    margin-left: 20px;
+    margin-right: 20px;
+    width:70%;
+    float: left;
+}
+
+#search-button{
+    
+    float: left;
+    margin-left: 50px;
 }
 
 
@@ -137,10 +147,17 @@ mark{
       background-color: gray;
   }
 
+  .row-tabs
+  {
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-bottom: 20px;
+  }
   .tab{
-      width:25%;
+      width:150px;
       height: 150px;
       margin-left:42px;
+      margin-bottom: 30px;
       color:white;
       background-color: #00c4cc;
       padding-bottom: 10px;
@@ -158,8 +175,8 @@ mark{
       margin-top: 20px;
   }
 
-  .row
-  {
-    margin-top: 40px;
-    margin-left: 40px;
-  }
+
+
+  
+
+  
