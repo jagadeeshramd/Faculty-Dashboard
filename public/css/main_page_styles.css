@@ -164,6 +164,7 @@ mark{
       text-align: center;
       padding-right: 10px;
       float: left;
+      transition: transform 0.5s;
   }
 
   .tab h6{
@@ -173,6 +174,15 @@ mark{
   }
   .tab img{
       margin-top: 20px;
+  }
+
+  .tab :hover{
+    transform: scale(1.1);
+  }
+
+  .tab a{
+      text-decoration: none;
+      color: white;
   }
 
 
