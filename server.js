@@ -98,6 +98,10 @@ app.post("/login", function (req, res) {
     );
 });
 
+app.get("/reg_students", function (req, res) {
+    res.render("reg_students.ejs");
+});
+
 app.listen(process.env.PORT || 3000, function () {
     console.log("Server started running");
 });
