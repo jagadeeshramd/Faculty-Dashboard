@@ -1,2 +1,4 @@
 # Faculty-Dashboard
-Software Engineering Project
+<h2>Software Engineering Project</h2>
+<h3> Abstract </h3>
+A faculty dashboard is a one point place for faculties to view and manage all relevant information and functionalities to manage day to day administrative and academic activities efficiently and with ease. There are dedicated views of permission hierarchy and abstraction required for different roles of faculties such as course faculty, mentor, batch coordinator, and Head of the Department; to carry out their relevant duties. The system must synchronize perfectly between different dashboards for effective communication of information without discrepancy. The functionalities of CO attainment calculation, mark and grade consolidation can be automated to reduce the workload on faculties and have an effective method employed. 
