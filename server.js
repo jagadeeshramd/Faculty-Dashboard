@@ -99,7 +99,11 @@ app.post("/login", function (req, res) {
 });
 
 app.get("/reg_students", function (req, res) {
-    res.render("reg_students.ejs");
+    res.render("reg_students");
+});
+
+app.get("/courseinfo", function (req, res) {
+    res.render("courseinfo");
 });
 
 app.listen(process.env.PORT || 3000, function () {
