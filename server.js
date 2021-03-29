@@ -49,8 +49,16 @@ connection.connect(function (err) {
 // GET methods
 app.get("/", function (req, res) {
     if (req.session.loggedin) {
-        // res.render("index");
-        res.send("Hi! User logged in");
+        let date = new Date();
+        let hours = date.getHours();
+        let msg = "";
+        if (hours >= 3 && hours < 11) msg = "Good morning";
+        else if (hours >= 11 && hours < 16) msg = "Good afternoon";
+        else if (hours >= 16 && hours < 21) msg = "Good evening";
+        else msg = "Good night";
+        res.render("home", {
+            welcomeMessage: msg + ", " + req.session.username + "!",
+        });
     } else {
         // res.sendFile(__dirname + "/signup.html");
         res.render("login", {
@@ -88,6 +96,14 @@ app.post("/login", function (req, res) {
             }
         }
     );
+});
+
+app.get("/reg_students", function (req, res) {
+    res.render("reg_students");
+});
+
+app.get("/courseinfo", function (req, res) {
+    res.render("courseinfo");
 });
 
 app.listen(process.env.PORT || 3000, function () {
