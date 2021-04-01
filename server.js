@@ -18,6 +18,8 @@ app.use(
     })
 );
 
+// app.use(express.urlencoded()); //Parse URL-encoded bodies
+
 app.use(express.static("public"));
 
 app.set("views", __dirname + "/views");
