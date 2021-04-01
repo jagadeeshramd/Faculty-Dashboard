@@ -29,6 +29,7 @@ app.use(
 );
 
 // database connection
+// AWS RDS
 
 connection = mysql.createConnection({
     host: "localhost",
