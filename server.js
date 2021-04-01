@@ -30,7 +30,6 @@ app.use(
 
 // database connection
 // AWS RDS
-//123
 
 connection = mysql.createConnection({
     host: "localhost",
