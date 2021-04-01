@@ -3,6 +3,8 @@ const mysql = require("mysql");
 const https = require("https");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const { request } = require("http");
+const e = require("express");
 
 const app = express();
 
@@ -33,7 +35,7 @@ app.use(
 connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "#Harry1329",
+    password: "password",
     port: "3306",
     database: "facultydashboard",
 });
@@ -48,6 +50,7 @@ connection.connect(function (err) {
 
 // GET methods
 app.get("/", function (req, res) {
+    console.log("hi");
     if (req.session.loggedin) {
         let date = new Date();
         let hours = date.getHours();
@@ -67,6 +70,7 @@ app.get("/", function (req, res) {
     }
 });
 
+
 app.get("/logout", function (req, res) {
     req.session.loggedin = false;
     req.session.email = null;
@@ -78,6 +82,7 @@ app.get("/logout", function (req, res) {
 app.post("/login", function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
+
     connection.query(
         "select * from faculty where email = ? and passwd = ? ",
         [email, password],
@@ -98,12 +103,60 @@ app.post("/login", function (req, res) {
     );
 });
 
-app.get("/reg_students", function (req, res) {
-    res.render("reg_students");
-});
 
 app.get("/courseinfo", function (req, res) {
     res.render("courseinfo");
+});
+
+app.get("/reg_students", function (req, res) {
+    
+    var success=false;
+    var studlist=[];
+    connection.query(
+        "select roll_number from student_18 where roll_number like '%U4CSE180%' order by roll_number;",
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if(results.length>0)  {
+                success=true;
+                studlist=results;
+                console.log(results.length);
+                res.render("reg_students",{
+                    status:success,
+                    liststud:studlist,
+                });
+            
+            }
+            else{
+                success=false;
+                console.log(results.length);
+                res.render("reg_students",{
+                    status:success,
+                    liststud:[]
+                });
+            
+            }
+        }
+    );
+        
+});
+
+app.get('/det_student_info',function(req,res){
+    console.log(req);
+    rno=req.query.rollno;
+    console.log(rno);
+    connection.query(
+        "select * from student_18 where roll_number= ?;",[rno],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if(results.length==1)  {
+                res.send({resp:true,rec:results[0]});
+            }
+            else{
+                console.log(results);
+                res.send({resp:false,rec:{}});
+            }
+        }
+    );
 });
 
 app.listen(process.env.PORT || 3000, function () {
