@@ -23,7 +23,12 @@
     <link rel="stylesheet" href="/css/main_page_styles.css">
     <link rel="stylesheet" href="/css/course_info.css">
     <link rel="stylesheet" href="/css/reg_students.css">
-
+    <script src="/js/studentinfo.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+    window.jQuery || document.write('<script src="http://mysite.com/jquery.min.js"><\/script>')
+    </script>
+    
 </head>
 
 <body>
@@ -56,6 +61,7 @@
         </div>
     </nav>
 
+    
     <div id="content-header" style="margin-left: 20px;width:300px;">
         <h6>Course ID</h6>
         <nav class="navbar navbar-expand-lg" id="search-list"
@@ -70,6 +76,7 @@
                 style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
         </nav>
     </div>
+    <% if(status) { %>
     <div id="disp-content">
         <div id="course-text" class="disp-text">
 
@@ -84,8 +91,12 @@
                 </div>
             </nav>
             <div class="list-group" style="overflow: scroll;height:460px;">
-                <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18001</button>
-                <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18002</button>
+                
+                <% for (var i =0; i < liststud.length;  i++ ){ %>
+                <button type="button" class="list-group-item list-group-item-action" onclick="getstudentinfo(this);"><%=liststud[i].roll_number %></button>
+                <% console.log(liststud[i]); %>
+                <% } %>
+               <!-- <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18002</button>
                 <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18003</button>
                 <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18004</button>
                 <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18005</button>
@@ -97,7 +108,7 @@
                 <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18011</button>
                 <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18012</button>
                 <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18013</button>
-
+            -->
             </div>
 
         </div>
@@ -117,15 +128,15 @@
 
             <div class="row-det" id="student-det">
                 <div class="row-det-1" id="student-pic" style="float: left;">
-                    <img src="/images/boy_avatar.png" width="50px" height="50px">
+                    <img src="/images/boy_avatar.png" width="50px" height="50px" id="stud-img">
                 </div>
                 <div class="row-det-1" id="basic-det" style="float: left;">
                     <ul class="list-group">
-                        <li class="list-group-item">Name:</li>
-                        <li class="list-group-item">Roll Number:</li>
-                        <li class="list-group-item">College mail id:</li>
-                        <li class="list-group-item">Personal mail id:</li>
-                        <li class="list-group-item">Phone Number:</li>
+                        <li class="list-group-item" id="stud-name">Name:</li>
+                        <li class="list-group-item" id="stud-rollno">Roll Number:</li>
+                        <li class="list-group-item" id="stud-clg-id">College mail id:</li>
+                        <li class="list-group-item" id="stud-per-id">Personal mail id:</li>
+                        <li class="list-group-item" id="stud-phno">Phone Number:</li>
                     </ul>
                 </div>
             </div>
@@ -169,8 +180,9 @@
 
         </div>
     </div>
-
-
+   <% } else{ %>
+    <h6>No data found</h6>
+    <% } %>
 
 </body>
 
