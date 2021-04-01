@@ -141,6 +141,9 @@ app.get("/reg_students", function (req, res) {
     );
         
 });
+app.get("/mark_grade", function (req, res) {
+    res.render("mark_grade");
+});
 
 app.get('/det_student_info',function(req,res){
     console.log(req);
@@ -160,6 +163,7 @@ app.get('/det_student_info',function(req,res){
         }
     );
 });
+
 
 app.listen(process.env.PORT || 3000, function () {
     console.log("Server started running");

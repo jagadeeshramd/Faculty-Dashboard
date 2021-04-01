@@ -1,9 +1,9 @@
 
 .row-det{
-    height:206px;
+    height:270px;
 }
 .row-det-1{
-    height: 30%;
+    height: 35%;
     float:left;
     width:30%;
 }
@@ -60,3 +60,6 @@
     margin-left: 10px;
 }
 
+.list-group-item{
+    color: #495057;;
+}
