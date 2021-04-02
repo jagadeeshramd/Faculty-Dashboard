@@ -1,136 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Dashboard</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/css/main_page_styles.css">
-    <link rel="stylesheet" href="/css/course_info.css">
-    <link rel="stylesheet" href="/css/reg_students.css">
-    
-</head>
-<body>
-    
-    <nav class="navbar navbar-expand-lg" style="background-image:linear-gradient(90deg,#00c4cc,#7d2ae8); height:70px; ">
-        <a class="navbar-brand" href="#" style="color:beige; margin-left:20px;"><strong>Faculty Dashboard</strong></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown" style="margin-left: 75%;">
-            <ul class="navbar-nav navbar-right">
-                
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <img src = "/images/user_icon.png" width="50px" height="50px" alt = "user_icon">
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                      <!-- <form action="/../profile" method="GET" id="formpro"> -->
-                      <a class="dropdown-item" href="#" >Profile</a>
-                      <!-- <p name="email">{{email}}</p> -->
-                      <!-- <a class="dropdown-item" href="{% url 'about' %}">About</a> -->
-                      <!-- </form> -->
-                      <a class="dropdown-item" href="#">About</a>
-                      
-                      <a class="dropdown-item" href="#">Log out</a>
-                    </div>
-                  </li>
-            </ul>
-        </div>
-    </nav>
-    
+<%- include ("partials/header") -%>
+
     <div id="content-header" style="margin-left: 20px;width:300px;">
         <h6>Course ID</h6>
-        <nav class="navbar navbar-expand-lg" id="search-list" style="height:35px; font-size:20px;background-image:linear-gradient(90deg,#05a7e7,#2a26ff);">
-            <a class="navbar-brand" href="#" style="color: beige; margin-left:10%; font-size:20px; font: width 5%;">Marks and Grades</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg" id="search-list"
+            style="height:35px; font-size:20px;background-image:linear-gradient(90deg,#05a7e7,#2a26ff);">
+            <a class="navbar-brand" href="#"
+                style="color: beige; margin-left:10%; font-size:20px; font: width 5%;">Marks and Grades</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <i class="fa fa-angle-down" style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
+            <i class="fa fa-angle-down"
+                style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
         </nav>
     </div>
-      <div id="disp-content">
-          <div id="course-text" class="disp-text" style="width: 1200px; margin-left:40px;">
-            
+    <div id="disp-content">
+        <div id="course-text" class="disp-text" style="width: 1200px; margin-left:40px;">
+
             <nav class="navbar navbar-expand-lg" id="search-list" style="background-color:#45b1ef;">
-                
+
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                  <form class="form-inline my-2 my-lg-0">
-                    <div>
-                        <select id="inputTest" class="form-control">
-                            <option selected>Choose Test..</option>
-                            <option>Test 1</option>
-                            <option>Test 2</option>
-                            <option>Test 3</option>
-                          </select>
-                        
-                    </div>
-                  </form>
+                    <form class="form-inline my-2 my-lg-0">
+                        <div>
+                            <select id="inputTest" class="form-control">
+                                <option selected>Choose Test..</option>
+                                <option>Test 1</option>
+                                <option>Test 2</option>
+                                <option>Test 3</option>
+                            </select>
+
+                        </div>
+                    </form>
                 </div>
             </nav>
             <div class="list-group" id="mark-list" style="overflow: scroll;height:460px;">
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18001</p>
-                        <input type="number" class="form-control score" id="score1" placeholder="Score">
-                    </li>
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18002</p>
-                        <input type="number" class="form-control score" id="score2" placeholder="Score">
-                    </li>
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18003</p>
-                        <input type="number" class="form-control" id="score3" placeholder="Score">
-                    </li>
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18004</p>
-                        <input type="number" class="form-control" id="score4" placeholder="Score">
-                    </li>
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18005</p>
-                        <input type="number" class="form-control" id="score5" placeholder="Score">
-                    </li>
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18006</p>
-                        <input type="number" class="form-control" id="score6" placeholder="Score">
-                    </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18001</p>
+                    <input type="number" class="form-control score" id="score1" placeholder="Score">
+                </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18002</p>
+                    <input type="number" class="form-control score" id="score2" placeholder="Score">
+                </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18003</p>
+                    <input type="number" class="form-control" id="score3" placeholder="Score">
+                </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18004</p>
+                    <input type="number" class="form-control" id="score4" placeholder="Score">
+                </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18005</p>
+                    <input type="number" class="form-control" id="score5" placeholder="Score">
+                </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18006</p>
+                    <input type="number" class="form-control" id="score6" placeholder="Score">
+                </li>
 
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18007</p>
-                        <input type="number" class="form-control" id="score7" placeholder="Score">
-                    </li>
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18008</p>
-                        <input type="number" class="form-control" id="score8" placeholder="Score">
-                    </li>
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18009</p>
-                        <input type="number" class="form-control" id="score9" placeholder="Score">
-                    </li>
-                    <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;">CB.EN.U4CSE18010</p>
-                        <input type="number" class="form-control" id="score10" placeholder="Score">
-                    </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18007</p>
+                    <input type="number" class="form-control" id="score7" placeholder="Score">
+                </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18008</p>
+                    <input type="number" class="form-control" id="score8" placeholder="Score">
+                </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18009</p>
+                    <input type="number" class="form-control" id="score9" placeholder="Score">
+                </li>
+                <li class="list-group-item">
+                    <p style="float:left;margin-left:20px;">CB.EN.U4CSE18010</p>
+                    <input type="number" class="form-control" id="score10" placeholder="Score">
+                </li>
 
             </div>
-            
-          </div>
-          
-          
-          
-      </div>
-     
-    
-   
-</body>
-</html>
+
+        </div>
+
+    </div>
+
+    <%- include ("partials/footer") -%>

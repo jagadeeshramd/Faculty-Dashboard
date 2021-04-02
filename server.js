@@ -37,7 +37,7 @@ app.use(
 connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "password",
+    password: "#Harry1329",
     port: "3306",
     database: "facultydashboard",
 });
@@ -50,9 +50,9 @@ connection.connect(function (err) {
     console.log("Connected to Database.");
 });
 
-// GET methods
+// GET methods ===================================================================
 app.get("/", function (req, res) {
-    console.log("hi");
+    // console.log("hi");
     if (req.session.loggedin) {
         let date = new Date();
         let hours = date.getHours();
@@ -62,7 +62,7 @@ app.get("/", function (req, res) {
         else if (hours >= 16 && hours < 21) msg = "Good evening";
         else msg = "Good night";
         res.render("home", {
-            welcomeMessage: msg + ", " + req.session.username + "!",
+            welcomeMessage: msg + ", " + req.session.faculty.name + "!",
         });
     } else {
         // res.sendFile(__dirname + "/signup.html");
@@ -72,21 +72,79 @@ app.get("/", function (req, res) {
     }
 });
 
+app.get("/profile", function (req, res) {
+    res.render("profile", {
+        faculty: req.session.faculty,
+    });
+});
 
 app.get("/logout", function (req, res) {
     req.session.loggedin = false;
     req.session.email = null;
-    req.session.username = null;
+    req.session.faculty = null;
     res.redirect("/");
 });
 
-// POST methods
+app.get("/courseinfo", function (req, res) {
+    res.render("courseinfo");
+});
+
+app.get("/reg_students", function (req, res) {
+    var success = false;
+    var studlist = [];
+    connection.query(
+        "select roll_number from student_18 where roll_number like '%U4CSE180%' order by roll_number;",
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if (results.length > 0) {
+                success = true;
+                studlist = results;
+                console.log(results.length);
+                res.render("reg_students", {
+                    status: success,
+                    liststud: studlist,
+                });
+            } else {
+                success = false;
+                console.log(results.length);
+                res.render("reg_students", {
+                    status: success,
+                    liststud: [],
+                });
+            }
+        }
+    );
+});
+app.get("/mark_grade", function (req, res) {
+    res.render("mark_grade");
+});
+
+app.get("/det_student_info", function (req, res) {
+    console.log(req);
+    rno = req.query.rollno;
+    console.log(rno);
+    connection.query(
+        "select * from student_18 where roll_number= ?;",
+        [rno],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if (results.length == 1) {
+                res.send({ resp: true, rec: results[0] });
+            } else {
+                console.log(results);
+                res.send({ resp: false, rec: {} });
+            }
+        }
+    );
+});
+
+// POST methods ----------------------------------------------------------
 app.post("/login", function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
     connection.query(
-        "select * from faculty where email = ? and passwd = ? ",
+        "select * from login where email = ? and passwd = ? ",
         [email, password],
         function (error, results, fields) {
             if (error) console.log(error);
@@ -94,8 +152,15 @@ app.post("/login", function (req, res) {
                 message = "";
                 req.session.loggedin = true;
                 req.session.email = email;
-                req.session.username = results[0].username;
-                res.redirect("/");
+                connection.query(
+                    "select * from faculty where emailID = ?",
+                    [email],
+                    function (err, rows, fields) {
+                        req.session.faculty = rows[0];
+                        // console.log(req.session.faculty);
+                        res.redirect("/");
+                    }
+                );
             } else {
                 res.render("login", {
                     message: "Incorrect email Id or password.",
@@ -104,66 +169,6 @@ app.post("/login", function (req, res) {
         }
     );
 });
-
-
-app.get("/courseinfo", function (req, res) {
-    res.render("courseinfo");
-});
-
-app.get("/reg_students", function (req, res) {
-    
-    var success=false;
-    var studlist=[];
-    connection.query(
-        "select roll_number from student_18 where roll_number like '%U4CSE180%' order by roll_number;",
-        function (error, results, fields) {
-            if (error) console.log(error);
-            else if(results.length>0)  {
-                success=true;
-                studlist=results;
-                console.log(results.length);
-                res.render("reg_students",{
-                    status:success,
-                    liststud:studlist,
-                });
-            
-            }
-            else{
-                success=false;
-                console.log(results.length);
-                res.render("reg_students",{
-                    status:success,
-                    liststud:[]
-                });
-            
-            }
-        }
-    );
-        
-});
-app.get("/mark_grade", function (req, res) {
-    res.render("mark_grade");
-});
-
-app.get('/det_student_info',function(req,res){
-    console.log(req);
-    rno=req.query.rollno;
-    console.log(rno);
-    connection.query(
-        "select * from student_18 where roll_number= ?;",[rno],
-        function (error, results, fields) {
-            if (error) console.log(error);
-            else if(results.length==1)  {
-                res.send({resp:true,rec:results[0]});
-            }
-            else{
-                console.log(results);
-                res.send({resp:false,rec:{}});
-            }
-        }
-    );
-});
-
 
 app.listen(process.env.PORT || 3000, function () {
     console.log("Server started running");

@@ -1,0 +1,142 @@
+<%- include ("partials/header") -%>
+
+    <div style="padding: 2% 10%;">
+        <h1>My profile</h1><br><br>
+        <section>
+            <div class="row">
+                <div class="col-lg-3">
+                    <% if (faculty.gender=='M' ) { %>
+                        <img id="profile-pic"
+                            src="https://icrowdnewswire.com/wp-content/themes/icrowdnewswire/assets/images/team-page/vector.jpg"
+                            alt="">
+                        <% } else { %>
+                            <img id="profile-pic"
+                                src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
+                                alt="">
+                            <% } %>
+                </div>
+
+                <div class="col-lg-7" style="padding-left: 2%;padding-top: 1.5%;">
+                    <h2>
+                        <%= faculty.name %>
+                    </h2>
+
+                    <p>
+                        <em>
+                            <%= faculty.emailID %>
+                        </em>
+                    </p>
+
+                    <br><br>
+
+                    <button style="margin-right: 2%;" data-toggle="modal" data-target="#changePassword"
+                        aria-haspopup="true" class="btn btn-sm btn-primary">Change password</button>
+
+                    <button class="btn btn-sm btn-warning">Edit profile</button>
+                </div>
+            </div>
+
+        </section>
+
+        <br><br>
+
+        <section style="padding: 2% 0 0 5%;">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4>ID</h4>
+                    <p>
+                        <%= faculty.id %>
+                    </p><br>
+
+                    <h4>DOB</h4>
+                    <p>
+                        <%= faculty.DOB %>
+                    </p><br>
+
+                    <h4>Address</h4>
+                    <p>
+                        <%= faculty.address %>
+                    </p><br>
+
+                    <h4>Mobile</h4>
+                    <p>
+                        <%= faculty.phone %>
+                    </p>
+
+                </div>
+                <div class="col-lg-6">
+                    <h4>Department</h4>
+                    <p>
+                        <%= faculty.deptID %>
+                    </p><br>
+
+                    <h4>Qualification</h4>
+                    <p>
+                        <%= faculty.qualification %>
+                    </p><br>
+
+                    <h4>Designation</h4>
+                    <p>
+                        <%= faculty.designation %>
+                    </p>
+                </div>
+            </div>
+
+        </section>
+        <br><br><br>
+
+    </div>
+
+    <div class="container">
+        <div class="modal fade" id="changePassword">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- header -->
+                    <div class="modal-header text-center">
+                        <h3 class="modal-title text-center">Change Password</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- body -->
+                    <div class="modal-body">
+                        <form action="/updatePassword" method="post">
+                            <br>
+                            <input class="form-control" placeholder="Old password" type="password" name="oldpasswd"
+                                id="oldpasswd" required><br>
+
+
+                            <input id="newpasswd" class="form-control" type="password" name="newpasswd"
+                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                placeholder="New password" required /> <br>
+                            <input class="form-control" type="password" name="confirm_passwd"
+                                placeholder="Confirm new passowrd" id="confirm-passwd" required />
+                            <br><br>
+                            <button class="btn btn-sm btn-success" style="margin-right: 1%;"
+                                type="submit">Change</button>
+                            <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var password = document.getElementById("newpasswd"),
+            confirm_password = document.getElementById("confirm-passwd");
+        function validatePassword() {
+            if (password.value != confirm_password.value) {
+                confirm_password.setCustomValidity("Passwords don't Match");
+            } else {
+                confirm_password.setCustomValidity("");
+            }
+        }
+
+        password.onchange = validatePassword;
+        confirm_password.onkeyup = validatePassword;
+
+    </script>
+
+
+
+    <%- include ("partials/footer") -%>
