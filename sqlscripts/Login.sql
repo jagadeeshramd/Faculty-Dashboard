@@ -10,14 +10,14 @@ insert into department values ('CSE', 'Computer Science and Engineering', 'B.Tec
 
 select * from department;
 
-create table faculty(id varchar(10), name varchar(50), emailID varchar(50) UNIQUE, age integer, gender varchar(1), 
+create table faculty(id varchar(10), name varchar(50), emailID varchar(50) UNIQUE, DOB varchar(10), gender varchar(1), 
 						address varchar(100), phone varchar(15), deptID varchar(5), qualification varchar(30), designation varchar(30),
                         primary key (id), 
                         foreign key (deptID) references department(id));
                         
-insert into faculty values('12301', 'Akhil', 'akhil@gmail.com', 48, 'M', 'XYZ street, XYZ.', '9234567890', 'CSE', 'PhD', 'Assistant professor'),
-							('12465', 'Senthil', 'senthil@gmail.com', 49, 'M', 'ABC street, ABC.', '9234561234', 'EEE', 'PhD', 'Assistant professor'),
-                            ('13301', 'Venkat', 'venkat@gmail.com', 47, 'M', 'PQR street, PQR.', '9212345890', 'CSE', 'PhD', 'Assistant professor');
+insert into faculty values('12301', 'Akhil', 'akhil@gmail.com', '1/3/1975', 'M', 'XYZ street, XYZ.', '9234567890', 'CSE', 'PhD', 'Assistant professor'),
+							('12465', 'Senthil', 'senthil@gmail.com', '1/4/1973', 'M', 'ABC street, ABC.', '9234561234', 'EEE', 'PhD', 'Assistant professor'),
+                            ('13301', 'Venkat', 'venkat@gmail.com', '20/11/1978', 'M', 'PQR street, PQR.', '9212345890', 'CSE', 'PhD', 'Assistant professor');
 
 select * from faculty;
 
