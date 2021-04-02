@@ -35,7 +35,7 @@ app.use(
 connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "password",
+    password: "#Harry1329",
     port: "3306",
     database: "facultydashboard",
 });
@@ -48,7 +48,7 @@ connection.connect(function (err) {
     console.log("Connected to Database.");
 });
 
-// GET methods
+// GET methods ===================================================================
 app.get("/", function (req, res) {
     console.log("hi");
     if (req.session.loggedin) {
@@ -70,6 +70,9 @@ app.get("/", function (req, res) {
     }
 });
 
+app.get("/profile", function (req, res) {
+    res.render("profile");
+});
 
 app.get("/logout", function (req, res) {
     req.session.loggedin = false;
@@ -78,7 +81,60 @@ app.get("/logout", function (req, res) {
     res.redirect("/");
 });
 
-// POST methods
+app.get("/courseinfo", function (req, res) {
+    res.render("courseinfo");
+});
+
+app.get("/reg_students", function (req, res) {
+    var success = false;
+    var studlist = [];
+    connection.query(
+        "select roll_number from student_18 where roll_number like '%U4CSE180%' order by roll_number;",
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if (results.length > 0) {
+                success = true;
+                studlist = results;
+                console.log(results.length);
+                res.render("reg_students", {
+                    status: success,
+                    liststud: studlist,
+                });
+            } else {
+                success = false;
+                console.log(results.length);
+                res.render("reg_students", {
+                    status: success,
+                    liststud: [],
+                });
+            }
+        }
+    );
+});
+app.get("/mark_grade", function (req, res) {
+    res.render("mark_grade");
+});
+
+app.get("/det_student_info", function (req, res) {
+    console.log(req);
+    rno = req.query.rollno;
+    console.log(rno);
+    connection.query(
+        "select * from student_18 where roll_number= ?;",
+        [rno],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if (results.length == 1) {
+                res.send({ resp: true, rec: results[0] });
+            } else {
+                console.log(results);
+                res.send({ resp: false, rec: {} });
+            }
+        }
+    );
+});
+
+// POST methods ----------------------------------------------------------
 app.post("/login", function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
@@ -102,66 +158,6 @@ app.post("/login", function (req, res) {
         }
     );
 });
-
-
-app.get("/courseinfo", function (req, res) {
-    res.render("courseinfo");
-});
-
-app.get("/reg_students", function (req, res) {
-    
-    var success=false;
-    var studlist=[];
-    connection.query(
-        "select roll_number from student_18 where roll_number like '%U4CSE180%' order by roll_number;",
-        function (error, results, fields) {
-            if (error) console.log(error);
-            else if(results.length>0)  {
-                success=true;
-                studlist=results;
-                console.log(results.length);
-                res.render("reg_students",{
-                    status:success,
-                    liststud:studlist,
-                });
-            
-            }
-            else{
-                success=false;
-                console.log(results.length);
-                res.render("reg_students",{
-                    status:success,
-                    liststud:[]
-                });
-            
-            }
-        }
-    );
-        
-});
-app.get("/mark_grade", function (req, res) {
-    res.render("mark_grade");
-});
-
-app.get('/det_student_info',function(req,res){
-    console.log(req);
-    rno=req.query.rollno;
-    console.log(rno);
-    connection.query(
-        "select * from student_18 where roll_number= ?;",[rno],
-        function (error, results, fields) {
-            if (error) console.log(error);
-            else if(results.length==1)  {
-                res.send({resp:true,rec:results[0]});
-            }
-            else{
-                console.log(results);
-                res.send({resp:false,rec:{}});
-            }
-        }
-    );
-});
-
 
 app.listen(process.env.PORT || 3000, function () {
     console.log("Server started running");
