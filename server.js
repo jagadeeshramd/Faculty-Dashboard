@@ -50,7 +50,7 @@ connection.connect(function (err) {
 
 // GET methods ===================================================================
 app.get("/", function (req, res) {
-    console.log("hi");
+    // console.log("hi");
     if (req.session.loggedin) {
         let date = new Date();
         let hours = date.getHours();
@@ -60,7 +60,7 @@ app.get("/", function (req, res) {
         else if (hours >= 16 && hours < 21) msg = "Good evening";
         else msg = "Good night";
         res.render("home", {
-            welcomeMessage: msg + ", " + req.session.username + "!",
+            welcomeMessage: msg + ", " + req.session.faculty.name + "!",
         });
     } else {
         // res.sendFile(__dirname + "/signup.html");
@@ -71,13 +71,15 @@ app.get("/", function (req, res) {
 });
 
 app.get("/profile", function (req, res) {
-    res.render("profile");
+    res.render("profile", {
+        faculty: req.session.faculty,
+    });
 });
 
 app.get("/logout", function (req, res) {
     req.session.loggedin = false;
     req.session.email = null;
-    req.session.username = null;
+    req.session.faculty = null;
     res.redirect("/");
 });
 
@@ -148,8 +150,15 @@ app.post("/login", function (req, res) {
                 message = "";
                 req.session.loggedin = true;
                 req.session.email = email;
-                req.session.username = results[0].username; // ||||||||||||||||||||||||
-                res.redirect("/");
+                connection.query(
+                    "select * from faculty where emailID = ?",
+                    [email],
+                    function (err, rows, fields) {
+                        req.session.faculty = rows[0];
+                        // console.log(req.session.faculty);
+                        res.redirect("/");
+                    }
+                );
             } else {
                 res.render("login", {
                     message: "Incorrect email Id or password.",
