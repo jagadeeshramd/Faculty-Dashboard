@@ -140,7 +140,7 @@ app.post("/login", function (req, res) {
     var password = req.body.password;
 
     connection.query(
-        "select * from faculty where email = ? and passwd = ? ",
+        "select * from login where email = ? and passwd = ? ",
         [email, password],
         function (error, results, fields) {
             if (error) console.log(error);
@@ -148,7 +148,7 @@ app.post("/login", function (req, res) {
                 message = "";
                 req.session.loggedin = true;
                 req.session.email = email;
-                req.session.username = results[0].username;
+                req.session.username = results[0].username; // ||||||||||||||||||||||||
                 res.redirect("/");
             } else {
                 res.render("login", {
