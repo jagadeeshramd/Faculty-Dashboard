@@ -155,31 +155,42 @@ app.post("/login", function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
-    connection.query(
-        "select * from login where email = ? and passwd = ? ",
-        [email, password],
-        function (error, results, fields) {
-            if (error) console.log(error);
-            else if (results.length > 0) {
-                message = "";
-                req.session.loggedin = true;
-                req.session.email = email;
-                connection.query(
-                    "select * from faculty where emailID = ?",
-                    [email],
-                    function (err, rows, fields) {
-                        req.session.faculty = rows[0];
-                        // console.log(req.session.faculty);
-                        res.redirect("/");
-                    }
-                );
-            } else {
-                res.render("login", {
-                    message: "Incorrect email Id or password.",
-                });
-            }
+    if (email == "harishcse18501@gmail.com") {
+        if (password == "qwertyui") {
+            res.render("admin", {
+                welcomeMessage: "Welcome, Harry!",
+            });
+        } else {
+            res.render("login", {
+                message: "Incorrect email Id or password.",
+            });
         }
-    );
+    } else {
+        connection.query(
+            "select * from login where email = ? and passwd = ? ",
+            [email, password],
+            function (error, results, fields) {
+                if (error) console.log(error);
+                else if (results.length > 0) {
+                    message = "";
+                    req.session.loggedin = true;
+                    req.session.email = email;
+                    connection.query(
+                        "select * from faculty where emailID = ?",
+                        [email],
+                        function (err, rows, fields) {
+                            req.session.faculty = rows[0];
+                            res.redirect("/");
+                        }
+                    );
+                } else {
+                    res.render("login", {
+                        message: "Incorrect email Id or password.",
+                    });
+                }
+            }
+        );
+    }
 });
 
 app.post("/updateProfile", function (req, res) {
