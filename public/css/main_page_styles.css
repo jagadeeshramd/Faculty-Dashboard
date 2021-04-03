@@ -181,3 +181,12 @@ mark {
     border-radius: 50%;
     width: 80%;
 }
+
+#notification {
+    color: white;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 1.5%;
+    border-radius: 20px;
+}

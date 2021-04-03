@@ -73,6 +73,8 @@ app.get("/", function (req, res) {
 app.get("/profile", function (req, res) {
     res.render("profile", {
         faculty: req.session.faculty,
+        notification: "",
+        bgcolor: "",
     });
 });
 
@@ -113,6 +115,7 @@ app.get("/reg_students", function (req, res) {
         }
     );
 });
+
 app.get("/mark_grade", function (req, res) {
     res.render("mark_grade");
 });
@@ -163,6 +166,44 @@ app.post("/login", function (req, res) {
                 res.render("login", {
                     message: "Incorrect email Id or password.",
                 });
+            }
+        }
+    );
+});
+
+app.post("/updateProfile", function (req, res) {
+    let email = req.session.email;
+    let name = req.body.name;
+    let dob = req.body.dob;
+    let address = req.body.address;
+    let mobile = req.body.mobile;
+    let qual = req.body.qualification;
+
+    connection.query(
+        "UPDATE faculty SET name=?,DOB=?,address=?,phone=?,qualification=? WHERE emailID=?",
+        [name, dob, address, mobile, qual, email],
+        function (error, results, fields) {
+            if (error) {
+                res.render("profile", {
+                    faculty: req.session.faculty,
+                    notification:
+                        "Error occured while updating profile. Try again.",
+                    bgcolor: "bg-danger",
+                });
+            } else {
+                connection.query(
+                    "select * from faculty where emailID = ?",
+                    [email],
+                    function (err, rows, fields) {
+                        req.session.faculty = rows[0];
+                        // res.redirect("/profile");
+                        res.render("profile", {
+                            faculty: req.session.faculty,
+                            notification: "Profile updated successfully",
+                            bgcolor: "bg-success",
+                        });
+                    }
+                );
             }
         }
     );
