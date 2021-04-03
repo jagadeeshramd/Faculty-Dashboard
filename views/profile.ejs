@@ -1,5 +1,6 @@
 <%- include ("partials/header") -%>
 
+
     <div style="padding: 2% 10%;">
         <h1>My profile</h1><br><br>
         <section>
@@ -32,7 +33,8 @@
                     <button style="margin-right: 2%;" data-toggle="modal" data-target="#changePassword"
                         aria-haspopup="true" class="btn btn-sm btn-primary">Change password</button>
 
-                    <button class="btn btn-sm btn-warning">Edit profile</button>
+                    <button data-toggle="modal" data-target="#editProfile" aria-haspopup="true"
+                        class="btn btn-sm btn-warning">Edit profile</button>
                 </div>
             </div>
 
@@ -120,6 +122,90 @@
             </div>
         </div>
     </div>
+
+    <div class="container">
+        <div class="modal fade" id="editProfile">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!-- header -->
+                    <div class="modal-header text-center">
+                        <h3 class="modal-title text-center">Edit profile</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- body -->
+                    <div class="modal-body">
+                        <form action="/updateProfile" method="post">
+                            <br>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="name">Name</label>
+                                    <input class="form-control" placeholder="Enter your name" type="text" name="name"
+                                        id="name" value="<%= faculty.name %>" required><br>
+
+                                    <label for="dob">DOB</label>
+                                    <input class="form-control" name="dob" value="<%= faculty.DOB %>" type="date">
+                                </div>
+
+                                <div class="col-sm">
+                                    <label for="fid">ID</label>
+                                    <input class="form-control" id="fid" type="text" value="<%= faculty.id %>" readonly>
+                                    <br>
+
+                                    <label for="f_dept">Department</label>
+                                    <input class="form-control" id="f_dept" type="text" value="<%= faculty.deptID %>"
+                                        readonly> <br>
+
+
+                                </div>
+
+                            </div><br>
+
+                            <label for="address">Address</label>
+                            <textarea class="form-control" name="address" id="address" cols="20"
+                                rows="3"><%= faculty.address %> </textarea><br>
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="mobile">Mobile</label>
+                                    <input id="mobile" name="mobile" class="form-control" value="<%= faculty.phone %>"
+                                        type="text">
+
+                                </div>
+                                <div class="col-sm">
+                                    <label for="f_email">Email</label>
+                                    <input class="form-control" id="f_email" type="text" value="<%= faculty.emailID %>"
+                                        readonly> <br>
+                                </div>
+                            </div><br>
+
+                            <label for="qual">Qualification</label>
+                            <textarea class="form-control" name="qualification" id="qual" cols="20"
+                                rows="3"><%= faculty.qualification %> </textarea><br>
+
+                            <br><br>
+
+                            <button class="btn btn-sm btn-success" style="margin-right: 1%;"
+                                type="submit">Update</button>
+                            <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="notification" class="<%= bgcolor %>">
+        <%= notification %>
+    </div>
+
+    <script>
+        $("#notification").fadeIn();
+        setTimeout(() => {
+            $("#notification").fadeOut();
+        }, 3000);
+    </script>
+
 
     <script>
         var password = document.getElementById("newpasswd"),

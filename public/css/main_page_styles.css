@@ -20,6 +20,29 @@ body {
     padding-right: 20px;
 }
 
+/* #disp-content-mc{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 650px;
+    padding: 10px;
+} */
+
+#disp-content-mc{
+    margin: 0 auto;
+        /* margin-left: 20px; */
+    width: 50%;
+    /* margin-top: 2.5%; */
+    height: 500px;
+    /* float: left; */
+    font-family: "Poppins", sans-serif;
+    border: 2px solid #45b1ef;
+    /* padding-left: 15px;
+    padding-right: 15px; */
+    border-radius: 10px;
+    margin-bottom: 50px;
+}
+
 .disp-text {
     margin-left: 20px;
     width: 500px;
@@ -31,6 +54,7 @@ body {
     border-radius: 10px;
     margin-bottom: 50px;
 }
+
 
 .disp-text textarea {
     border: none;
@@ -160,10 +184,34 @@ mark {
     transition: transform 0.5s;
 }
 
+.tab-mc {
+    /* width: 150px;
+    height: 150px; */
+    /* margin-left: 42px;
+    margin-bottom: 30px; */
+    color: white;
+    background-color: #00c4cc;
+    margin: 30px ;
+    padding: 10px;
+    padding-top: 20px;
+     /* padding-bottom: 10px; */
+    text-align: center;
+    /* padding-right: 10px; */
+    /* float: left; */
+    transition: transform 0.5s;
+}
+
 .tab h6 {
     background-color: transparent;
     margin-top: 30px;
 }
+
+.tab-mc h6 {
+    color: white;
+    background-color: transparent;
+    margin-top: 10px;
+}
+
 .tab img {
     margin-top: 20px;
 }
@@ -180,4 +228,15 @@ mark {
 #profile-pic {
     border-radius: 50%;
     width: 80%;
+}
+
+#notification {
+    color: white;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 1% 1.5%;
+    opacity: 0.8;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
 }

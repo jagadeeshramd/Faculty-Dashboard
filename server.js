@@ -19,6 +19,8 @@ app.use(
     })
 );
 
+// app.use(express.urlencoded()); //Parse URL-encoded bodies, instead of bodyParser
+
 app.use(express.static("public"));
 
 app.set("views", __dirname + "/views");
@@ -64,7 +66,6 @@ app.get("/", function (req, res) {
             welcomeMessage: msg + ", " + req.session.faculty.name + "!",
         });
     } else {
-        // res.sendFile(__dirname + "/signup.html");
         res.render("login", {
             message: "",
         });
@@ -74,6 +75,8 @@ app.get("/", function (req, res) {
 app.get("/profile", function (req, res) {
     res.render("profile", {
         faculty: req.session.faculty,
+        notification: "",
+        bgcolor: "",
     });
 });
 
@@ -83,6 +86,40 @@ app.get("/logout", function (req, res) {
     req.session.faculty = null;
     res.redirect("/");
 });
+
+app.get("/admin", function (req, res) {
+    connection.query(
+        "SELECT id FROM department",
+        [],
+        function (error, result, fields) {
+            if (error) console.log("Error occured while fetching departments");
+            else {
+                for (let index = 0; index < result.length; index++) {
+                    result[index] = result[index].id;
+                }
+                let msg = req.session.notifyMSG;
+                let color = req.session.msgStatusColor;
+                req.session.notifyMSG = null;
+                req.session.msgStatusColor = null;
+                res.render("admin", {
+                    welcomeMessage: "Welcome, Harry!",
+                    dept: result,
+                    notification: msg,
+                    bgcolor: color,
+                });
+            }
+        }
+    );
+});
+
+app.get("/myclass", function (req, res) {
+    res.render("myclass");
+});
+
+app.get("/temp", function (req, res) {
+    res.render("temp");
+});
+
 
 app.get("/courseinfo", function (req, res) {
     
@@ -142,6 +179,7 @@ app.get("/reg_students", function (req, res) {
         }
     );
 });
+
 app.get("/mark_grade", function (req, res) {
     
     ttype=req.query.testtype;
@@ -345,29 +383,105 @@ app.post("/login", function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
+    if (email == "harishcse18501@gmail.com") {
+        if (password == "qwertyui") {
+            res.redirect("/admin");
+        } else {
+            res.render("login", {
+                message: "Incorrect email Id or password.",
+            });
+        }
+    } else {
+        connection.query(
+            "select * from login where email = ? and passwd = ? ",
+            [email, password],
+            function (error, results, fields) {
+                if (error) console.log(error);
+                else if (results.length > 0) {
+                    message = "";
+                    req.session.loggedin = true;
+                    req.session.email = email;
+                    connection.query(
+                        "select * from faculty where emailID = ?",
+                        [email],
+                        function (err, rows, fields) {
+                            req.session.faculty = rows[0];
+                            res.redirect("/");
+                        }
+                    );
+                } else {
+                    res.render("login", {
+                        message: "Incorrect email Id or password.",
+                    });
+                }
+            }
+        );
+    }
+});
+
+app.post("/updateProfile", function (req, res) {
+    let email = req.session.email;
+    let name = req.body.name;
+    let dob = req.body.dob;
+    let address = req.body.address;
+    let mobile = req.body.mobile;
+    let qual = req.body.qualification;
+
     connection.query(
-        "select * from login where email = ? and passwd = ? ",
-        [email, password],
+        "UPDATE faculty SET name=?,DOB=?,address=?,phone=?,qualification=? WHERE emailID=?",
+        [name, dob, address, mobile, qual, email],
         function (error, results, fields) {
-            if (error) console.log(error);
-            else if (results.length > 0) {
-                message = "";
-                req.session.loggedin = true;
-                req.session.email = email;
+            if (error) {
+                res.render("profile", {
+                    faculty: req.session.faculty,
+                    notification:
+                        "Error occured while updating profile. Try again.",
+                    bgcolor: "bg-danger",
+                });
+            } else {
                 connection.query(
                     "select * from faculty where emailID = ?",
                     [email],
                     function (err, rows, fields) {
                         req.session.faculty = rows[0];
-                        // console.log(req.session.faculty);
-                        res.redirect("/");
+                        // res.redirect("/profile");
+                        res.render("profile", {
+                            faculty: req.session.faculty,
+                            notification: "Profile updated successfully",
+                            bgcolor: "bg-success",
+                        });
                     }
                 );
-            } else {
-                res.render("login", {
-                    message: "Incorrect email Id or password.",
-                });
             }
+        }
+    );
+});
+
+app.post("/addNewFaculty", function (req, res) {
+    let f = req.body;
+    connection.query(
+        "INSERT INTO faculty VALUES(?,?,?,?,?,?,?,?,?,?)",
+        [
+            f.id,
+            f.name,
+            f.email,
+            f.dob,
+            f.gender,
+            f.address,
+            f.mobile,
+            f.dept,
+            f.qualification,
+            f.designation,
+        ],
+        function (err, result, fields) {
+            if (err) {
+                req.session.notifyMSG = "Error occured. Faculty not added.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Added new faculty to database";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/admin");
         }
     );
 });

@@ -15,9 +15,9 @@ create table faculty(id varchar(10), name varchar(50), emailID varchar(50) UNIQU
                         primary key (id), 
                         foreign key (deptID) references department(id));
                         
-insert into faculty values('12301', 'Akhil', 'akhil@gmail.com', '1/3/1975', 'M', 'XYZ street, XYZ.', '9234567890', 'CSE', 'PhD', 'Assistant professor'),
-							('12465', 'Senthil', 'senthil@gmail.com', '1/4/1973', 'M', 'ABC street, ABC.', '9234561234', 'EEE', 'PhD', 'Assistant professor'),
-                            ('13301', 'Venkat', 'venkat@gmail.com', '20/11/1978', 'M', 'PQR street, PQR.', '9212345890', 'CSE', 'PhD', 'Assistant professor');
+insert into faculty values('12301', 'Akhil', 'akhil@gmail.com', '1975-03-01', 'M', 'XYZ street, XYZ.', '9234567890', 'CSE', 'PhD', 'Assistant professor'),
+							('12465', 'Senthil', 'senthil@gmail.com', '1973-04-02', 'M', 'ABC street, ABC.', '9234561234', 'EEE', 'PhD', 'Assistant professor'),
+                            ('13301', 'Venkat', 'venkat@gmail.com', '1978-11-20', 'M', 'PQR street, PQR.', '9212345890', 'CSE', 'PhD', 'Assistant professor');
 
 select * from faculty;
 
@@ -32,5 +32,6 @@ select * from login;
 
 
 
-
-
+-- drop table login;
+-- drop table faculty;
+-- drop table department;
