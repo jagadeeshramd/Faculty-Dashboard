@@ -18,7 +18,7 @@ app.use(
     })
 );
 
-// app.use(express.urlencoded()); //Parse URL-encoded bodies
+// app.use(express.urlencoded()); //Parse URL-encoded bodies, instead of bodyParser
 
 app.use(express.static("public"));
 
