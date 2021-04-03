@@ -91,6 +91,11 @@ app.get("/myclass", function (req, res) {
     res.render("myclass");
 });
 
+app.get("/temp", function (req, res) {
+    res.render("temp");
+});
+
+
 app.get("/courseinfo", function (req, res) {
     res.render("courseinfo");
 });
