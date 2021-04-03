@@ -17,6 +17,7 @@
                     style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
             </nav>
         </div>
+        <% if(status) %>
         <div class="row-tabs">
             <div class="disptab">
                 <nav class="navbar navbar-expand-lg" id="search-list"
@@ -33,6 +34,11 @@
                     <i class="fa fa-expand"
                         style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
                 </nav>
+                <button style="width: 40%; margin-top: 15%;margin-left:30%;" type="button" class="btn btn-outline-primary">
+                    <a href="<%= details %>" target="_blank">
+                        View Course Details
+                    </a>
+                </button>
             </div>
             <div class="disptab" style="margin-left: 130px;">
                 <nav class="navbar navbar-expand-lg" id="search-list"
@@ -49,9 +55,14 @@
                     <i class="fa fa-expand"
                         style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
                 </nav>
+                <button style="width: 70%; margin-top: 15%;margin-left:18%;" type="button" class="btn btn-outline-primary">
+                    <a href="<%= co %>" target="_blank">
+                        View Course Objectives and Outcomes
+                    </a>
+                </button>
             </div>
         </div>
-
+        
         <div class="row-tabs">
             <div class="disptab">
                 <nav class="navbar navbar-expand-lg" id="search-list"
@@ -69,6 +80,12 @@
                         style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
 
                 </nav>
+                <button style="width: 42%; margin-top: 15%;margin-left:30%;" type="button" class="btn btn-outline-primary">
+                    <a href="<%= eval %>" target="_blank">
+                        View Evaluation Rubrics
+                    </a>
+                </button>
+
             </div>
             <div class="disptab" style="margin-left: 130px;">
                 <nav class="navbar navbar-expand-lg" id="search-list"
@@ -86,6 +103,11 @@
                         style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
 
                 </nav>
+                <button style="width: 40%; margin-top: 15%;margin-left:30%;" type="button" class="btn btn-outline-primary">
+                    <a href="<%= syllabus %>" target="_blank" style="text-decoration:none;">
+                        View Course Syllabus
+                    </a>
+                </button>
             </div>
         </div>
 

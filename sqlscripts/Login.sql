@@ -1,6 +1,6 @@
 create database facultydashboard;
 use facultydashboard;
-
+show tables;
 create table department(id varchar(5) primary key, name varchar(50), degree varchar(30), HoD_ID varchar(10));
 
 insert into department values ('CSE', 'Computer Science and Engineering', 'B.Tech', '10001'),
@@ -32,6 +32,5 @@ select * from login;
 
 
 
-drop table login;
-drop table faculty;
-drop table department;
+
+

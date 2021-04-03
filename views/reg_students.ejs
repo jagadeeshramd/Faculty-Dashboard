@@ -1,5 +1,5 @@
 <%- include ("partials/header") -%>
-
+<script src="/js/studentinfo.js"></script>
     <div id="content-header" style="margin-left: 20px;width:300px;">
         <h6>Course ID</h6>
         <nav class="navbar navbar-expand-lg" id="search-list"
@@ -87,31 +87,23 @@
                 <div class="row-det" id="student-attendance"
                     style="width: 100%;height:50px;background-color: #00c4cc;color:white;">
                     <h5>Attendance:</h5>
-                    <p><strong>..</strong></p>
+                    <p><strong id="attendance-val">..</strong></p>
                 </div>
                 <div class="row-det" id="student-acdemics">
                     <div class="row-det-1" id="test-det" style="overflow: scroll;height:206px;">
-                        <ul class="list-group">
+                        <ul class="list-group" id="quiz">
                             <li class="list-group-item active" style="text-align: center;">Quizzes</li>
-                            <li class="list-group-item">Quiz 1:</li>
-                            <li class="list-group-item">Quiz 2:</li>
-                            <li class="list-group-item">Quiz 3:</li>
-                            <li class="list-group-item">Quiz 4:</li>
+                            
                         </ul>
 
-                        <ul class="list-group">
+                        <ul class="list-group" id="periodical">
                             <li class="list-group-item active" style="text-align: center;">Periodicals</li>
-                            <li class="list-group-item">P1:</li>
-                            <li class="list-group-item">P2:</li>
+                            
                         </ul>
 
-                        <ul class="list-group">
+                        <ul class="list-group" id="assignment">
                             <li class="list-group-item active" style="text-align: center;">Assignments</li>
-                            <li class="list-group-item">Assignment 1:</li>
-                            <li class="list-group-item">Assignment 2:</li>
-                            <li class="list-group-item">Assignment 3:</li>
-                            <li class="list-group-item">Assignment 4:</li>
-
+                            
 
                         </ul>
                     </div>
