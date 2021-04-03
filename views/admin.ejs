@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faculty Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous" />
+
+    <!-- jQuery and JS bundle w/ Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="/css/main_page_styles.css" />
+    <link rel="stylesheet" href="/css/course_info.css" />
+    <link rel="stylesheet" href="/css/reg_students.css" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg" style="
+                background-image: linear-gradient(90deg, #00c4cc, #7d2ae8);
+                height: 70px;
+            ">
+        <a class="navbar-brand" href="#" style="color: beige; margin-left: 20px"><strong>Faculty Dashboard</strong></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown" style="margin-left: 75%">
+            <ul class="navbar-nav navbar-right">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <img src="/images/user_icon.png" width="30px" height="30px" alt="user_icon" />
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/logout">Log out</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section style="padding: 4% 10%">
+        <h2>
+            <%= welcomeMessage %>
+        </h2>
+        <br />
+        <em>You are an admin.</em>
+        <br /><br /><br />
+        <button data-toggle="modal" data-target="#addNewFaculty" aria-haspopup="true" class="btn btn-primary">
+            Add new faculty
+        </button>
+        <br /><br />
+        <a class="btn btn-warning" href="#">Change faculty authorization</a>
+    </section>
+
+    <div class="container">
+        <div class="modal fade" id="addNewFaculty">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <!-- header -->
+                    <div class="modal-header text-center">
+                        <h3 class="modal-title text-center">
+                            Add new faculty
+                        </h3>
+                        <button type="button" class="close" data-dismiss="modal">
+                            &times;
+                        </button>
+                    </div>
+                    <!-- body -->
+                    <div class="modal-body">
+                        <form action="/addNewFaculty" method="post" autocomplete="off">
+                            <br />
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="name">Name</label>
+                                    <input class="form-control" placeholder="Enter faculty name" type="text" name="name"
+                                        id="name" required />
+                                </div>
+
+                                <div class="col-sm">
+                                    <label for="fid">ID</label>
+                                    <input class="form-control" id="fid" type="text" name="id"
+                                        placeholder="Enter faculty ID" required />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="dob">DOB</label>
+                                    <input class="form-control" name="dob" type="date" required />
+                                </div>
+                                <div class="col-sm">
+                                    <label for="f_dept">Department</label>
+                                    <input class="form-control" id="f_dept" list="datalistOptions" name="dept"
+                                        placeholder="Enter faculty's department" required />
+                                    <datalist id="datalistOptions">
+
+                                        <% for( let index=0; index < dept.length; index++ ) { %>
+                                            <option value="<%= dept[index] %>">
+                                                <% } %>
+
+                                    </datalist>
+                                </div>
+                                <div style="padding-top: 0.5%;" class="col-sm">
+                                    <label for="">Gender</label><br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" id="inlineRadio1"
+                                            value="M" required>
+                                        <label class="form-check-label" for="inlineRadio1">Male</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" id="inlineRadio2"
+                                            value="F">
+                                        <label class="form-check-label" for="inlineRadio2">Female</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <br />
+
+                            <label for="address">Address</label>
+                            <textarea class="form-control" name="address" id="address" cols="20" rows="3"
+                                required></textarea><br />
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="mobile">Mobile</label>
+                                    <input id="mobile" name="mobile" class="form-control" type="text" required />
+                                </div>
+                                <div class="col-sm">
+                                    <label for="f_email">Email</label>
+                                    <input class="form-control" id="f_email" name="email" type="email" required />
+                                </div>
+                            </div>
+                            <br />
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="qual">Qualification</label>
+                                    <textarea class="form-control" name="qualification" id="qual" cols="20" rows="3"
+                                        required></textarea><br />
+                                </div>
+                                <div class="col-sm">
+                                    <label for="des">Designation</label>
+                                    <input id="des" name="designation" class="form-control" type="text" required />
+                                </div>
+                            </div>
+
+                            <br /><br />
+
+                            <button class="btn btn-sm btn-success" style="margin-right: 1%" type="submit">
+                                Add faculty
+                            </button>
+                            <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">
+                                Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="<%= bgcolor %>">
+        <%= notification %>
+    </div>
+
+    <script>
+        $("#notification").fadeIn();
+        setTimeout(() => {
+            $("#notification").fadeOut();
+        }, 3000);
+    </script>
+</body>
+
+</html>

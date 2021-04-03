@@ -37,7 +37,7 @@ app.use(
 connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "Myjagasql123",
+    password: "#Harry1329",
     port: "3306",
     database: "facultydashboard",
 });
@@ -65,7 +65,6 @@ app.get("/", function (req, res) {
             welcomeMessage: msg + ", " + req.session.faculty.name + "!",
         });
     } else {
-        // res.sendFile(__dirname + "/signup.html");
         res.render("login", {
             message: "",
         });
@@ -85,6 +84,31 @@ app.get("/logout", function (req, res) {
     req.session.email = null;
     req.session.faculty = null;
     res.redirect("/");
+});
+
+app.get("/admin", function (req, res) {
+    connection.query(
+        "SELECT id FROM department",
+        [],
+        function (error, result, fields) {
+            if (error) console.log("Error occured while fetching departments");
+            else {
+                for (let index = 0; index < result.length; index++) {
+                    result[index] = result[index].id;
+                }
+                let msg = req.session.notifyMSG;
+                let color = req.session.msgStatusColor;
+                req.session.notifyMSG = null;
+                req.session.msgStatusColor = null;
+                res.render("admin", {
+                    welcomeMessage: "Welcome, Harry!",
+                    dept: result,
+                    notification: msg,
+                    bgcolor: color,
+                });
+            }
+        }
+    );
 });
 
 app.get("/myclass", function (req, res) {
@@ -157,9 +181,7 @@ app.post("/login", function (req, res) {
 
     if (email == "harishcse18501@gmail.com") {
         if (password == "qwertyui") {
-            res.render("admin", {
-                welcomeMessage: "Welcome, Harry!",
-            });
+            res.redirect("/admin");
         } else {
             res.render("login", {
                 message: "Incorrect email Id or password.",
@@ -227,6 +249,35 @@ app.post("/updateProfile", function (req, res) {
                     }
                 );
             }
+        }
+    );
+});
+
+app.post("/addNewFaculty", function (req, res) {
+    let f = req.body;
+    connection.query(
+        "INSERT INTO faculty VALUES(?,?,?,?,?,?,?,?,?,?)",
+        [
+            f.id,
+            f.name,
+            f.email,
+            f.dob,
+            f.gender,
+            f.address,
+            f.mobile,
+            f.dept,
+            f.qualification,
+            f.designation,
+        ],
+        function (err, result, fields) {
+            if (err) {
+                req.session.notifyMSG = "Error occured. Faculty not added.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Added new faculty to database";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/admin");
         }
     );
 });
