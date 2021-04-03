@@ -37,7 +37,7 @@ app.use(
 connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "#Harry1329",
+    password: "Myjagasql123",
     port: "3306",
     database: "facultydashboard",
 });
@@ -83,6 +83,10 @@ app.get("/logout", function (req, res) {
     req.session.email = null;
     req.session.faculty = null;
     res.redirect("/");
+});
+
+app.get("/myclass", function (req, res) {
+    res.render("myclass");
 });
 
 app.get("/courseinfo", function (req, res) {

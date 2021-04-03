@@ -20,6 +20,17 @@ body {
     padding-right: 20px;
 }
 
+#disp-content-mc{
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 650px;
+    padding: 10px;
+}
+
+
 .disp-text {
     margin-left: 20px;
     width: 500px;
@@ -164,6 +175,12 @@ mark {
     background-color: transparent;
     margin-top: 30px;
 }
+
+.tab.mc h6 {
+    background-color: transparent;
+    margin-top: 10px;
+}
+
 .tab img {
     margin-top: 20px;
 }

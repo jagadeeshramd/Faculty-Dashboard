@@ -11,4 +11,4 @@ insert into student_18 values('CB.EN.U4CSE18008', 'Bharati M','F','cb.en.u4cse18
 insert into student_18 values('CB.EN.U4CSE18009', 'Dhanush S','M','cb.en.u4cse18009@cb.students.amrita.edu','student9@gmail.com',9000000011);
 insert into student_18 values('CB.EN.U4CSE18010', 'Divya T','F','cb.en.u4cse18010@cb.students.amrita.edu','student10@gmail.com',9888811455);
 select * from student_18;
-drop table student_18;
+-- drop table student_18;

@@ -32,6 +32,6 @@ select * from login;
 
 
 
-drop table login;
-drop table faculty;
-drop table department;
+-- drop table login;
+-- drop table faculty;
+-- drop table department;
