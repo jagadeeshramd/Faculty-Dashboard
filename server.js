@@ -343,7 +343,7 @@ app.get("/get_quiz_marks", function (req, res) {
             } else {
                 res.send({resp:false,rec:{}});
             }
-            res.send({ resp: true, rec: marks });
+            
         } 
     );
     
@@ -375,7 +375,7 @@ app.get("/get_assignment_marks", function (req, res) {
             } else {
                 res.send({resp:false,rec:{}});
             }
-            res.send({ resp: true, rec: marks });
+            
         } );
     console.log(stud_info);
 });
@@ -409,7 +409,7 @@ app.get("/get_periodical_marks", function (req, res) {
                 
                 res.send({resp:false,rec:{}});
             }
-            res.send({ resp: true, rec: marks });
+            
         } 
     );
     

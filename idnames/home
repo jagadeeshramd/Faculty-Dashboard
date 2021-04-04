@@ -1,0 +1,21 @@
+Updating course name: 
+id=course-name
+class=course-name
+
+Register Students:
+id=reg-student
+
+Attendance:
+id=attendance
+
+Course info:
+id=courseinfo
+
+resources:
+id=resources
+
+tests:
+id=tests
+
+grade:
+id="grade"

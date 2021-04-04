@@ -21,7 +21,7 @@
                     <ul id="course-list" style="list-style: none">
                         <% for(i=0;i < courses.length;i++) { %>
                             <button type="button" class="list-group-item list-group-item-action"
-                                style="width:400px;margin-top:20px;" onclick="updatecoursetab(this);">
+                                style="width:400px;margin-top:20px;" id="course-name" class="course-name" onclick="updatecoursetab(this);">
                                 <%= courses[i]['course_id'] %>
                                     <%= courses[i]['batch'] %>
                                         <%= courses[i]['dept'] %>
@@ -61,21 +61,21 @@
                 <div class="tab">
                     <img src="/images/list.png" width="50px" height="50px" />
                     <br />
-                    <a href="reg_students">
+                    <a href="reg_students" id="reg-student">
                         <h6><strong>Registered Students</strong></h6>
                     </a>
                 </div>
                 <div class="tab">
                     <img src="/images/attendance.png" width="50px" height="50px" />
                     <br />
-                    <a href="attendance"></a>
+                    <a href="attendance" id="attendance"></a>
                     <h6><strong>Attendance</strong></h6>
                     </a>
                 </div>
                 <div class="tab">
                     <img src="/images/course_info.png" width="50px" height="50px" />
                     <br />
-                    <a href="courseinfo">
+                    <a href="courseinfo" id="courseinfo">
                         <h6><strong>Course information</strong></h6>
                     </a>
                 </div>
@@ -84,21 +84,21 @@
                 <div class="tab">
                     <img src="/images/res.png" width="50px" height="50px" />
                     <br />
-                    <a href="resources">
+                    <a href="resources" id="resources">
                         <h6><strong>Resources</strong></h6>
                     </a>
                 </div>
                 <div class="tab">
                     <img src="/images/test.png" width="50px" height="50px" />
                     <br />
-                    <a href="tests-and-assignments">
+                    <a href="tests-and-assignments" id="tests">
                         <h6><strong>Tests & Assignments</strong></h6>
                     </a>
                 </div>
                 <div class="tab">
                     <img src="/images/grade.png" width="50px" height="50px" />
                     <br />
-                    <a href="mark_grade">
+                    <a href="mark_grade" id="grade">
                         <h6><strong>Marks and Grades</strong></h6>
                     </a>
                 </div>
