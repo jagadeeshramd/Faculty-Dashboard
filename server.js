@@ -6,13 +6,15 @@ const session = require("express-session");
 const { request } = require("http");
 const e = require("express");
 const { type } = require("os");
+const nodemailer = require("nodemailer");
+const pass = require("./config.js");
 
 const app = express();
 
-cid="";
-cbatch="";
-cdept="";
-csect="";
+cid = "";
+cbatch = "";
+cdept = "";
+csect = "";
 process.stdin.resume();
 
 app.set("view engine", "ejs");
@@ -42,7 +44,7 @@ app.use(
 connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "password",
+    password: pass.SQLPass,
     port: "3306",
     database: "facultydashboard",
 });
@@ -67,35 +69,41 @@ app.get("/", function (req, res) {
         else if (hours >= 16 && hours < 21) msg = "Good evening";
         else msg = "Good night";
 
-        wel=msg + ", " + req.session.faculty.name + "!";
+        wel = msg + ", " + req.session.faculty.name + "!";
         console.log(wel);
         connection.query(
             "select course_id,batch,dept,section from course_faculty where faculty_id=?;",
             [req.session.faculty.id],
             function (error, result, fields) {
-                if (error) console.log("Error occured while fetching departments");
-                else if(result.length>=1){
+                if (error)
+                    console.log("Error occured while fetching departments");
+                else if (result.length >= 1) {
                     console.log(result);
-                    course_sel=result[0]['course_id']+" "+result[0]['batch']+" "+result[0]['dept']+" "+result[0]['section'];
-                    req.session.course=result[0];
-                    res.render("home",{
-                        courselen:result.length,
-                        welcomeMessage:wel,
-                        courses:result,
-                        coursesel:course_sel
+                    course_sel =
+                        result[0]["course_id"] +
+                        " " +
+                        result[0]["batch"] +
+                        " " +
+                        result[0]["dept"] +
+                        " " +
+                        result[0]["section"];
+                    req.session.course = result[0];
+                    res.render("home", {
+                        courselen: result.length,
+                        welcomeMessage: wel,
+                        courses: result,
+                        coursesel: course_sel,
                     });
-                }
-                else{
-                    res.render("home",{
-                        courselen:result.length,
-                        welcomeMessage:wel,
-                        courses:[],
-                        coursesel:""
+                } else {
+                    res.render("home", {
+                        courselen: result.length,
+                        welcomeMessage: wel,
+                        courses: [],
+                        coursesel: "",
                     });
                 }
             }
         );
-        
     } else {
         res.render("login", {
             message: "",
@@ -105,13 +113,13 @@ app.get("/", function (req, res) {
 
 app.get("/updatecoursetab", function (req, res) {
     console.log(req.session.course);
-    s=req.query.course.trim().split(" ");
+    s = req.query.course.trim().split(" ");
     console.log(s);
-    req.session.course.course_id=s[0];
-    req.session.course.batch=parseInt(s[1]);
-    req.session.course.dept=s[2];
-    req.session.course.section=s[3];
-    res.send({"status":true});
+    req.session.course.course_id = s[0];
+    req.session.course.batch = parseInt(s[1]);
+    req.session.course.dept = s[2];
+    req.session.course.section = s[3];
+    res.send({ status: true });
 });
 
 app.get("/profile", function (req, res) {
@@ -162,23 +170,21 @@ app.get("/temp", function (req, res) {
     res.render("temp");
 });
 
-
 app.get("/courseinfo", function (req, res) {
-    
     connection.query(
         "select * from course_list where course_code='15CSE301';",
         function (error, results, fields) {
             if (error) console.log(error);
-            else if (results.length ==1) {
+            else if (results.length == 1) {
                 success = true;
                 studlist = results;
                 console.log(results.length);
                 res.render("courseinfo", {
-                    status:true,
-                    syllabus: results[0]['course_syllabus'],
-                    details:results[0]['course_details'],
-                    eval:results[0]['course_eval'],
-                    co:results[0]['course_outcome']
+                    status: true,
+                    syllabus: results[0]["course_syllabus"],
+                    details: results[0]["course_details"],
+                    eval: results[0]["course_eval"],
+                    co: results[0]["course_outcome"],
                 });
             } else {
                 success = false;
@@ -188,7 +194,7 @@ app.get("/courseinfo", function (req, res) {
                     syllabus: "#",
                     details: "#",
                     eval: "#",
-                    co: "#"
+                    co: "#",
                 });
             }
         }
@@ -198,13 +204,13 @@ app.get("/courseinfo", function (req, res) {
 app.get("/reg_students", function (req, res) {
     var success = false;
     var studlist = [];
-    l="%U4";
+    l = "%U4";
     console.log("Inside reg students");
     console.log(req.session);
-    l+=req.session.course.dept;
-    l+=req.session.course.batch%2000;
-    l+=req.session.course.section.charCodeAt(0) - 'A'.charCodeAt(0);
-    l+="%";
+    l += req.session.course.dept;
+    l += req.session.course.batch % 2000;
+    l += req.session.course.section.charCodeAt(0) - "A".charCodeAt(0);
+    l += "%";
     console.log(l);
     connection.query(
         "select roll_number from student where roll_number like ? order by roll_number;",
@@ -232,15 +238,14 @@ app.get("/reg_students", function (req, res) {
 });
 
 app.get("/mark_grade", function (req, res) {
-    
-    ttype=req.query.testtype;
-    tnum=req.query.testnum;
+    ttype = req.query.testtype;
+    tnum = req.query.testnum;
     console.log(ttype);
-    add_msg=req.query.addmsg;
-    cname=req.session.course.course_id+"_";
-    cname+=req.session.course.batch+"_";
-    cname+=req.session.course.dept+"_";
-    cname+=req.session.course.section;
+    add_msg = req.query.addmsg;
+    cname = req.session.course.course_id + "_";
+    cname += req.session.course.batch + "_";
+    cname += req.session.course.dept + "_";
+    cname += req.session.course.section;
     connection.query(
         "select ass_name from assessment_list where course_code_full= ?;",
         [cname],
@@ -248,116 +253,113 @@ app.get("/mark_grade", function (req, res) {
             if (error) console.log(error);
             else if (results.length >= 1) {
                 console.log(results);
-                ass_list=[];
-                for(i in results){
-                    ass_list.push(results[i]['ass_name']);
+                ass_list = [];
+                for (i in results) {
+                    ass_list.push(results[i]["ass_name"]);
                 }
-                ass_name=req.query.assname;
-                if(ass_name==null)
-                    ass_name=ass_list[0];
+                ass_name = req.query.assname;
+                if (ass_name == null) ass_name = ass_list[0];
                 console.log(ass_name);
-                tablename="course_"+cname;
-                q="select roll_number,"+ass_name+" from "+tablename+"_student_academic_info;"
-                
-                connection.query(
-                    q,
-                    function (error, results, fields) {
-                        if (error) console.log(error);
-                        else if (results.length >= 1) {
-                            smark=[]
-                            for(i=0;i<results.length;i++)
-                            {
-                                smark.push([ results[i]['roll_number'] , results[i][ass_name]]);
-                            }
-                            console.log(smark);
-                            res.render("mark_grade",{
-                                addmsg:add_msg,
-                                asslist:ass_list,
-                                stud_marks: smark,
-                                currass: "Current Assessment: "+ass_name
-                            });
-                        } 
-                        else {
-                            console.log(results);
-                            res.render("mark_grade",{
-                                addmsg:add_msg,
-                                asslist:ass_list,
-                                stud_marks: [],
-                                currass: "Current Assessment: "+ass_name
-                            });
-                        }
-                    }
-                );
+                tablename = "course_" + cname;
+                q =
+                    "select roll_number," +
+                    ass_name +
+                    " from " +
+                    tablename +
+                    "_student_academic_info;";
 
+                connection.query(q, function (error, results, fields) {
+                    if (error) console.log(error);
+                    else if (results.length >= 1) {
+                        smark = [];
+                        for (i = 0; i < results.length; i++) {
+                            smark.push([
+                                results[i]["roll_number"],
+                                results[i][ass_name],
+                            ]);
+                        }
+                        console.log(smark);
+                        res.render("mark_grade", {
+                            addmsg: add_msg,
+                            asslist: ass_list,
+                            stud_marks: smark,
+                            currass: "Current Assessment: " + ass_name,
+                        });
+                    } else {
+                        console.log(results);
+                        res.render("mark_grade", {
+                            addmsg: add_msg,
+                            asslist: ass_list,
+                            stud_marks: [],
+                            currass: "Current Assessment: " + ass_name,
+                        });
+                    }
+                });
             } else {
                 console.log(results);
-                res.render("mark_grade",{
-                    addmsg:add_msg,
-                    asslist:[],
-                    stud_marks:[],
-                    currass: ""
+                res.render("mark_grade", {
+                    addmsg: add_msg,
+                    asslist: [],
+                    stud_marks: [],
+                    currass: "",
                 });
             }
         }
     );
-    
 });
-
 
 app.get("/det_student_info", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={};
+    var stud_info = {};
     connection.query(
         "select * from student where roll_number= ?;",
         [rno],
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length == 1) {
-                res.send({resp:true,rec:results[0]});
+                res.send({ resp: true, rec: results[0] });
             } else {
                 console.log(results);
-                res.send({resp:false,rec:{}});
+                res.send({ resp: false, rec: {} });
             }
         }
     );
     console.log(stud_info);
-    
 });
 
 app.get("/get_quiz_marks", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={};
-    cname=req.session.course.course_id+"_";
-    cname+=req.session.course.batch+"_";
-    cname+=req.session.course.dept+"_";
-    cname+=req.session.course.section;
-    tablename="course_"+cname;
-    console.log("quiz "+tablename);
-    q="select * from "+tablename+"_student_academic_info where roll_number=?;";
-    connection.query(
-        q,
-        [rno],
-        function (error, results, fields) {
-            if (error) console.log(error);
-            else if (results.length == 1) {
-                marks={}
-                for(k in results[0]){
-                    if(k.startsWith("Q")){
-                        k1=k.slice(1,k.length)
-                        marks[k1]=results[0][k];
-                    }
+    var stud_info = {};
+    cname = req.session.course.course_id + "_";
+    cname += req.session.course.batch + "_";
+    cname += req.session.course.dept + "_";
+    cname += req.session.course.section;
+    tablename = "course_" + cname;
+    console.log("quiz " + tablename);
+    q =
+        "select * from " +
+        tablename +
+        "_student_academic_info where roll_number=?;";
+    connection.query(q, [rno], function (error, results, fields) {
+        if (error) console.log(error);
+        else if (results.length == 1) {
+            marks = {};
+            for (k in results[0]) {
+                if (k.startsWith("Q")) {
+                    k1 = k.slice(1, k.length);
+                    marks[k1] = results[0][k];
                 }
-                res.send({resp:true,rec:marks});
-            } else {
-                console.log(results);
-                res.send({resp:false,rec:{}});
             }
+            res.send({ resp: true, rec: marks });
+        } else {
+            console.log(results);
+            res.send({ resp: false, rec: {} });
         }
-    );
+    });
     console.log(stud_info);
 });
 
@@ -365,34 +367,33 @@ app.get("/get_assignment_marks", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={};
-    cname=req.session.course.course_id+"_";
-    cname+=req.session.course.batch+"_";
-    cname+=req.session.course.dept+"_";
-    cname+=req.session.course.section;
-    tablename="course_"+cname;
-    console.log("assignment "+tablename);
-    q="select * from "+tablename+"_student_academic_info where roll_number=?;";
-    connection.query(
-        q,
-        [rno],
-        function (error, results, fields) {
-            if (error) console.log(error);
-            else if (results.length == 1) {
-                marks={}
-                for(k in results[0]){
-                    if(k.startsWith("A")){
-                        k1=k.slice(1,k.length);
-                        marks[k1]=results[0][k];
-                    }
+    var stud_info = {};
+    cname = req.session.course.course_id + "_";
+    cname += req.session.course.batch + "_";
+    cname += req.session.course.dept + "_";
+    cname += req.session.course.section;
+    tablename = "course_" + cname;
+    console.log("assignment " + tablename);
+    q =
+        "select * from " +
+        tablename +
+        "_student_academic_info where roll_number=?;";
+    connection.query(q, [rno], function (error, results, fields) {
+        if (error) console.log(error);
+        else if (results.length == 1) {
+            marks = {};
+            for (k in results[0]) {
+                if (k.startsWith("A")) {
+                    k1 = k.slice(1, k.length);
+                    marks[k1] = results[0][k];
                 }
-                res.send({resp:true,rec:marks});
-            } else {
-                console.log(results);
-                res.send({resp:false,rec:{}});
             }
+            res.send({ resp: true, rec: marks });
+        } else {
+            console.log(results);
+            res.send({ resp: false, rec: {} });
         }
-    );
+    });
     console.log(stud_info);
 });
 
@@ -400,34 +401,33 @@ app.get("/get_periodical_marks", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={};
-    cname=req.session.course.course_id+"_";
-    cname+=req.session.course.batch+"_";
-    cname+=req.session.course.dept+"_";
-    cname+=req.session.course.section;
-    tablename="course_"+cname;
-    console.log("per "+tablename);
-    q="select * from "+tablename+"_student_academic_info where roll_number=?;";
-    connection.query(
-        q,
-        [rno],
-        function (error, results, fields) {
-            if (error) console.log(error);
-            else if (results.length == 1) {
-                marks={}
-                for(k in results[0]){
-                    if(k.startsWith("P")){
-                        k1=k.slice(1,k.length);
-                        marks[k1]=results[0][k];
-                    }
+    var stud_info = {};
+    cname = req.session.course.course_id + "_";
+    cname += req.session.course.batch + "_";
+    cname += req.session.course.dept + "_";
+    cname += req.session.course.section;
+    tablename = "course_" + cname;
+    console.log("per " + tablename);
+    q =
+        "select * from " +
+        tablename +
+        "_student_academic_info where roll_number=?;";
+    connection.query(q, [rno], function (error, results, fields) {
+        if (error) console.log(error);
+        else if (results.length == 1) {
+            marks = {};
+            for (k in results[0]) {
+                if (k.startsWith("P")) {
+                    k1 = k.slice(1, k.length);
+                    marks[k1] = results[0][k];
                 }
-                res.send({resp:true,rec:marks});
-            } else {
-                console.log(results);
-                res.send({resp:false,rec:{}});
             }
+            res.send({ resp: true, rec: marks });
+        } else {
+            console.log(results);
+            res.send({ resp: false, rec: {} });
         }
-    );
+    });
     console.log(stud_info);
 });
 
@@ -435,32 +435,30 @@ app.get("/get_attendance", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={};
-    cname=req.session.course.course_id+"_";
-    cname+=req.session.course.batch+"_";
-    cname+=req.session.course.dept+"_";
-    cname+=req.session.course.section;
-    tablename="course_"+cname;
-    
+    var stud_info = {};
+    cname = req.session.course.course_id + "_";
+    cname += req.session.course.batch + "_";
+    cname += req.session.course.dept + "_";
+    cname += req.session.course.section;
+    tablename = "course_" + cname;
+
     connection.query(
-        "select roll_number,(sum(classes)/sum(e_period-s_period+1))*100 as percentage from "+tablename+"_attendance group by roll_number having roll_number=?;",
+        "select roll_number,(sum(classes)/sum(e_period-s_period+1))*100 as percentage from " +
+            tablename +
+            "_attendance group by roll_number having roll_number=?;",
         [rno],
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length == 1) {
-                res.send({resp:true,rec:results[0]['percentage']});
+                res.send({ resp: true, rec: results[0]["percentage"] });
             } else {
                 console.log(results);
-                res.send({resp:false,rec:{}});
+                res.send({ resp: false, rec: {} });
             }
         }
     );
     console.log(stud_info);
 });
-
-
-
-
 
 // POST methods ----------------------------------------------------------
 app.post("/login", function (req, res) {
@@ -564,6 +562,50 @@ app.post("/addNewFaculty", function (req, res) {
             } else {
                 req.session.notifyMSG = "Added new faculty to database";
                 req.session.msgStatusColor = "bg-success";
+                let code = Math.random().toString(36).slice(4);
+
+                connection.query(
+                    "INSERT INTO login VALUES(?,?)",
+                    [f.email, code],
+                    function (err, result, fields) {
+                        if (err) console.log(error);
+                        // else {
+                        //     var transporter = nodemailer.createTransport({
+                        //         service: "gmail",
+                        //         auth: {
+                        //             user: "harishcse18501@gmail.com",
+                        //             pass: pass.GPassword,
+                        //         },
+                        //     });
+
+                        //     var mailOptions = {
+                        //         from: "harishcse18501@gmail.com",
+                        //         to: f.email,
+                        //         subject:
+                        //             "Faculty Dashboard - User account created.",
+                        //         text:
+                        //             "Greetings!\n\tAdmin Harry has created an account for you in the Faculty Dashboard application.\n\nEmail id: " +
+                        //             f.email +
+                        //             "\nPassword: " +
+                        //             code +
+                        //             "\nThis password is randomly generated. You can change your password after logging in. \nHave a great day!\nRegards, Admin.",
+                        //     };
+
+                        //     transporter.sendMail(
+                        //         mailOptions,
+                        //         function (error, info) {
+                        //             if (error) {
+                        //                 console.log(error);
+                        //             } else {
+                        //                 console.log(
+                        //                     "Email sent: " + info.response
+                        //                 );
+                        //             }
+                        //         }
+                        //     );
+                        // }
+                    }
+                );
             }
             res.redirect("/admin");
         }
@@ -572,57 +614,59 @@ app.post("/addNewFaculty", function (req, res) {
 
 app.post("/add_assessment", function (req, res) {
     console.log("assessment");
-    ttype=req.body.testtype;
-    tnum= req.body.testnum;
-    tmarks=req.body.testmark;
-    colname=ttype[0]+tnum;
-    cname=req.session.course.course_id+"_";
-    cname+=req.session.course.batch+"_";
-    cname+=req.session.course.dept+"_";
-    cname+=req.session.course.section;
+    ttype = req.body.testtype;
+    tnum = req.body.testnum;
+    tmarks = req.body.testmark;
+    colname = ttype[0] + tnum;
+    cname = req.session.course.course_id + "_";
+    cname += req.session.course.batch + "_";
+    cname += req.session.course.dept + "_";
+    cname += req.session.course.section;
     connection.query(
         "insert into assessment_list values(?,?,?);",
-        [cname,colname,tmarks],
+        [cname, colname, tmarks],
         function (error, results, fields) {
-            if (error){
+            if (error) {
                 console.log(error);
-                var msg = encodeURIComponent("Sorry assessment is already available");
-                res.redirect("/mark_grade?addmsg="+msg);
-            }
-             else {
-                
-                tablename="course_"+cname;
-                q="alter table "+tablename+"_student_academic_info add "+colname+" float;"
-                console.log("ok");
-                connection.query(
-                    q,
-                    function (error, results, fields) {
-                        if (error){
-                            console.log(error);
-                            var msg = encodeURIComponent("Sorry assessment is already available");
-                            res.redirect("/mark_grade?addmsg="+msg);
-                        }
-                         else {
-                            console.log("ok");
-                            var msg = encodeURIComponent("Added successfully");
-                            res.redirect("/mark_grade?addmsg="+msg);
-                        }
-                    }
+                var msg = encodeURIComponent(
+                    "Sorry assessment is already available"
                 );
-                
+                res.redirect("/mark_grade?addmsg=" + msg);
+            } else {
+                tablename = "course_" + cname;
+                q =
+                    "alter table " +
+                    tablename +
+                    "_student_academic_info add " +
+                    colname +
+                    " float;";
+                console.log("ok");
+                connection.query(q, function (error, results, fields) {
+                    if (error) {
+                        console.log(error);
+                        var msg = encodeURIComponent(
+                            "Sorry assessment is already available"
+                        );
+                        res.redirect("/mark_grade?addmsg=" + msg);
+                    } else {
+                        console.log("ok");
+                        var msg = encodeURIComponent("Added successfully");
+                        res.redirect("/mark_grade?addmsg=" + msg);
+                    }
+                });
             }
         }
-    );  
+    );
 });
 
 app.post("/get_ass_marks", function (req, res) {
     var msg = encodeURIComponent(req.body.inputTest);
-    res.redirect("/mark_grade?assname="+msg);   
+    res.redirect("/mark_grade?assname=" + msg);
 });
 
 app.post("/update_marks", function (req, res) {
     console.log("Inside update marks");
-    console.log(req); 
+    console.log(req);
 });
 
 app.listen(process.env.PORT || 3000, function () {
