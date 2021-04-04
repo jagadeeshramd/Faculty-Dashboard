@@ -1,5 +1,5 @@
 <%- include ("partials/header") -%>
-<script src="/js/coursetab.js"></script>
+    <script src="/js/coursetab.js"></script>
     <h1 style="padding: 2% 0 0 2%">
         <%= welcomeMessage %>
     </h1>
@@ -20,16 +20,19 @@
                 <% if(courselen>=1) { %>
                     <ul id="course-list" style="list-style: none">
                         <% for(i=0;i < courses.length;i++) { %>
-                            <button type="button" class="list-group-item list-group-item-action" style="width:400px;margin-top:20px;"
-                            onclick="updatecoursetab(this);">
-                                <%= courses[i]['course_id'] %> <%= courses[i]['batch'] %> <%= courses[i]['dept'] %> <%= courses[i]['section'] %>
+                            <button type="button" class="list-group-item list-group-item-action"
+                                style="width:400px;margin-top:20px;" onclick="updatecoursetab(this);">
+                                <%= courses[i]['course_id'] %>
+                                    <%= courses[i]['batch'] %>
+                                        <%= courses[i]['dept'] %>
+                                            <%= courses[i]['section'] %>
                             </button>
-                        <% } %>
-                        
+                            <% } %>
+
                     </ul>
-                <% } else { %>
-                    <h6>No Results found</h6>
-                <% } %>
+                    <% } else { %>
+                        <h6>No Results found</h6>
+                        <% } %>
             </div>
         </div>
 
@@ -50,7 +53,9 @@
                 </button>
             </nav>
             <br>
-            <h5 id="course-selected" style="background-color: transparent; margin-left:40%;color:black;"><%= coursesel %></h5>
+            <h5 id="course-selected" style="background-color: transparent; margin-left:40%;color:black;">
+                <%= coursesel %>
+            </h5>
             <br>
             <div class="row mar-left-10">
                 <div class="tab">
@@ -86,8 +91,8 @@
                 <div class="tab">
                     <img src="/images/test.png" width="50px" height="50px" />
                     <br />
-                    <a href="assignments">
-                        <h6><strong>Assignments</strong></h6>
+                    <a href="tests-and-assignments">
+                        <h6><strong>Tests & Assignments</strong></h6>
                     </a>
                 </div>
                 <div class="tab">
