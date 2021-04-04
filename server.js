@@ -147,10 +147,15 @@ app.get("/tests-and-assignments", function (req, res) {
 });
 
 app.get("/profile", function (req, res) {
+    let msg = req.session.notifyMSG;
+    let color = req.session.msgStatusColor;
+    req.session.notifyMSG = null;
+    req.session.msgStatusColor = null;
+
     res.render("profile", {
         faculty: req.session.faculty,
-        notification: "",
-        bgcolor: "",
+        notification: msg,
+        bgcolor: color,
     });
 });
 
@@ -607,30 +612,52 @@ app.post("/updateProfile", function (req, res) {
         [name, dob, address, mobile, qual, email],
         function (error, results, fields) {
             if (error) {
-                res.render("profile", {
-                    faculty: req.session.faculty,
-                    notification:
-                        "Error occured while updating profile. Try again.",
-                    bgcolor: "bg-danger",
-                });
+                req.session.notifyMSG = "Error occured while updating profile. Try again.";
+                req.session.msgStatusColor = "bg-danger";
+                res.redirect("/profile");
+
             } else {
                 connection.query(
                     "select * from faculty where emailID = ?",
                     [email],
                     function (err, rows, fields) {
                         req.session.faculty = rows[0];
-                        // res.redirect("/profile");
-                        res.render("profile", {
-                            faculty: req.session.faculty,
-                            notification: "Profile updated successfully",
-                            bgcolor: "bg-success",
-                        });
+                        req.session.notifyMSG = "Profile updated successfully";
+                        req.session.msgStatusColor = "bg-success";
+                        res.redirect("/profile");
                     }
                 );
             }
         }
     );
 });
+
+app.post("/updatePassword", function(req, res) {
+    connection.query(
+        "SELECT * FROM login WHERE email=? AND passwd=?",
+        [req.session.email, req.body.oldpasswd],
+        function(err, result, fields) {
+            if (err) {
+                req.session.notifyMSG = "Error occured. Password not changed.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                if (result.length == 0) {
+                    req.session.notifyMSG = "Wrong password. Password not changed";
+                    req.session.msgStatusColor = "bg-warning";
+                }
+                else {
+                    connection.query(
+                        "UPDATE login SET passwd=? WHERE email=?",
+                        [req.body.newpasswd, req.session.email],
+                    )
+                    req.session.notifyMSG = "Password changed successfully!";
+                    req.session.msgStatusColor = "bg-success";
+                }
+            }
+            res.redirect("/profile");
+        }
+    )
+})
 
 app.post("/addNewFaculty", function (req, res) {
     let f = req.body;
