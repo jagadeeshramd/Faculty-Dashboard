@@ -1,17 +1,17 @@
 use facultydashboard;
 SHOW TABLES;
-create table assessment_list(course_code_full varchar(50),ass_name varchar(2) unique,totalmarks int,constraint PK primary key(course_code_full,ass_name)); 
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','A1',10);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','A2',10);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','A3',10);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','Q1',15);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','Q2',15);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','Q3',15);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','Q4',15);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','P1',50);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','P2',50);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','T1',20);
-insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A','T2',20);
+create table assessment_list(course_code_full varchar(50),ass_name varchar(2),totalmarks int,constraint PK primary key(course_code_full,ass_name)); 
+insert into assessment_list values('15CSE313_2018_CSE_A','A1',10);
+insert into assessment_list values('15CSE313_2018_CSE_A','A2',10);
+insert into assessment_list values('15CSE313_2018_CSE_A','A3',10);
+insert into assessment_list values('15CSE313_2018_CSE_A','Q1',15);
+insert into assessment_list values('15CSE313_2018_CSE_A','Q2',15);
+insert into assessment_list values('15CSE313_2018_CSE_A','Q3',15);
+insert into assessment_list values('15CSE313_2018_CSE_A','Q4',15);
+insert into assessment_list values('15CSE313_2018_CSE_A','P1',50);
+insert into assessment_list values('15CSE313_2018_CSE_A','P2',50);
+insert into assessment_list values('15CSE313_2018_CSE_A','T1',20);
+insert into assessment_list values('15CSE313_2018_CSE_A','T2',20);
 select * from assessment_list;
 
 create table course_15CSE313_2018_CSE_A_student_academic_info(roll_number varchar(20) primary key references student_18(roll_number),

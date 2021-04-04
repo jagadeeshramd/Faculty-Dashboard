@@ -576,9 +576,13 @@ app.post("/add_assessment", function (req, res) {
     tnum= req.body.testnum;
     tmarks=req.body.testmark;
     colname=ttype[0]+tnum;
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
     connection.query(
-        "insert into assessment_list values('15CSE387_2018_B.Tech_CSE_A',?,?);",
-        [colname,tmarks],
+        "insert into assessment_list values(?,?,?);",
+        [cname,colname,tmarks],
         function (error, results, fields) {
             if (error){
                 console.log(error);
@@ -586,10 +590,7 @@ app.post("/add_assessment", function (req, res) {
                 res.redirect("/mark_grade?addmsg="+msg);
             }
              else {
-                cname=req.session.course.course_id+"_";
-                cname+=req.session.course.batch+"_";
-                cname+=req.session.course.dept+"_";
-                cname+=req.session.course.section;
+                
                 tablename="course_"+cname;
                 q="alter table "+tablename+"_student_academic_info add "+colname+" float;"
                 console.log("ok");
