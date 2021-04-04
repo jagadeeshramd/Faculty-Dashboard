@@ -203,3 +203,16 @@ insert into course_15CSE313_2018_CSE_A_attendance values('CB.EN.U4CSE18010',STR_
 select roll_number,(sum(classes)/sum(e_period-s_period+1))*100 as percentage from course_15CSE313_2018_CSE_A_attendance group by roll_number having roll_number='CB.EN.U4CSE18001';
 -- drop table attendance;
 
+-- *************************************************************************************************
+-- tests
+-- *************************************************************************************************
+
+create table tests(id int primary key AUTO_INCREMENT, name varchar(100), date varchar(10), time varchar(5), instructions varchar(1000), course varchar(50));
+
+insert into tests(name, date,time, instructions, course) 
+	values	('Test 1', '2021-01-30','11:00','No negative marking. Duration: 15 minutes','15CSE301'),
+			('Tutorial 1', '2021-02-14','15:00','Negative marking. Duration: 1 hour','15CSE301');
+	
+select * from tests;
+
+-- drop table tests;
