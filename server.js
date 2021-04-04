@@ -123,18 +123,27 @@ app.get("/tests-and-assignments", function (req, res) {
     connection.query(
         "SELECT * FROM tests WHERE course=?",
         [req.session.course.course_id],
-        function (err, result, fields) { 
+        function (err, result1, fields) { 
             if (err) console.log(err);
             else {
-                let msg = req.session.notifyMSG;
-                let color = req.session.msgStatusColor;
-                req.session.notifyMSG = null;
-                req.session.msgStatusColor = null;
-                res.render("testAssignment", {
-                    Data: result,
-                    notification: msg,
-                    bgcolor: color,
-                });
+                connection.query(
+                    "SELECT * FROM assignments WHERE course=?",
+                    [req.session.course.course_id],
+                    function (err, result2, fields) { 
+                        if (err) console.error(err);
+                        let msg = req.session.notifyMSG;
+                        let color = req.session.msgStatusColor;
+                        req.session.notifyMSG = null;
+                        req.session.msgStatusColor = null;
+                        res.render("testAssignment", {
+                            tests: result1,
+                            assignments: result2,
+                            notification: msg,
+                            bgcolor: color,
+                        });
+                     }
+                );
+                
             }
         });
 });
@@ -654,7 +663,26 @@ app.post("/addNewTest", function(req, res){
                 req.session.notifyMSG = "Error occured. Test not scheduled.";
                 req.session.msgStatusColor = "bg-danger";
             } else {
-                req.session.notifyMSG = "Added new faculty to database";
+                req.session.notifyMSG = "Scheduled test successfully!";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/tests-and-assignments");
+        }
+    )
+    
+});
+
+app.post("/addNewAssignment", function(req, res){
+    // console.log(req.body);
+    connection.query(
+        "INSERT INTO assignments(name, date,time, instructions, course) VALUES(?,?,?,?,?)",
+        [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id],
+        function (err, results, fields) { 
+            if (err) {
+                req.session.notifyMSG = "Error occured. Assignment not created.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Assignment created successfully!";
                 req.session.msgStatusColor = "bg-success";
             }
             res.redirect("/tests-and-assignments");
