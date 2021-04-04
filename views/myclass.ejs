@@ -1,8 +1,7 @@
 <%- include ("partials/header") -%>
 
     <h5 style="padding: 2% 0 0 2%">
-
-        CSE - A
+        <%= classid %>
     </h5>
 
     <div id="disp-content-mc">
@@ -26,22 +25,22 @@
             <br>
             <div class="row">
                 <div class="tab-mc col">
-                    <img src="/images/students.png" width="70px" height="70px" />
-                    <a href="view_students">
+                    <img src="/images/students.png" width="60px" height="60px" />
+                    <a id="view-students" href="myclass_students">
                         <h6><strong>View Students</strong></h6>
                     </a>
                 </div>
                 <div class="tab-mc col">
                     <img src="/images/timetable.png" width="60px" height="60px" />
                     <br />
-                    <a href="class_timetable">
+                    <a id="view-timetable" href="class_timetable">
                     <h6><strong>View Timetable</strong></h6>
                     </a>
                 </div>
                 <div class="tab-mc col">
                     <img src="/images/reportcard.png" width="60px" height="60px" />
                     <br />
-                    <a href="generate_report_cards">
+                    <a id="generate-rc" href="generate_report_cards">
                         <h6><strong>Generate Report Cards</strong></h6>
                     </a>
                 </div>
@@ -50,21 +49,21 @@
                 <div class="tab-mc col">
                     <img src="/images/gatepass.png" width="60px" height="60px" />
                     <br />
-                    <a href="gate_passes">
+                    <a id="gate-passes" href="gate_passes">
                         <h6><strong>Gate Passes</strong></h6>
                     </a>
                 </div>
                 <div class="tab-mc col">
                     <img src="/images/odform.png" width="60px" height="60px" />
                     <br />
-                    <a href="od_leave_forms">
+                    <a id="od-leave-forms" href="od_leave_forms">
                         <h6><strong>OD/Leave Forms</strong></h6>
                     </a>
                 </div>
                 <div class="tab-mc col">
                     <img src="/images/performanceanalysis.png" width="60px" height="60px" />
                     <br />
-                    <a href="performance_analysis">
+                    <a id="perf-analysis" href="performance_analysis">
                         <h6><strong>Performance Analysis</strong></h6>
                     </a>
                 </div>

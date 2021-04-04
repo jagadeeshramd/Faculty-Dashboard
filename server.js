@@ -164,7 +164,80 @@ app.get("/admin", function (req, res) {
 });
 
 app.get("/myclass", function (req, res) {
-    res.render("myclass");
+    req.session.classID = null;
+    l = req.session.faculty.id;
+    connection.query("SELECT classid FROM advisor_class WHERE advisor_id = ?;", [l], function (error, results, fields) {
+        if (error) console.log(error);
+        else if (results[0].classid) {
+            req.session.classID = results[0].classid;
+            res.render("myclass", { classid: req.session.classID });
+        }
+        else {
+            req.session.classID = "No Class";
+            res.render("myclass", { classid: req.session.classID });
+        }
+    });
+    
+});
+
+app.get("/myclass_students", function (req, res) {
+    var success = false;
+    var studlist = [];
+    l=req.session.faculty.id;
+    classID = req.session.classID;
+
+    // connection.query("SELECT classid FROM advisor_class WHERE advisor_id = ?;", [l], function(error,results,fields){
+    //     if(error) console.log(error);
+    //     else if(results[0].classid){
+    //         classID = results[0].classid;
+    //     }
+    //     else{
+    //         classID = "No Class";
+    //     }
+    // });
+
+    connection.query(
+        // SELECT * FROM student_det S INNER JOIN parent_det P ON S.roll_number = P.roll_number where S.advisor_id = ?;
+
+        "select roll_number from student_det where advisor_id = ? order by roll_number;",
+        [l],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if (results.length > 0) {
+                success = true;
+                studlist = results;
+                res.render("myclass_students", {
+                    status: success,
+                    liststud: studlist,
+                    classid: classID,
+                });
+            } else {
+                success = false;
+                res.render("myclass_students", {
+                    status: success,
+                    liststud: [],
+                    classid: classID,
+                });
+            }
+        }
+    );
+});
+
+app.get("/det_student_detail_info", function (req, res) {
+    rno = req.query.rollno;
+    var stud_info = {};
+    connection.query(
+        "SELECT * FROM student_det S INNER JOIN parent_det P ON S.roll_number = P.roll_number where S.roll_number = ?;",
+        [rno],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if (results.length == 1) {
+                res.send({ resp: true, rec: results[0] });
+            } else {
+                res.send({ resp: false, rec: {} });
+            }
+        }
+    );
 });
 
 app.get("/temp", function (req, res) {

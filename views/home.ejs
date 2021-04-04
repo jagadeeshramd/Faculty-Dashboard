@@ -21,7 +21,7 @@
                     <ul id="course-list" style="list-style: none">
                         <% for(i=0;i < courses.length;i++) { %>
                             <button type="button" class="list-group-item list-group-item-action"
-                                style="width:400px;margin-top:20px;" id="course-name" class="course-name" onclick="updatecoursetab(this);">
+                                style="width:400px;margin-top:20px;" id="<%= i %>" class="course-name" onclick="updatecoursetab(this);">
                                 <%= courses[i]['course_id'] %>
                                     <%= courses[i]['batch'] %>
                                         <%= courses[i]['dept'] %>

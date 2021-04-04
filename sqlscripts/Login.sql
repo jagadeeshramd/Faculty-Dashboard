@@ -18,6 +18,7 @@ create table faculty(id varchar(10), name varchar(50), emailID varchar(50) UNIQU
 insert into faculty values('12301', 'Akhil', 'akhil@gmail.com', '1975-03-01', 'M', 'XYZ street, XYZ.', '9234567890', 'CSE', 'PhD', 'Assistant professor'),
 							('12465', 'Senthil', 'senthil@gmail.com', '1973-04-02', 'M', 'ABC street, ABC.', '9234561234', 'EEE', 'PhD', 'Assistant professor'),
                             ('13301', 'Venkat', 'venkat@gmail.com', '1978-11-20', 'M', 'PQR street, PQR.', '9212345890', 'CSE', 'PhD', 'Assistant professor');
+insert into faculty values('14312', 'Gowtham', 'Gowtham@gmail.com', '1970-04-16', 'M', 'ZTQ street, UIZ.', '9344678456', 'CSE', 'PhD', 'Assistant professor');
 
 select * from faculty;
 
@@ -27,6 +28,7 @@ create table login(email varchar(50) primary key, passwd varchar(30) not null,
 insert into login values('venkat@gmail.com','venkat123');
 insert into login values('akhil@gmail.com','akhil123');
 insert into login values('senthil@gmail.com','senthil123');
+insert into login values('Gowtham@gmail.com','gowtham123');
 
 select * from login;
 
@@ -34,4 +36,4 @@ select * from login;
 
 -- drop table login;
 -- drop table faculty;
--- drop table department;
+-- drop table department; 

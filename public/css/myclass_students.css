@@ -1,0 +1,41 @@
+.row-det-mc{
+    height:270px;
+}
+.row-det-1-mc{
+    height: 100%;
+    float:left;
+    width:30%;
+}
+
+.row-det-1-mc img{
+    width: 100px;
+    height: 100px;
+    margin-top: 30%;
+    margin-left: 25%;
+
+}
+
+#basic-det-mc{
+    width: 70%;
+}
+
+.row-det-2-mc{
+    height: 73%;
+}
+.row-det-mc h5{
+    float: left;
+    background-color: transparent;
+    margin-left: 30%;
+    margin-top: 10px;
+    width:30%;
+}
+.row-det-mc p{
+    float: left;
+    background-color: transparent;
+    margin-left: 2px;
+    margin-top: 10px;
+}
+
+.list-group-item{
+    color: #495057;;
+}
