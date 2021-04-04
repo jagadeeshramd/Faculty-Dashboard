@@ -4,6 +4,21 @@
 
 use facultydashboard;
 
+-- drop table login;
+-- drop table faculty;
+-- drop table department;
+-- drop table course_list; 
+-- drop table course_faculty;
+-- drop table assessment_list;
+-- drop table student;
+-- drop table student_academic_info;
+-- DROP TABLE course_15cse313_2018_cse_a_student_academic_info;
+-- DROP TABLE course_15cse313_2018_cse_a_attendance;
+-- drop table student_det;
+-- drop table parent_det;
+-- drop table advisor_class;
+-- drop table tests;
+
 create table department(id varchar(5) primary key, name varchar(50), degree varchar(30), HoD_ID varchar(10));
 
 insert into department values ('CSE', 'Computer Science and Engineering', 'B.Tech', '10001'),
@@ -38,6 +53,15 @@ select * from login;
 -- drop table login;
 -- drop table faculty;
 -- drop table department;
+-- drop table course_list; 
+-- drop table course_faculty;
+-- drop table assessment_list;
+-- drop table student_academic_info;
+-- drop table attendance;
+-- drop table student_det;
+-- drop table parent_det;
+-- drop table advisor_class;
+-- drop table tests;
 
 -- ********************************************************************************************
 -- course-info
@@ -56,6 +80,15 @@ insert into course_list values('15CSE301','COA',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing');
 
 -- drop table course_list; 
+-- drop table course_faculty;
+-- drop table assessment_list;
+-- drop table student_academic_info;
+-- drop table attendance;
+-- drop table student_det;
+-- drop table parent_det;
+-- drop table advisor_class;
+-- drop table tests;
+
 
 create table course_faculty(course_id varchar(50) references course_list(course_code),
 						    batch int, 
@@ -70,6 +103,13 @@ insert into course_faculty values('15CSE313',2018,'CSE','B','13301');
 insert into course_faculty values('15CSE312',2018,'CSE','B','14312');
 
 -- drop table course_faculty;
+-- drop table assessment_list;
+-- drop table student_academic_info;
+-- drop table attendance;
+-- drop table student_det;
+-- drop table parent_det;
+-- drop table advisor_class;
+-- drop table tests;
 
 select course_id,batch,dept,section from course_faculty where faculty_id='12301';
 
@@ -166,6 +206,11 @@ select * from course_15CSE313_2018_CSE_A_student_academic_info where roll_number
 
 -- drop table assessment_list;
 -- drop table student_academic_info;
+-- drop table attendance;
+-- drop table student_det;
+-- drop table parent_det;
+-- drop table advisor_class;
+-- drop table tests;
 
 -- alter table student_academic_info add t1 float;
 
@@ -209,6 +254,10 @@ insert into course_15CSE313_2018_CSE_A_attendance values('CB.EN.U4CSE18010',STR_
 
 select roll_number,(sum(classes)/sum(e_period-s_period+1))*100 as percentage from course_15CSE313_2018_CSE_A_attendance group by roll_number having roll_number='CB.EN.U4CSE18001';
 -- drop table attendance;
+-- drop table student_det;
+-- drop table parent_det;
+-- drop table advisor_class;
+-- drop table tests;
 
 
 -- *************************************************************************************************
@@ -288,6 +337,7 @@ insert into advisor_class values(12301, 'B.TECH. 2018 CSE A'), (13301, 'B.TECH. 
 -- drop table student_det;
 -- drop table parent_det;
 -- drop table advisor_class;
+-- drop table tests;
 
 
 
