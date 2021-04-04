@@ -120,7 +120,23 @@ app.get("/updatecoursetab", function (req, res) {
 });
 
 app.get("/tests-and-assignments", function (req, res) {
-    res.render("testAssignment");
+    connection.query(
+        "SELECT * FROM tests WHERE course=?",
+        [req.session.course.course_id],
+        function (err, result, fields) { 
+            if (err) console.log(err);
+            else {
+                let msg = req.session.notifyMSG;
+                let color = req.session.msgStatusColor;
+                req.session.notifyMSG = null;
+                req.session.msgStatusColor = null;
+                res.render("testAssignment", {
+                    Data: result,
+                    notification: msg,
+                    bgcolor: color,
+                });
+            }
+        });
 });
 
 app.get("/profile", function (req, res) {
@@ -626,6 +642,25 @@ app.post("/addNewFaculty", function (req, res) {
             res.redirect("/admin");
         }
     );
+});
+
+app.post("/addNewTest", function(req, res){
+    // console.log(req.body);
+    connection.query(
+        "INSERT INTO tests(name, date,time, instructions, course) VALUES(?,?,?,?,?)",
+        [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id],
+        function (err, results, fields) { 
+            if (err) {
+                req.session.notifyMSG = "Error occured. Test not scheduled.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Added new faculty to database";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/tests-and-assignments");
+        }
+    )
+    
 });
 
 app.post("/add_assessment", function (req, res) {
