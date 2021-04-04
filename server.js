@@ -9,6 +9,10 @@ const { type } = require("os");
 
 const app = express();
 
+cid="";
+cbatch="";
+cdept="";
+csect="";
 process.stdin.resume();
 
 app.set("view engine", "ejs");
@@ -62,14 +66,52 @@ app.get("/", function (req, res) {
         else if (hours >= 11 && hours < 16) msg = "Good afternoon";
         else if (hours >= 16 && hours < 21) msg = "Good evening";
         else msg = "Good night";
-        res.render("home", {
-            welcomeMessage: msg + ", " + req.session.faculty.name + "!",
-        });
+
+        wel=msg + ", " + req.session.faculty.name + "!";
+        console.log(wel);
+        connection.query(
+            "select course_id,batch,dept,section from course_faculty where faculty_id=?;",
+            [req.session.faculty.id],
+            function (error, result, fields) {
+                if (error) console.log("Error occured while fetching departments");
+                else if(result.length>=1){
+                    console.log(result);
+                    course_sel=result[0]['course_id']+" "+result[0]['batch']+" "+result[0]['dept']+" "+result[0]['section'];
+                    req.session.course=result[0];
+                    res.render("home",{
+                        courselen:result.length,
+                        welcomeMessage:wel,
+                        courses:result,
+                        coursesel:course_sel
+                    });
+                }
+                else{
+                    res.render("home",{
+                        courselen:result.length,
+                        welcomeMessage:wel,
+                        courses:[],
+                        coursesel:""
+                    });
+                }
+            }
+        );
+        
     } else {
         res.render("login", {
             message: "",
         });
     }
+});
+
+app.get("/updatecoursetab", function (req, res) {
+    console.log(req.session.course);
+    s=req.query.course.trim().split(" ");
+    console.log(s);
+    req.session.course.course_id=s[0];
+    req.session.course.batch=parseInt(s[1]);
+    req.session.course.dept=s[2];
+    req.session.course.section=s[3];
+    res.send({"status":true});
 });
 
 app.get("/profile", function (req, res) {
@@ -156,8 +198,17 @@ app.get("/courseinfo", function (req, res) {
 app.get("/reg_students", function (req, res) {
     var success = false;
     var studlist = [];
+    l="%U4";
+    console.log("Inside reg students");
+    console.log(req.session);
+    l+=req.session.course.dept;
+    l+=req.session.course.batch%2000;
+    l+=req.session.course.section.charCodeAt(0) - 'A'.charCodeAt(0);
+    l+="%";
+    console.log(l);
     connection.query(
-        "select roll_number from student_18 where roll_number like '%U4CSE180%' order by roll_number;",
+        "select roll_number from student where roll_number like ? order by roll_number;",
+        [l],
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length > 0) {
@@ -186,8 +237,13 @@ app.get("/mark_grade", function (req, res) {
     tnum=req.query.testnum;
     console.log(ttype);
     add_msg=req.query.addmsg;
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
     connection.query(
-        "select ass_name from assessment_list where course_code_full= '15CSE387_2018_B.Tech_CSE_A';",
+        "select ass_name from assessment_list where course_code_full= ?;",
+        [cname],
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length >= 1) {
@@ -200,7 +256,8 @@ app.get("/mark_grade", function (req, res) {
                 if(ass_name==null)
                     ass_name=ass_list[0];
                 console.log(ass_name);
-                q="select roll_number,"+ass_name+" from student_academic_info;"
+                tablename="course_"+cname;
+                q="select roll_number,"+ass_name+" from "+tablename+"_student_academic_info;"
                 
                 connection.query(
                     q,
@@ -251,9 +308,9 @@ app.get("/det_student_info", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={}
+    var stud_info={};
     connection.query(
-        "select * from student_18 where roll_number= ?;",
+        "select * from student where roll_number= ?;",
         [rno],
         function (error, results, fields) {
             if (error) console.log(error);
@@ -273,9 +330,16 @@ app.get("/get_quiz_marks", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={}
+    var stud_info={};
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+    tablename="course_"+cname;
+    console.log("quiz "+tablename);
+    q="select * from "+tablename+"_student_academic_info where roll_number=?;";
     connection.query(
-        "select * from student_academic_info where roll_number=?; ",
+        q,
         [rno],
         function (error, results, fields) {
             if (error) console.log(error);
@@ -301,9 +365,16 @@ app.get("/get_assignment_marks", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={}
+    var stud_info={};
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+    tablename="course_"+cname;
+    console.log("assignment "+tablename);
+    q="select * from "+tablename+"_student_academic_info where roll_number=?;";
     connection.query(
-        "select * from student_academic_info where roll_number=?; ",
+        q,
         [rno],
         function (error, results, fields) {
             if (error) console.log(error);
@@ -329,9 +400,16 @@ app.get("/get_periodical_marks", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={}
+    var stud_info={};
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+    tablename="course_"+cname;
+    console.log("per "+tablename);
+    q="select * from "+tablename+"_student_academic_info where roll_number=?;";
     connection.query(
-        "select * from student_academic_info where roll_number=?; ",
+        q,
         [rno],
         function (error, results, fields) {
             if (error) console.log(error);
@@ -357,9 +435,15 @@ app.get("/get_attendance", function (req, res) {
     console.log(req);
     rno = req.query.rollno;
     console.log(rno);
-    var stud_info={}
+    var stud_info={};
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+    tablename="course_"+cname;
+    
     connection.query(
-        "select roll_number,(sum(classes)/sum(e_period-s_period+1))*100 as percentage from attendance group by roll_number having roll_number=?;",
+        "select roll_number,(sum(classes)/sum(e_period-s_period+1))*100 as percentage from "+tablename+"_attendance group by roll_number having roll_number=?;",
         [rno],
         function (error, results, fields) {
             if (error) console.log(error);
@@ -502,7 +586,12 @@ app.post("/add_assessment", function (req, res) {
                 res.redirect("/mark_grade?addmsg="+msg);
             }
              else {
-                 q="alter table student_academic_info add "+colname+" float;"
+                cname=req.session.course.course_id+"_";
+                cname+=req.session.course.batch+"_";
+                cname+=req.session.course.dept+"_";
+                cname+=req.session.course.section;
+                tablename="course_"+cname;
+                q="alter table "+tablename+"_student_academic_info add "+colname+" float;"
                 console.log("ok");
                 connection.query(
                     q,
