@@ -1,3 +1,226 @@
 <%- include ("partials/header") -%>
 
+    <section style="padding: 2% 10%">
+        <!-- tests section -->
+        <h2>Tests</h2>
+        <br>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-hover table-light table-striped">
+                <thead class="thead-dark ">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th style="width: 65%;" scope="col">Test</th>
+                        <th scope="col">Scheduled date</th>
+                        <th scope="col">Time</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <% if (tests.length !=0) { var i=1; tests.forEach(function(data){ %>
+                        <tr>
+                            <td>
+                                <%= i; %>
+                            </td>
+                            <td>
+                                <%= data.name %>
+                            </td>
+                            <td>
+                                <%= data.date %>
+                            </td>
+                            <td>
+                                <%= data.time %>
+                            </td>
+
+                        </tr>
+                        <% i++; }) %>
+                            <% } else{ %>
+                                <tr>
+                                    <td colspan="7"> - No test scheduled so far - </td>
+                                </tr>
+                                <% } %>
+                </tbody>
+            </table>
+
+        </div>
+
+        <br><br>
+        <button style="margin-right: 2%;" data-toggle="modal" data-target="#createTest" aria-haspopup="true"
+            class="btn btn-success">Schedule test</button>
+
+        <br><br>
+
+        <!-- assignments section -->
+        <br><br>
+        <h2>Assignments</h2>
+        <br>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-hover table-light table-striped">
+                <thead class="thead-dark ">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th style="width: 65%;" scope="col">Assignment</th>
+                        <th scope="col">Scheduled date</th>
+                        <th scope="col">Time</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <% if (assignments.length !=0) { var i=1; assignments.forEach(function(data){ %>
+                        <tr>
+                            <td>
+                                <%= i; %>
+                            </td>
+                            <td>
+                                <%= data.name %>
+                            </td>
+                            <td>
+                                <%= data.date %>
+                            </td>
+                            <td>
+                                <%= data.time %>
+                            </td>
+
+                        </tr>
+                        <% i++; }) %>
+                            <% } else{ %>
+                                <tr>
+                                    <td colspan="7"> - No assignment scheduled so far - </td>
+                                </tr>
+                                <% } %>
+                </tbody>
+            </table>
+
+        </div>
+
+        <br><br>
+        <button style="margin-right: 2%;" data-toggle="modal" data-target="#createAssignment" aria-haspopup="true"
+            class="btn btn-primary">Assign one!</button>
+        <br><br>
+    </section>
+
+    <div class="container">
+        <div class="modal fade" id="createTest">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!-- header -->
+                    <div class="modal-header text-center">
+                        <h3 class="modal-title text-center">Enter test details</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- body -->
+                    <div class="modal-body">
+                        <form action="/addNewTest" method="post">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="name">Name</label>
+                                    <input class="form-control" placeholder="Enter test title" type="text" name="name"
+                                        id="name" required />
+                                </div>
+                                <div class="col-sm">
+                                    <!--  -->
+                                </div>
+                            </div><br>
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="date">Date</label>
+                                    <input id="date" class="form-control" name="date" type="date" required />
+                                </div>
+                                <div class="col-sm">
+                                    <label for="time">Time</label>
+                                    <input id="time" class="form-control" name="time" type="time" required />
+                                </div>
+                            </div><br>
+
+                            <label for="ins">Instructions</label>
+                            <textarea class="form-control" name="instructions" id="ins" cols="20" rows="4"
+                                required></textarea><br />
+
+
+                            <br><br>
+                            <button class="btn btn-sm btn-success" style="margin-right: 1%;"
+                                type="submit">Schedule</button>
+                            <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="modal fade" id="createAssignment">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!-- header -->
+                    <div class="modal-header text-center">
+                        <h3 class="modal-title text-center">Enter Assignment details</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- body -->
+                    <div class="modal-body">
+                        <form action="/addNewAssignment" method="post">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="name">Name</label>
+                                    <input class="form-control" placeholder="Enter assignment title" type="text"
+                                        name="name" id="name" required />
+                                </div>
+                                <div class="col-sm">
+                                    <!--  -->
+                                </div>
+                            </div><br>
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label for="date">Date</label>
+                                    <input id="date" class="form-control" name="date" type="date" required />
+                                </div>
+                                <div class="col-sm">
+                                    <label for="time">Time</label>
+                                    <input id="time" class="form-control" name="time" type="time" required />
+                                </div>
+                            </div><br>
+
+                            <label for="ins">Instructions</label>
+                            <textarea class="form-control" name="instructions" id="ins" cols="20" rows="4"
+                                required></textarea><br />
+
+                            <label for="">Upload file</label>
+                            <div class="custom-file">
+                                <label class="custom-file-label" for="customFile">Choose a file</label>
+                                <input type="file" class="custom-file-input" id="customFile">
+                                
+                            </div>
+
+                            <br><br><br>
+                            <button class="btn btn-sm btn-success" style="margin-right: 1%;"
+                                type="submit">Create</button>
+                            <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="<%= bgcolor %>">
+        <%= notification %>
+    </div>
+
+
+    <script>
+        $("#notification").fadeIn();
+        setTimeout(() => {
+            $("#notification").fadeOut();
+        }, 3000);
+
+        $(".custom-file-input").on("change", function() {
+          var fileName = $(this).val().split("\\").pop();
+          $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+
+
+
     <%- include ("partials/footer") -%>

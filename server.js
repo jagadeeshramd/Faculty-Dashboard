@@ -80,7 +80,6 @@ app.get("/", function (req, res) {
                 else if (result.length >= 1) {
                     // console.log(result);
                     course_sel =result[0]["course_id"] +" " +result[0]["batch"] +" " +result[0]["dept"] +" " +result[0]["section"];
-                    console.log(course_sel);
                     req.session.course = result[0]; // first course in the list is made default
                     res.render("home", {
                         courselen: result.length,
@@ -106,8 +105,7 @@ app.get("/", function (req, res) {
 });
 
 app.get("/updatecoursetab", function (req, res) {
-    console.log(req.session.course);
-    console.log(req.query.course);
+    
     s = req.query.course.trim().split("\n");
     for(i=0;i<s.length;i++)
     s[i]=s[i].trim();
@@ -120,14 +118,44 @@ app.get("/updatecoursetab", function (req, res) {
 });
 
 app.get("/tests-and-assignments", function (req, res) {
-    res.render("testAssignment");
+    connection.query(
+        "SELECT * FROM tests WHERE course=?",
+        [req.session.course.course_id],
+        function (err, result1, fields) { 
+            if (err) console.log(err);
+            else {
+                connection.query(
+                    "SELECT * FROM assignments WHERE course=?",
+                    [req.session.course.course_id],
+                    function (err, result2, fields) { 
+                        if (err) console.error(err);
+                        let msg = req.session.notifyMSG;
+                        let color = req.session.msgStatusColor;
+                        req.session.notifyMSG = null;
+                        req.session.msgStatusColor = null;
+                        res.render("testAssignment", {
+                            tests: result1,
+                            assignments: result2,
+                            notification: msg,
+                            bgcolor: color,
+                        });
+                     }
+                );
+                
+            }
+        });
 });
 
 app.get("/profile", function (req, res) {
+    let msg = req.session.notifyMSG;
+    let color = req.session.msgStatusColor;
+    req.session.notifyMSG = null;
+    req.session.msgStatusColor = null;
+
     res.render("profile", {
         faculty: req.session.faculty,
-        notification: "",
-        bgcolor: "",
+        notification: msg,
+        bgcolor: color,
     });
 });
 
@@ -488,38 +516,92 @@ app.get("/get_periodical_marks", function (req, res) {
     
 });
 
+
 app.get("/attendance", function (req, res) {
-    var success = false;
-    var studlist = [];
+    res.render("attendance",{isstatic:false,addmsg:""});
+});
+
+app.get("/get_attendance_list", function (req, res) {
+    
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
     tablename="course_"+cname;
+    d=req.query.attdate;
+    s=req.query.speriod;
+    ep=req.query.eperiod;
+    u="";
+    if(req.query.updatemsg!=null)
+    u=req.query.updatemsg;
+    
+    console.log(d+" "+s+" "+ep);
     
     q="select * from "+tablename+"_attendance where att_date=? and s_period=? and e_period=?;";
     connection.query(
-        "select roll_number from student where roll_number like ? order by roll_number;",
-        [l],
+        q,
+        [d,s,ep],
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length > 0) {
                 success = true;
-                studlist = results;
-                res.render("reg_students", {
+                //console.log(results);
+                for(i=0;i<results.length;i++)
+                {
+                    results[i]['att_date']=d;
+                }
+                res.render("attendance", {
                     status: success,
-                    liststud: studlist,
+                    attlist: results,
+                    isstatic:true,
+                    addmsg:"",
+                    update:u
                 });
             } else {
                 success = false;
-                res.render("reg_students", {
-                    status: success,
-                    liststud: [],
-                });
+                q= "select distinct roll_number from "+tablename+"_attendance;"
+                connection.query(
+                    q,
+                    function (error, results, fields) {
+                        if (error) console.log(error);
+                        else if (results.length > 0) {
+                            success = true;
+                            studlist = results;
+                            att=[]
+                            for(i=0;i<results.length;i++)
+                            {
+                                o={}
+                                o['roll_number']=results[i]['roll_number'];
+                                o['att_date']=d;
+                                o['s_period']=s;
+                                o['e_period']=ep;
+                                o['classes']=0;
+                                att.push(o);
+                            }
+                            res.render("attendance", {
+                                status: true,
+                                attlist: att,
+                                isstatic:true,
+                                addmsg:"",
+                                update:u
+                            });
+                        } else {
+                            success = false;
+                            res.render("attendance", {
+                                status: true,
+                                attlist: att,
+                                isstatic:true,
+                                addmsg:"",
+                                update:u
+                            });
+                        }
+                    }
+                );
             }
         }
     );
 });
+
 
 
 app.get("/get_attendance", function (req, res) {
@@ -603,30 +685,52 @@ app.post("/updateProfile", function (req, res) {
         [name, dob, address, mobile, qual, email],
         function (error, results, fields) {
             if (error) {
-                res.render("profile", {
-                    faculty: req.session.faculty,
-                    notification:
-                        "Error occured while updating profile. Try again.",
-                    bgcolor: "bg-danger",
-                });
+                req.session.notifyMSG = "Error occured while updating profile. Try again.";
+                req.session.msgStatusColor = "bg-danger";
+                res.redirect("/profile");
+
             } else {
                 connection.query(
                     "select * from faculty where emailID = ?",
                     [email],
                     function (err, rows, fields) {
                         req.session.faculty = rows[0];
-                        // res.redirect("/profile");
-                        res.render("profile", {
-                            faculty: req.session.faculty,
-                            notification: "Profile updated successfully",
-                            bgcolor: "bg-success",
-                        });
+                        req.session.notifyMSG = "Profile updated successfully";
+                        req.session.msgStatusColor = "bg-success";
+                        res.redirect("/profile");
                     }
                 );
             }
         }
     );
 });
+
+app.post("/updatePassword", function(req, res) {
+    connection.query(
+        "SELECT * FROM login WHERE email=? AND passwd=?",
+        [req.session.email, req.body.oldpasswd],
+        function(err, result, fields) {
+            if (err) {
+                req.session.notifyMSG = "Error occured. Password not changed.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                if (result.length == 0) {
+                    req.session.notifyMSG = "Wrong password. Password not changed";
+                    req.session.msgStatusColor = "bg-warning";
+                }
+                else {
+                    connection.query(
+                        "UPDATE login SET passwd=? WHERE email=?",
+                        [req.body.newpasswd, req.session.email],
+                    )
+                    req.session.notifyMSG = "Password changed successfully!";
+                    req.session.msgStatusColor = "bg-success";
+                }
+            }
+            res.redirect("/profile");
+        }
+    )
+})
 
 app.post("/addNewFaculty", function (req, res) {
     let f = req.body;
@@ -699,6 +803,44 @@ app.post("/addNewFaculty", function (req, res) {
             res.redirect("/admin");
         }
     );
+});
+
+app.post("/addNewTest", function(req, res){
+    // console.log(req.body);
+    connection.query(
+        "INSERT INTO tests(name, date,time, instructions, course) VALUES(?,?,?,?,?)",
+        [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id],
+        function (err, results, fields) { 
+            if (err) {
+                req.session.notifyMSG = "Error occured. Test not scheduled.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Scheduled test successfully!";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/tests-and-assignments");
+        }
+    )
+    
+});
+
+app.post("/addNewAssignment", function(req, res){
+    // console.log(req.body);
+    connection.query(
+        "INSERT INTO assignments(name, date,time, instructions, course) VALUES(?,?,?,?,?)",
+        [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id],
+        function (err, results, fields) { 
+            if (err) {
+                req.session.notifyMSG = "Error occured. Assignment not created.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Assignment created successfully!";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/tests-and-assignments");
+        }
+    )
+    
 });
 
 app.post("/add_assessment", function (req, res) {
@@ -777,6 +919,69 @@ app.post("/update_marks", function (req, res) {
                 console.log("ok");
                 var msg = encodeURIComponent("Added successfully");
                 res.redirect("/mark_grade?updatemsg=Updated successfully");
+            }
+        }
+    );
+});
+
+app.post("/update_attendance", function (req, res) {
+    roll_number=req.body.roll_number;
+    console.log("update att");
+    r=req.body.roll_number;
+    d=req.body.attdate;
+    s=req.body.speriod;
+    ep=req.body.eperiod;
+    c=req.body.classes;
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+    tablename="course_"+cname+"_attendance";
+    q="select * from "+tablename+" where att_date='"+d+"' and s_period="+s+" and e_period="+ep+" and roll_number='"+r+"';";
+    console.log(q);
+    connection.query(
+        q,
+        function (error, results, fields) {
+            if (error){
+                console.log(error);
+                res.redirect("/attendance?updatemsg=error&attdate="+d+"&speriod="+s+"&eperiod="+ep);
+            }
+             else if(results.length==1) {
+                q="update "+tablename+" set classes="+c+" where att_date='"+d+"' and s_period="+s+" and e_period="+ep+" and roll_number='"+r+"';";
+                console.log(q);
+                connection.query(
+                    q,
+                    [c,d,s,ep],
+                    function (error, results, fields) {
+                        if (error){
+                            console.log(error);
+                            res.redirect("/get_attendance_list?updatemsg=error&attdate="+d+"&speriod="+s+"&eperiod="+ep);
+                        }
+                         else {
+                            console.log("ok");
+                            var msg = encodeURIComponent("Added successfully");
+                            res.redirect("/get_attendance_list?updatemsg=Updated successfully&attdate="+d+"&speriod="+s+"&eperiod="+ep);
+                        }
+                    }
+                );
+            }
+            else{
+                q="insert into "+tablename+" values(?,?,?,?,?);";
+                connection.query(
+                    q,
+                    [r,d,s,ep,c],
+                    function (error, results, fields) {
+                        if (error){
+                            console.log(error);
+                            res.redirect("/get_attendance_list?updatemsg=error&attdate="+d+"&speriod="+s+"&eperiod="+ep);
+                        }
+                         else {
+                            console.log("ok");
+                            var msg = encodeURIComponent("Added successfully");
+                            res.redirect("/get_attendance_list?updatemsg=Updated successfully&attdate="+d+"&speriod="+s+"&eperiod="+ep);
+                        }
+                    }
+                );
             }
         }
     );
