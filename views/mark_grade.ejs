@@ -55,25 +55,33 @@
                         <button id="search" class="btn btn-light" type="submit" style="display: float; margin-left:10px;">
                             Get Marks
                         </button>
+                        <input type="text" class="form-control score" style="display: float; margin-left:150px;" id="currass" placeholder="<%= currass %>" readonly>
                     </form>
-                    <form action="/update_marks" method="post">
-                    <input type="text" class="form-control score" style="display: float; margin-left:150px;" id="currass" placeholder="<%= currass %>">
+                    <!-- <form action="/update_marks" method="post"> -->
+                    
                 </div>
             </nav>
             <div class="list-group" id="mark-list" style="overflow: scroll;height:460px;">
                 <% for(var i=0;i < stud_marks.length;i++) { %>
                     <li class="list-group-item">
-                        <p style="float:left;margin-left:20px;"><%= stud_marks[i][0] %></p>
-                        <input type="number" class="form-control score" id="<%= stud_marks[i][0] %>" placeholder="<%= stud_marks[i][1] %>">
+                        <form action="/update_marks" method="post">
+                            
+                            <input type="text" class="form-control score" style="float:left;margin-left:20px;width:200px;" id="roll_number" name="roll_number" value="<%= stud_marks[i][0] %>" readonly>
+                            <input type="text" class="form-control score" style="float:left;margin-left:20px;width:300px;" id="assignment" name="assignment" value="<%= currass %>" readonly>
+                            <input type="number" class="form-control score" style="margin-left:10px;" id="<%= stud_marks[i][0] %>" name="marks" value="<%= stud_marks[i][1] %>">
+                            <button id="search" class="btn btn-primary" type="submit" style="display:float; margin-left:15%;margin-bottom:10px;">
+                                Update
+                            </button>    
+                        </form>
                     </li>
                 <% } %>
             </div>
-
+          
+            <h6 style="margin-left: 35%;background-color:transparent;"><%= update %></h6>
+           
         </div>
-            <button id="search" class="btn btn-primary" type="submit" style="margin-left:45%;margin-bottom:10px;">
-                Update
-            </button>
-        </form>
+            
+       
 
     </div>
     
