@@ -70,7 +70,7 @@ app.get("/", function (req, res) {
         else msg = "Good night";
 
         wel = msg + ", " + req.session.faculty.name + "!";
-        console.log(wel);
+        // console.log(wel);
         connection.query(
             "select course_id,batch,dept,section from course_faculty where faculty_id=?;",
             [req.session.faculty.id],
@@ -78,7 +78,7 @@ app.get("/", function (req, res) {
                 if (error)
                     console.log("Error occured while fetching departments");
                 else if (result.length >= 1) {
-                    console.log(result);
+                    // console.log(result);
                     course_sel =
                         result[0]["course_id"] +
                         " " +
@@ -87,7 +87,7 @@ app.get("/", function (req, res) {
                         result[0]["dept"] +
                         " " +
                         result[0]["section"];
-                    req.session.course = result[0];
+                    req.session.course = result[0]; // first course in the list is made default
                     res.render("home", {
                         courselen: result.length,
                         welcomeMessage: wel,
@@ -120,6 +120,10 @@ app.get("/updatecoursetab", function (req, res) {
     req.session.course.dept = s[2];
     req.session.course.section = s[3];
     res.send({ status: true });
+});
+
+app.get("/tests-and-assignments", function (req, res) {
+    res.render("testAssignment");
 });
 
 app.get("/profile", function (req, res) {
