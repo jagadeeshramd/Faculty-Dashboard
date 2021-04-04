@@ -33,11 +33,10 @@
                 <div class="list-group" style="overflow: scroll;height:515px;">
 
                     <% for (var i=0; i < liststud.length; i++ ){ %>
-                        <button type="button" id="curr_roll" class="list-group-item list-group-item-action"
+                        <button type="button" id="<%= liststud[i].roll_number %>" class="list-group-item list-group-item-action"
                             onclick="getstudentinfo(this);">
-                            <%=liststud[i].roll_number %>
+                            <%= liststud[i].roll_number %>
                         </button>
-                        <% console.log(liststud[i]); %>
                             <% } %>
                                 <!-- <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18002</button>
                 <button type="button" class="list-group-item list-group-item-action">CB.EN.U4CSE18003</button>

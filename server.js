@@ -415,6 +415,40 @@ app.get("/get_periodical_marks", function (req, res) {
     
 });
 
+app.get("/attendance", function (req, res) {
+    var success = false;
+    var studlist = [];
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+    tablename="course_"+cname;
+    
+    q="select * from "+tablename+"_attendance where att_date=? and s_period=? and e_period=?;";
+    connection.query(
+        "select roll_number from student where roll_number like ? order by roll_number;",
+        [l],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if (results.length > 0) {
+                success = true;
+                studlist = results;
+                res.render("reg_students", {
+                    status: success,
+                    liststud: studlist,
+                });
+            } else {
+                success = false;
+                res.render("reg_students", {
+                    status: success,
+                    liststud: [],
+                });
+            }
+        }
+    );
+});
+
+
 app.get("/get_attendance", function (req, res) {
     
     rno = req.query.rollno;
