@@ -4,6 +4,44 @@
         <%= welcomeMessage %>
     </h1>
 
+    <% if(faculty.isAdvisor) { %>
+        <nav class="navbar navbar-expand-lg" id="search-list"
+            style="height:35px; width: 140px; margin-left: 20px; font-size:20px;background-image:linear-gradient(90deg,#05a7e7,#2a26ff);">
+            <a href = "myclass" id = "my_class" class="navbar-brand" href="#" style="color: beige; margin-left:10%; font-size:20px; font: width 5%;">My Class</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <i class="fa fa-angle-down"
+                style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
+        </nav>
+    <% } else if(faculty.isBC) { %>
+        <nav class="navbar navbar-expand-lg" id="search-list"
+            style="height:35px; width: 140px; font-size:20px;background-image:linear-gradient(90deg,#05a7e7,#2a26ff);">
+            <a href="myclass" id="my_class" class="navbar-brand" href="#"
+                style="color: beige; margin-left:10%; font-size:20px; font: width 5%;">My Batch</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <i class="fa fa-angle-down"
+                style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
+        </nav>
+    <% } else if(faculty.isHOD) { %>
+        <nav class="navbar navbar-expand-lg" id="search-list"
+            style="height:35px; width: 120px; font-size:20px;background-image:linear-gradient(90deg,#05a7e7,#2a26ff);">
+            <a href="myclass" id="my_class" class="navbar-brand" href="#"
+                style="color: beige; margin-left:10%; font-size:20px; font: width 5%;">My Department</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <i class="fa fa-angle-down"
+                style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
+        </nav>
+    <% } %>
+    
+
     <div id="disp-content">
         <div id="course-text" class="disp-text">
             <nav class="navbar navbar-expand-lg" id="search-list" style="background-color: #45b1ef">

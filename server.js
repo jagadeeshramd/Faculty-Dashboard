@@ -86,6 +86,7 @@ app.get("/", function (req, res) {
                         welcomeMessage: wel,
                         courses: result,
                         coursesel: course_sel,
+                        faculty: req.session.faculty,
                     });
                 } else {
                     res.render("home", {
@@ -93,6 +94,7 @@ app.get("/", function (req, res) {
                         welcomeMessage: wel,
                         courses: [],
                         coursesel: "",
+                        faculty: req.session.faculty,
                     });
                 }
             }
@@ -867,10 +869,10 @@ app.post("/addNewAssignment", function(req, res){
 });
 
 app.post("/addNewResource", function (req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     datetime = new Date();
     mdate = datetime.toISOString().slice(0, 10);
-    console.log(mdate);
+    // console.log(mdate);
     connection.query(
         "INSERT INTO resources(name, modified_date, instructions, course) VALUES(?,?,?,?);",
         [req.body.name, mdate, req.body.instructions, req.session.course.course_id],
