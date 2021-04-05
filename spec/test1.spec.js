@@ -105,9 +105,6 @@ describe("server",()=>{
                 done();
             });
         });
-        it("Status 200",() =>{
-            expect(data.status).toBe(200);
-        });
         it("quizmark",() =>{
             b=data.body;
             b=JSON.parse(b);
@@ -126,9 +123,7 @@ describe("server",()=>{
                 done();
             });
         });
-        it("Status 200",() =>{
-            expect(data.status).toBe(200);
-        });
+        
         it("quizmark",() =>{
             b=data.body;
             b=JSON.parse(b);
