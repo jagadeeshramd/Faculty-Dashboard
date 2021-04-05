@@ -108,11 +108,10 @@ app.get("/", function (req, res) {
 
 app.get("/updatecoursetab", function (req, res) {
    
-    console.log(req.query);
+    
     s = req.query.course.trim().split("\n");
     if(s.length==1){
         s=s[0].split("_");
-        console.log(s);
         if(s.length==4){
             res.send({ status: true });
         }
@@ -486,8 +485,7 @@ app.get("/get_quiz_marks", function (req, res) {
         q,
         [rno],
         function (error, results, fields) {
-            console.log(q);
-            console.log(results);
+            
             if (error) console.log(error);
             else if (results.length == 1) {
                 marks={}
@@ -497,10 +495,10 @@ app.get("/get_quiz_marks", function (req, res) {
                         marks[k1]=results[0][k];
                     }
                 }
-                console.log("true");
+                
                 res.send({resp:true,rec:marks});
             } else {
-                console.log("false");
+               
                 res.send({resp:false,rec:{}});
             }
             
@@ -534,8 +532,7 @@ app.get("/get_assignment_marks", function (req, res) {
                 
                 res.send({resp:true,rec:marks});
             } else {
-                
-                console.log("false");
+               
                 res.send({resp:false,rec:{}});
             }
             
