@@ -30,15 +30,10 @@ body {
 
 #disp-content-mc{
     margin: 0 auto;
-        /* margin-left: 20px; */
     width: 50%;
-    /* margin-top: 2.5%; */
     height: 500px;
-    /* float: left; */
     font-family: "Poppins", sans-serif;
     border: 2px solid #45b1ef;
-    /* padding-left: 15px;
-    padding-right: 15px; */
     border-radius: 10px;
     margin-bottom: 50px;
 }
@@ -185,19 +180,12 @@ mark {
 }
 
 .tab-mc {
-    /* width: 150px;
-    height: 150px; */
-    /* margin-left: 42px;
-    margin-bottom: 30px; */
     color: white;
     background-color: #00c4cc;
     margin: 30px ;
     padding: 10px;
     padding-top: 20px;
-     /* padding-bottom: 10px; */
     text-align: center;
-    /* padding-right: 10px; */
-    /* float: left; */
     transition: transform 0.5s;
 }
 
@@ -216,11 +204,20 @@ mark {
     margin-top: 20px;
 }
 
-.tab :hover {
+.tab-mc :hover {
+    transform: scale(1.1);
+}
+
+.tab-mc :hover {
     transform: scale(1.1);
 }
 
 .tab a {
+    text-decoration: none;
+    color: white;
+}
+
+.tab-mc a {
     text-decoration: none;
     color: white;
 }

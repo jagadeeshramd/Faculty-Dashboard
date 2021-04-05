@@ -24,6 +24,7 @@ insert into course_faculty values('15CSE301',2017,'CSE','A','12301');
 insert into course_faculty values('15CSE301',2017,'CSE','B','12465');
 insert into course_faculty values('15CSE313',2018,'CSE','A','12301');
 insert into course_faculty values('15CSE313',2018,'CSE','B','13301');
+insert into course_faculty values('15CSE312',2018,'CSE','B','14312');
 drop table course_faculty;
 
 select course_id,batch,dept,section from course_faculty where faculty_id='12301';

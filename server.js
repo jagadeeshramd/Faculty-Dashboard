@@ -86,6 +86,7 @@ app.get("/", function (req, res) {
                         welcomeMessage: wel,
                         courses: result,
                         coursesel: course_sel,
+                        faculty: req.session.faculty,
                     });
                 } else {
                     res.render("home", {
@@ -93,6 +94,7 @@ app.get("/", function (req, res) {
                         welcomeMessage: wel,
                         courses: [],
                         coursesel: "",
+                        faculty: req.session.faculty,
                     });
                 }
             }
@@ -170,11 +172,39 @@ app.get("/tests-and-assignments", function (req, res) {
         });
 });
 
+app.get("/resources", function (req, res) {
+    connection.query(
+        "SELECT * FROM resources WHERE course=?",
+        [req.session.course.course_id],
+        function (err, result1, fields) {
+            if (err) console.log(err);
+            else {
+                    let msg = req.session.notifyMSG;
+                    let color = req.session.msgStatusColor;
+                    req.session.notifyMSG = null;
+                    req.session.msgStatusColor = null;
+                    datetime = new Date();
+                    mdate = datetime.toISOString().slice(0, 10);
+                    res.render("resources", {
+                        resources: result1,
+                        m_date: mdate,
+                        notification: msg,
+                        bgcolor: color,
+                    });
+                    }
+        });
+});
+
 app.get("/profile", function (req, res) {
+    let msg = req.session.notifyMSG;
+    let color = req.session.msgStatusColor;
+    req.session.notifyMSG = null;
+    req.session.msgStatusColor = null;
+
     res.render("profile", {
         faculty: req.session.faculty,
-        notification: "",
-        bgcolor: "",
+        notification: msg,
+        bgcolor: color,
     });
 });
 
@@ -211,7 +241,80 @@ app.get("/admin", function (req, res) {
 });
 
 app.get("/myclass", function (req, res) {
-    res.render("myclass");
+    req.session.classID = null;
+    l = req.session.faculty.id;
+    connection.query("SELECT classid FROM advisor_class WHERE advisor_id = ?;", [l], function (error, results, fields) {
+        if (error) console.log(error);
+        else if (results[0].classid) {
+            req.session.classID = results[0].classid;
+            res.render("myclass", { classid: req.session.classID });
+        }
+        else {
+            req.session.classID = "No Class";
+            res.render("myclass", { classid: req.session.classID });
+        }
+    });
+    
+});
+
+app.get("/myclass_students", function (req, res) {
+    var success = false;
+    var studlist = [];
+    l=req.session.faculty.id;
+    classID = req.session.classID;
+
+    // connection.query("SELECT classid FROM advisor_class WHERE advisor_id = ?;", [l], function(error,results,fields){
+    //     if(error) console.log(error);
+    //     else if(results[0].classid){
+    //         classID = results[0].classid;
+    //     }
+    //     else{
+    //         classID = "No Class";
+    //     }
+    // });
+
+    connection.query(
+        // SELECT * FROM student_det S INNER JOIN parent_det P ON S.roll_number = P.roll_number where S.advisor_id = ?;
+
+        "select roll_number from student_det where advisor_id = ? order by roll_number;",
+        [l],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if (results.length > 0) {
+                success = true;
+                studlist = results;
+                res.render("myclass_students", {
+                    status: success,
+                    liststud: studlist,
+                    classid: classID,
+                });
+            } else {
+                success = false;
+                res.render("myclass_students", {
+                    status: success,
+                    liststud: [],
+                    classid: classID,
+                });
+            }
+        }
+    );
+});
+
+app.get("/det_student_detail_info", function (req, res) {
+    rno = req.query.rollno;
+    var stud_info = {};
+    connection.query(
+        "SELECT * FROM student_det S INNER JOIN parent_det P ON S.roll_number = P.roll_number where S.roll_number = ?;",
+        [rno],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else if (results.length == 1) {
+                res.send({ resp: true, rec: results[0] });
+            } else {
+                res.send({ resp: false, rec: {} });
+            }
+        }
+    );
 });
 
 app.get("/temp", function (req, res) {
@@ -644,24 +747,19 @@ app.post("/updateProfile", function (req, res) {
         [name, dob, address, mobile, qual, email],
         function (error, results, fields) {
             if (error) {
-                res.render("profile", {
-                    faculty: req.session.faculty,
-                    notification:
-                        "Error occured while updating profile. Try again.",
-                    bgcolor: "bg-danger",
-                });
+                req.session.notifyMSG = "Error occured while updating profile. Try again.";
+                req.session.msgStatusColor = "bg-danger";
+                res.redirect("/profile");
+
             } else {
                 connection.query(
                     "select * from faculty where emailID = ?",
                     [email],
                     function (err, rows, fields) {
                         req.session.faculty = rows[0];
-                        // res.redirect("/profile");
-                        res.render("profile", {
-                            faculty: req.session.faculty,
-                            notification: "Profile updated successfully",
-                            bgcolor: "bg-success",
-                        });
+                        req.session.notifyMSG = "Profile updated successfully";
+                        req.session.msgStatusColor = "bg-success";
+                        res.redirect("/profile");
                     }
                 );
             }
@@ -669,10 +767,37 @@ app.post("/updateProfile", function (req, res) {
     );
 });
 
+app.post("/updatePassword", function(req, res) {
+    connection.query(
+        "SELECT * FROM login WHERE email=? AND passwd=?",
+        [req.session.email, req.body.oldpasswd],
+        function(err, result, fields) {
+            if (err) {
+                req.session.notifyMSG = "Error occured. Password not changed.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                if (result.length == 0) {
+                    req.session.notifyMSG = "Wrong password. Password not changed";
+                    req.session.msgStatusColor = "bg-warning";
+                }
+                else {
+                    connection.query(
+                        "UPDATE login SET passwd=? WHERE email=?",
+                        [req.body.newpasswd, req.session.email],
+                    )
+                    req.session.notifyMSG = "Password changed successfully!";
+                    req.session.msgStatusColor = "bg-success";
+                }
+            }
+            res.redirect("/profile");
+        }
+    )
+})
+
 app.post("/addNewFaculty", function (req, res) {
     let f = req.body;
     connection.query(
-        "INSERT INTO faculty VALUES(?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO faculty(id, name, emailID, DOB, gender, address, phone, deptID, qualification, designation) VALUES(?,?,?,?,?,?,?,?,?,?)",
         [
             f.id,
             f.name,
@@ -778,6 +903,29 @@ app.post("/addNewAssignment", function(req, res){
         }
     )
     
+});
+
+app.post("/addNewResource", function (req, res) {
+    // console.log(req.body);
+    datetime = new Date();
+    mdate = datetime.toISOString().slice(0, 10);
+    // console.log(mdate);
+    connection.query(
+        "INSERT INTO resources(name, modified_date, instructions, course) VALUES(?,?,?,?);",
+        [req.body.name, mdate, req.body.instructions, req.session.course.course_id],
+        function (err, results, fields) {
+            if (err) {
+                console.log(err);
+                req.session.notifyMSG = "Error occured. Resource not added.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Resource added successfully!";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/resources");
+        }
+    )
+
 });
 
 app.post("/add_assessment", function (req, res) {

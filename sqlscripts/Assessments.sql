@@ -14,7 +14,7 @@ insert into assessment_list values('15CSE313_2018_CSE_A','T1',20);
 insert into assessment_list values('15CSE313_2018_CSE_A','T2',20);
 select * from assessment_list;
 
-create table course_15CSE313_2018_CSE_A_student_academic_info(roll_number varchar(20) primary key references student_18(roll_number),
+create table course_15CSE313_2018_CSE_A_student_academic_info(roll_number varchar(20) primary key references student(roll_number),
 								   A1 float default 0,A2 float default 0,A3 float default 0,
                                    Q1 float default 0,Q2 float default 0,Q3 float default 0,Q4 float default 0,
                                    P1 float default 0,P2 float default 0,
@@ -34,7 +34,5 @@ select * from course_15CSE313_2018_CSE_A_student_academic_info;
 
 select * from course_15CSE313_2018_CSE_A_student_academic_info where roll_number='CB.EN.U4CSE18001';
 
-drop table assessment_list;
-drop table student_academic_info;
+-- drop table assessment_list;
 
-alter table student_academic_info add t1 float;

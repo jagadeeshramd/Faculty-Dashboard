@@ -35,4 +35,4 @@ insert into course_15CSE313_2018_CSE_A_attendance values('CB.EN.U4CSE18009',STR_
 insert into course_15CSE313_2018_CSE_A_attendance values('CB.EN.U4CSE18010',STR_TO_DATE('04-03-2021', '%m-%d-%Y'),1,2,2);
 
 select roll_number,(sum(classes)/sum(e_period-s_period+1))*100 as percentage from course_15CSE313_2018_CSE_A_attendance group by roll_number having roll_number='CB.EN.U4CSE18001';
-drop table attendance;
+-- drop table attendance;
