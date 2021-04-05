@@ -105,16 +105,40 @@ app.get("/", function (req, res) {
 });
 
 app.get("/updatecoursetab", function (req, res) {
-    
+   
+    console.log(req.query);
     s = req.query.course.trim().split("\n");
-    for(i=0;i<s.length;i++)
-    s[i]=s[i].trim();
-    console.log(s);
-    req.session.course.course_id = s[0];
-    req.session.course.batch = parseInt(s[1]);
-    req.session.course.dept = s[2];
-    req.session.course.section = s[3];
-    res.send({ status: true });
+    if(s.length==1){
+        s=s[0].split("_");
+        console.log(s);
+        if(s.length==4){
+            res.send({ status: true });
+        }
+        else
+        {
+        res.send({ status: false });
+        }
+
+    }
+    else{
+        for(i=0;i<s.length;i++)
+            s[i]=s[i].trim();
+        console.log(s);
+        if(s.length==4){
+            req.session.course.course_id = s[0];
+            req.session.course.batch = parseInt(s[1]);
+            req.session.course.dept = s[2];
+            req.session.course.section = s[3];
+            res.send({ status: true });
+        }
+        else
+        {
+        res.send({ status: false });
+        }
+    }
+    
+    
+
 });
 
 app.get("/tests-and-assignments", function (req, res) {
@@ -343,16 +367,24 @@ app.get("/det_student_info", function (req, res) {
 app.get("/get_quiz_marks", function (req, res) {
     rno = req.query.rollno;
     var stud_info={};
+    if(req.query.course!=null)
+    {   cname=req.query.course;
+        
+    }
+    else{
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
-    cname+=req.session.course.section;
+    cname+=req.session.course.section;  
+    }
     tablename="course_"+cname;
     q="select * from "+tablename+"_student_academic_info where roll_number=?;";
     connection.query(
         q,
         [rno],
         function (error, results, fields) {
+            console.log(q);
+            console.log(results);
             if (error) console.log(error);
             else if (results.length == 1) {
                 marks={}
@@ -362,8 +394,10 @@ app.get("/get_quiz_marks", function (req, res) {
                         marks[k1]=results[0][k];
                     }
                 }
+                console.log("true");
                 res.send({resp:true,rec:marks});
             } else {
+                console.log("false");
                 res.send({resp:false,rec:{}});
             }
             
@@ -394,13 +428,16 @@ app.get("/get_assignment_marks", function (req, res) {
                         marks[k1]=results[0][k];
                     }
                 }
+                
                 res.send({resp:true,rec:marks});
             } else {
+                
+                console.log("false");
                 res.send({resp:false,rec:{}});
             }
             
         } );
-    console.log(stud_info);
+   
 });
 
 app.get("/get_periodical_marks", function (req, res) {
@@ -887,10 +924,11 @@ app.post("/update_attendance", function (req, res) {
     );
 });
 
-app.listen(process.env.PORT || 3000, function () {
+var server=app.listen(process.env.PORT || 3000, function () {
     console.log("Server started running");
 });
 
+module.exports=server;
 process.on("SIGINT", function () {
     console.log("\nBreaking connection with DB...");
     connection.end();
