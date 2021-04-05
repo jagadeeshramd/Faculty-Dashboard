@@ -758,7 +758,7 @@ app.post("/updatePassword", function(req, res) {
 app.post("/addNewFaculty", function (req, res) {
     let f = req.body;
     connection.query(
-        "INSERT INTO faculty VALUES(?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO faculty(id, name, emailID, DOB, gender, address, phone, deptID, qualification, designation) VALUES(?,?,?,?,?,?,?,?,?,?)",
         [
             f.id,
             f.name,
