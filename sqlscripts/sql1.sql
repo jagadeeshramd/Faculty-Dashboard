@@ -361,3 +361,11 @@ select * from tests;
 
 create table assignments(id int primary key AUTO_INCREMENT, name varchar(100), date varchar(10), time varchar(5), instructions varchar(1000), course varchar(50));
 select * from assignments;
+
+-- *************************************************************************************************
+-- Resources
+-- *************************************************************************************************
+
+create table resources(id int primary key AUTO_INCREMENT, name varchar(100), modified_date varchar(10), instructions varchar(1000), course varchar(50));
+select * from resources;
+

@@ -146,6 +146,29 @@ app.get("/tests-and-assignments", function (req, res) {
         });
 });
 
+app.get("/resources", function (req, res) {
+    connection.query(
+        "SELECT * FROM resources WHERE course=?",
+        [req.session.course.course_id],
+        function (err, result1, fields) {
+            if (err) console.log(err);
+            else {
+                    let msg = req.session.notifyMSG;
+                    let color = req.session.msgStatusColor;
+                    req.session.notifyMSG = null;
+                    req.session.msgStatusColor = null;
+                    datetime = new Date();
+                    mdate = datetime.toISOString().slice(0, 10);
+                    res.render("resources", {
+                        resources: result1,
+                        m_date: mdate,
+                        notification: msg,
+                        bgcolor: color,
+                    });
+                    }
+        });
+});
+
 app.get("/profile", function (req, res) {
     let msg = req.session.notifyMSG;
     let color = req.session.msgStatusColor;
@@ -841,6 +864,29 @@ app.post("/addNewAssignment", function(req, res){
         }
     )
     
+});
+
+app.post("/addNewResource", function (req, res) {
+    console.log(req.body);
+    datetime = new Date();
+    mdate = datetime.toISOString().slice(0, 10);
+    console.log(mdate);
+    connection.query(
+        "INSERT INTO resources(name, modified_date, instructions, course) VALUES(?,?,?,?);",
+        [req.body.name, mdate, req.body.instructions, req.session.course.course_id],
+        function (err, results, fields) {
+            if (err) {
+                console.log(err);
+                req.session.notifyMSG = "Error occured. Resource not added.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Resource added successfully!";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/resources");
+        }
+    )
+
 });
 
 app.post("/add_assessment", function (req, res) {
