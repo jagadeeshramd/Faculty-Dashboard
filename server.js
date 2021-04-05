@@ -112,6 +112,7 @@ app.get("/updatecoursetab", function (req, res) {
     s = req.query.course.trim().split("\n");
     if(s.length==1){
         s=s[0].split("_");
+
         if(s.length==4){
             res.send({ status: true });
         }
