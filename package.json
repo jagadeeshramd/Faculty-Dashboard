@@ -20,6 +20,7 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "jasmine": "^3.7.0"
+    "jasmine": "^3.7.0",
+    "kill-port": "^1.6.1"
   }
 }

@@ -49,7 +49,14 @@
                     <form class="form-inline my-2 my-lg-0" action="/get_ass_marks" method="post">
                         <select id="inputTest" style="display: float; margin-left:100px;width:300px;" name="inputTest" id="inputTest" class="form-control">
                             <% for(var i=0;i < asslist.length;i++) { %>
-                                <option> <%= asslist[i] %></option>
+                                <% console.log(currass); %>
+                                <% console.log(asslist[i]); %>
+                                <% if(asslist[i].localeCompare(currass)==0) { %>
+                                    <% console.log(currass); %>
+                                    <option selected> <%= asslist[i] %></option>
+                                <% } else { %>
+                                    <option> <%= asslist[i] %></option>
+                                <% } %>
                             <% } %>
                         </select>
                         <button id="getmarks" class="btn btn-light" type="submit" style="display: float; margin-left:10px;">

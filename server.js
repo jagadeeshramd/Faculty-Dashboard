@@ -407,12 +407,44 @@ app.get("/mark_grade", function (req, res) {
             if (error) console.log(error);
             else if (results.length >= 1) {
                 ass_list=[];
-                for(i in results){
-                    ass_list.push(results[i]['ass_name']);
-                }
                 ass_name=req.query.assname;
-                if(ass_name==null)
-                    ass_name=ass_list[0];
+                if(ass_name!=null){
+                    if(ass_name.startsWith('Assignment'))
+                        ass_name="A"+ass_name.slice(11,ass_name.length);
+                    else if(ass_name.startsWith('Quiz'))
+                        ass_name="Q"+ass_name.slice(5,ass_name.length);
+                    else if(ass_name.startsWith('Periodical'))
+                        ass_name="P"+ass_name.slice(11,ass_name.length);
+                    else if(ass_name.startsWith('Tutorial'))
+                        ass_name="T"+ass_name.slice(9,ass_name.length);
+                }
+                for(i in results){
+                    assessment=results[i]['ass_name'];
+                    if(ass_name==null)
+                        ass_name=assessment;
+                    if(assessment.startsWith('A'))
+                        assessment="Assignment "+assessment.slice(1,assessment.length);
+                    else if(assessment.startsWith('Q'))
+                        assessment="Quiz "+assessment.slice(1,assessment.length);
+                    else if(assessment.startsWith('P'))
+                        assessment="Periodical "+assessment.slice(1,assessment.length);
+                    else if(assessment.startsWith('T'))
+                        assessment="Tutorial "+assessment.slice(1,assessment.length);
+                    ass_list.push(assessment);
+
+                }
+                
+                current_ass=ass_name;
+                if(current_ass.startsWith('A'))
+                    current_ass="Assignment "+current_ass.slice(1,current_ass.length);
+                else if(current_ass.startsWith('Q'))
+                    current_ass="Quiz "+current_ass.slice(1,current_ass.length);
+                else if(current_ass.startsWith('P'))
+                    current_ass="Periodical "+current_ass.slice(1,current_ass.length);
+                else if(current_ass.startsWith('T'))
+                    current_ass="Tutorial "+current_ass.slice(1,current_ass.length);
+                    
+
                 tablename="course_"+cname;
                 q="select roll_number,"+ass_name+" from "+tablename+"_student_academic_info;"
                 
@@ -430,7 +462,7 @@ app.get("/mark_grade", function (req, res) {
                                 addmsg:add_msg,
                                 asslist:ass_list,
                                 stud_marks: smark,
-                                currass: ass_name,
+                                currass: current_ass,
                                 update: u
                             });
                         } 
@@ -439,7 +471,7 @@ app.get("/mark_grade", function (req, res) {
                                 addmsg:add_msg,
                                 asslist:ass_list,
                                 stud_marks: [],
-                                currass: ass_name,
+                                currass: current_ass,
                                 update: u
                             });
                         }
@@ -943,6 +975,17 @@ app.post("/add_assessment", function (req, res) {
     cname += req.session.course.batch + "_";
     cname += req.session.course.dept + "_";
     cname += req.session.course.section;
+
+    assessment=colname;
+    if(assessment.startsWith('A'))
+        assessment="Assignment "+assessment.slice(1,assessment.length);
+    else if(assessment.startsWith('Q'))
+        assessment="Quiz "+assessment.slice(1,assessment.length);
+    else if(assessment.startsWith('P'))
+        assessment="Periodical "+assessment.slice(1,assessment.length);
+    else if(assessment.startsWith('T'))
+        assessment="Tutorial "+assessment.slice(1,assessment.length);
+                    
     connection.query(
         "insert into assessment_list values(?,?,?);",
         [cname, colname, tmarks],
@@ -952,7 +995,7 @@ app.post("/add_assessment", function (req, res) {
                 var msg = encodeURIComponent(
                     "Sorry assessment is already available"
                 );
-                res.redirect("/mark_grade?addmsg=" + msg);
+                res.redirect("/mark_grade?addmsg=" + msg+"&assname="+assessment);
             } else {
                 tablename = "course_" + cname;
                 q =
@@ -960,7 +1003,7 @@ app.post("/add_assessment", function (req, res) {
                     tablename +
                     "_student_academic_info add " +
                     colname +
-                    " float;";
+                    " float default 0.0;";
                 console.log("ok");
                 connection.query(q, function (error, results, fields) {
                     if (error) {
@@ -968,11 +1011,11 @@ app.post("/add_assessment", function (req, res) {
                         var msg = encodeURIComponent(
                             "Sorry assessment is already available"
                         );
-                        res.redirect("/mark_grade?addmsg=" + msg);
+                        res.redirect("/mark_grade?addmsg=" + msg+"&assname="+assessment);
                     } else {
                         console.log("ok");
                         var msg = encodeURIComponent("Added successfully");
-                        res.redirect("/mark_grade?addmsg=" + msg);
+                        res.redirect("/mark_grade?addmsg=" + msg+"&assname="+assessment);
                     }
                 });
             }
@@ -988,27 +1031,37 @@ app.post("/get_ass_marks", function (req, res) {
 app.post("/update_marks", function (req, res) {
     roll_number=req.body.roll_number;
     console.log("update marks");
-    a=req.body.assignment;
+    ass_name=req.body.assignment;
+    a=req.body.assignment;;
+    if(ass_name.startsWith('Assignment'))
+        ass_name="A"+ass_name.slice(11,ass_name.length);
+    else if(ass_name.startsWith('Quiz'))
+        ass_name="Q"+ass_name.slice(5,ass_name.length);
+    else if(ass_name.startsWith('Periodical'))
+        ass_name="P"+ass_name.slice(11,ass_name.length);
+    else if(ass_name.startsWith('Tutorial'))
+        ass_name="T"+ass_name.slice(9,ass_name.length);
     m=req.body.marks;
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
     tablename="course_"+cname+"_student_academic_info";
-    q="update "+tablename+" set "+a+"=? where roll_number=?";
+    q="update "+tablename+" set "+ass_name+"=? where roll_number=?";
     console.log(q);
+                    
     connection.query(
         q,
         [m,roll_number],
         function (error, results, fields) {
             if (error){
                 console.log(error);
-                res.redirect("/mark_grade?updatemsg=''");
+                res.redirect("/mark_grade?updatemsg=''&assname="+a);
             }
              else {
                 console.log("ok");
                 var msg = encodeURIComponent("Added successfully");
-                res.redirect("/mark_grade?updatemsg=Updated successfully");
+                res.redirect("/mark_grade?updatemsg=Updated successfully&assname="+a);
             }
         }
     );
