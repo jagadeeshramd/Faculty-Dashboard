@@ -832,7 +832,7 @@ app.post("/forgotPassword", function (req, res) {
                     var mailOptions = {
                         from: pass.GAccount,
                         to: email,
-                        subject: 'Faculty DashBoard - Request to reset Password',
+                        subject: 'Faculty Dashboard - Reset your Password',
                         html: `Hi user!<br><br>Click <a href="` + link +`">here</a> to reset your password.<br>If you did not request a new password, please ignore this email.`
                     }
 
