@@ -12,7 +12,10 @@ insert into assessment_list values('15CSE313_2018_CSE_A','P1',50);
 insert into assessment_list values('15CSE313_2018_CSE_A','P2',50);
 insert into assessment_list values('15CSE313_2018_CSE_A','T1',20);
 insert into assessment_list values('15CSE313_2018_CSE_A','T2',20);
-select * from assessment_list;
+alter table assessment_list add column weightage int default 0;
+select ass_name,totalmarks,weightage from assessment_list where course_code_full='15CSE313_2018_CSE_A';
+
+update assessment_list set weightage=2 where course_code_full='15CSE313_2018_CSE_A' and ass_name='Q2';
 
 create table course_15CSE313_2018_CSE_A_student_academic_info(roll_number varchar(20) primary key references student(roll_number),
 								   A1 float default 0,A2 float default 0,A3 float default 0,
@@ -31,8 +34,12 @@ insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18009',8,9,7,13,14.5,11.25,14,50,47,18,20);
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18010',10,9,9,13,12.5,15,14,48,50,20,19);
 select * from course_15CSE313_2018_CSE_A_student_academic_info;
+alter table course_15CSE313_2018_CSE_A_student_academic_info add column CA int default 0;
+alter table course_15CSE313_2018_CSE_A_student_academic_info drop column Q5,drop column Q6;
 
-select * from course_15CSE313_2018_CSE_A_student_academic_info where roll_number='CB.EN.U4CSE18001';
+
+
+select roll_number,CA from course_15CSE313_2018_CSE_A_student_academic_info;
 
 -- drop table assessment_list;
 

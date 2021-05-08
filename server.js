@@ -57,6 +57,36 @@ connection.connect(function (err) {
     console.log("Connected to Database.");
 });
 
+//functions required =============================================================
+
+function ass_to_fullname(assessment)
+{
+    if(assessment.startsWith('A'))
+        assessment="Assignment "+assessment.slice(1,assessment.length);
+    else if(assessment.startsWith('Q'))
+        assessment="Quiz "+assessment.slice(1,assessment.length);
+    else if(assessment.startsWith('P'))
+        assessment="Periodical "+assessment.slice(1,assessment.length);
+    else if(assessment.startsWith('T'))
+        assessment="Tutorial "+assessment.slice(1,assessment.length);
+    return assessment;
+}
+
+function ass_to_short(ass_name)
+{
+    if(ass_name.startsWith('Assignment'))
+        ass_name="A"+ass_name.slice(11,ass_name.length);
+    else if(ass_name.startsWith('Quiz'))
+        ass_name="Q"+ass_name.slice(5,ass_name.length);
+    else if(ass_name.startsWith('Periodical'))
+        ass_name="P"+ass_name.slice(11,ass_name.length);
+    else if(ass_name.startsWith('Tutorial'))
+        ass_name="T"+ass_name.slice(9,ass_name.length);
+    return ass_name;
+}
+
+
+
 // GET methods ===================================================================
 app.get("/", function (req, res) {
     // console.log("hi");
@@ -393,6 +423,13 @@ app.get("/mark_grade", function (req, res) {
     ttype=req.query.testtype;
     tnum=req.query.testnum;
     add_msg=req.query.addmsg;
+    dcname=req.session.course.course_id+" ";
+    dcname=req.session.course.course_id+" ";
+    dcname+=req.session.course.batch+" ";
+    dcname+=req.session.course.dept+" ";
+    dcname+=req.session.course.section;
+
+
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
@@ -409,40 +446,21 @@ app.get("/mark_grade", function (req, res) {
                 ass_list=[];
                 ass_name=req.query.assname;
                 if(ass_name!=null){
-                    if(ass_name.startsWith('Assignment'))
-                        ass_name="A"+ass_name.slice(11,ass_name.length);
-                    else if(ass_name.startsWith('Quiz'))
-                        ass_name="Q"+ass_name.slice(5,ass_name.length);
-                    else if(ass_name.startsWith('Periodical'))
-                        ass_name="P"+ass_name.slice(11,ass_name.length);
-                    else if(ass_name.startsWith('Tutorial'))
-                        ass_name="T"+ass_name.slice(9,ass_name.length);
+                    ass_name=ass_to_short(ass_name);
                 }
                 for(i in results){
                     assessment=results[i]['ass_name'];
                     if(ass_name==null)
                         ass_name=assessment;
-                    if(assessment.startsWith('A'))
-                        assessment="Assignment "+assessment.slice(1,assessment.length);
-                    else if(assessment.startsWith('Q'))
-                        assessment="Quiz "+assessment.slice(1,assessment.length);
-                    else if(assessment.startsWith('P'))
-                        assessment="Periodical "+assessment.slice(1,assessment.length);
-                    else if(assessment.startsWith('T'))
-                        assessment="Tutorial "+assessment.slice(1,assessment.length);
-                    ass_list.push(assessment);
+                    
+                    ans=ass_to_fullname(assessment);
+                    ass_list.push(ans);
+
 
                 }
                 
                 current_ass=ass_name;
-                if(current_ass.startsWith('A'))
-                    current_ass="Assignment "+current_ass.slice(1,current_ass.length);
-                else if(current_ass.startsWith('Q'))
-                    current_ass="Quiz "+current_ass.slice(1,current_ass.length);
-                else if(current_ass.startsWith('P'))
-                    current_ass="Periodical "+current_ass.slice(1,current_ass.length);
-                else if(current_ass.startsWith('T'))
-                    current_ass="Tutorial "+current_ass.slice(1,current_ass.length);
+                current_ass=ass_to_fullname(current_ass);
                     
 
                 tablename="course_"+cname;
@@ -463,7 +481,8 @@ app.get("/mark_grade", function (req, res) {
                                 asslist:ass_list,
                                 stud_marks: smark,
                                 currass: current_ass,
-                                update: u
+                                update: u,
+                                courseid: dcname
                             });
                         } 
                         else {
@@ -472,7 +491,8 @@ app.get("/mark_grade", function (req, res) {
                                 asslist:ass_list,
                                 stud_marks: [],
                                 currass: current_ass,
-                                update: u
+                                update: u,
+                                courseid: dcname
                             });
                         }
                     } );
@@ -482,12 +502,69 @@ app.get("/mark_grade", function (req, res) {
                     asslist:[],
                     stud_marks:[],
                     currass: "",
-                    update:u
+                    update:u,
+                    courseid: dcname
                 });
             }
         }
     );
 });
+
+app.get("/calculate_CA",function(req,res){
+    
+    dcname=req.session.course.course_id+" ";
+    dcname=req.session.course.course_id+" ";
+    dcname+=req.session.course.batch+" ";
+    dcname+=req.session.course.dept+" ";
+    dcname+=req.session.course.section;
+
+    cname=req.session.course.course_id+"_";
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+
+    tbname="course_"+cname;
+    connection.query(
+        "select ass_name,totalmarks,weightage from assessment_list where course_code_full=?;",
+        [cname],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else{
+
+                ass_wt=[];
+                ca_total=0;
+                for(i=0;i<results.length;i++){
+                    if(results[i]['ass_name'].localeCompare("CA")==0)
+                    {
+                        ca_total=results[i]['totalmarks'];
+                        continue;
+                    }
+                    r=ass_to_fullname(results[i]['ass_name']);
+                    ass_wt.push([r,results[i]['totalmarks'],results[i]['weightage']]);
+                }
+                connection.query(
+                    "select roll_number,CA from "+tbname+"_student_academic_info;",
+                    function (error, result_mark, fields) {
+                        if (error) console.log(error);
+                        else {
+                            console.log(ca_total);
+                            res.render("calculate_CA",{
+                                courseid:dcname,
+                                asswt:ass_wt,
+                                camark:result_mark,
+                                catotal:ca_total
+                            });
+                        } 
+                    }
+                );
+            } 
+        }
+    );
+   
+});
+
+
 
 app.get("/det_student_info", function (req, res) {
     rno = req.query.rollno;
@@ -700,8 +777,6 @@ app.get("/get_attendance_list", function (req, res) {
         }
     );
 });
-
-
 
 app.get("/get_attendance", function (req, res) {
     
@@ -977,14 +1052,7 @@ app.post("/add_assessment", function (req, res) {
     cname += req.session.course.section;
 
     assessment=colname;
-    if(assessment.startsWith('A'))
-        assessment="Assignment "+assessment.slice(1,assessment.length);
-    else if(assessment.startsWith('Q'))
-        assessment="Quiz "+assessment.slice(1,assessment.length);
-    else if(assessment.startsWith('P'))
-        assessment="Periodical "+assessment.slice(1,assessment.length);
-    else if(assessment.startsWith('T'))
-        assessment="Tutorial "+assessment.slice(1,assessment.length);
+    assessment=ass_to_fullname(assessment);
                     
     connection.query(
         "insert into assessment_list values(?,?,?);",
@@ -1033,14 +1101,7 @@ app.post("/update_marks", function (req, res) {
     console.log("update marks");
     ass_name=req.body.assignment;
     a=req.body.assignment;;
-    if(ass_name.startsWith('Assignment'))
-        ass_name="A"+ass_name.slice(11,ass_name.length);
-    else if(ass_name.startsWith('Quiz'))
-        ass_name="Q"+ass_name.slice(5,ass_name.length);
-    else if(ass_name.startsWith('Periodical'))
-        ass_name="P"+ass_name.slice(11,ass_name.length);
-    else if(ass_name.startsWith('Tutorial'))
-        ass_name="T"+ass_name.slice(9,ass_name.length);
+    ass_name=ass_to_short(ass_name);
     m=req.body.marks;
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
@@ -1066,6 +1127,133 @@ app.post("/update_marks", function (req, res) {
         }
     );
 });
+
+app.post("/update_CA_weightage", function (req, res) {
+    
+    console.log("update CA weightage");
+    ass_name=req.body.assname;
+    ass_name=ass_to_short(ass_name);
+    w=req.body.weight;
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+    
+    q="update assessment_list set weightage=? where course_code_full=? and ass_name=?;";
+
+    console.log(q);
+                    
+    connection.query(
+        q,
+        [w,cname,ass_name],
+        function (error, results, fields) {
+            if (error){
+                console.log(error);
+                res.redirect("/calculate_CA");
+            }
+             else {
+                console.log("ok");
+                var msg = encodeURIComponent("Added successfully");
+                res.redirect("/calculate_CA");
+            }
+        }
+    );
+});
+
+app.post("/re_calc_CA", function (req, res) {
+    
+    console.log("re-calculating CA");
+    
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+    tbname="course_"+cname+"_student_academic_info";
+    connection.query(
+        "select ass_name,totalmarks,weightage from assessment_list where course_code_full=? and ass_name!='CA';",
+        [cname],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else{
+
+                ass_wt={};
+                ca_total=0;
+                for(i=0;i<results.length;i++){
+                    
+                    r=results[i]['ass_name'];
+                    t=results[i]['totalmarks'];
+                    w=results[i]['weightage'];
+                    if(w==0)
+                    continue;
+
+                    ass_wt[r]=w/t;
+                    ca_total+=w;
+                }
+                connection.query(
+                    "select * from "+tbname+";",
+                    function (error, result_mark, fields) {
+                        if (error) console.log(error);
+                        else {
+                            m={};
+                            l=result_mark.length;
+                            for(i=0;i<result_mark.length;i++){
+                    
+                                r=result_mark[i]['roll_number'];
+                                ca=0;
+                                for(var k in ass_wt)
+                                {
+                                    console.log(k,result_mark[i][k]*ass_wt[k])
+                                    ca+=result_mark[i][k]*ass_wt[k];
+                                }
+                                m[r]=ca.toFixed(2);
+                                console.log(r,m[r]);
+                            }
+                            q="update assessment_list set totalmarks=? where course_code_full=? and ass_name='CA'";
+
+                            connection.query(
+                                q,
+                                [ca_total,cname],
+                                function (error, results, fields) {
+                                    if (error){
+                                        console.log(error);
+                                        
+                                    }
+                                     else {
+                                        console.log("ok");
+                                        
+                                    }
+                                }
+                            );
+                            console.log(m);
+                            q="update "+tbname+" set CA=? where roll_number=?";
+                            ct=0;
+                            for(var r in m)
+                            {
+                                ct+=1;
+                                connection.query(
+                                    q,
+                                    [m[r],r],
+                                    function (error, results, fields) {
+                                        if (error){
+                                            console.log(error);
+                                            
+                                        }
+                                         else {
+                                            console.log("updateca-ok");
+                                            
+                                        }
+                                    }
+                                );
+                            }
+                            res.redirect("/calculate_CA");
+                        } 
+                    }
+                );
+            } 
+        }
+    );
+});
+
 
 app.post("/update_attendance", function (req, res) {
     roll_number=req.body.roll_number;

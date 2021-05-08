@@ -1,18 +1,23 @@
 <%- include ("partials/header") -%>
 
     <div id="content-header" style="margin-left: 20px;width:300px;">
-        <h6>Course ID</h6>
-        <nav class="navbar navbar-expand-lg" id="search-list"
-            style="height:35px; font-size:20px;background-image:linear-gradient(90deg,#05a7e7,#2a26ff);">
-            <a class="navbar-brand" href="#"
-                style="color: beige; margin-left:10%; font-size:20px; font: width 5%;">Marks and Grades</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+        <h6><%= courseid %></h6>
+        
+        <button class="btn btn-secondary" type="button" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff);margin-top: 30px;margin-left:20px;">
+            Marks and Grades
+          </button>
+
+
+        <div class="dropdown" style="margin-top: 30px;margin-left:20px;">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff);" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Enter/Edit Marks
             </button>
-            <i class="fa fa-angle-down"
-                style="width:50px; padding-top:15px; margin-left:20px; height:50px;color:white; float:left;"></i>
-        </nav>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="calculate_CA">Calculate CA</a>
+              <a class="dropdown-item" href="#">Calculate Grades</a>
+              
+            </div>
+        </div>
     </div>
 
     <div style="margin-left: 40px; margin-top:30px;width:1200px;background-color: #45b1ef;">

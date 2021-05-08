@@ -1,0 +1,90 @@
+<%- include ("partials/header") -%>
+<script src="/js/changedisp.js"></script>
+    <div id="content-header" style="margin-left: 20px;width:300px;">
+        <h6><%= courseid %></h6>
+        
+        <button class="btn btn-secondary" type="button" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff);margin-top: 30px;margin-left:20px;">
+            Marks and Grades
+          </button>
+
+
+        <div class="dropdown" style="margin-top: 30px;margin-left:20px;">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff);" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Calculate CA
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="mark_grade">Enter/Edit Marks</a>
+              <a class="dropdown-item" href="#">Calculate Grades</a>
+              
+            </div>
+        </div>
+    </div>
+
+    <div id="disp-content">
+
+        <button class="btn btn-secondary" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff); margin-top:20px;margin-left:45%;" id="disp-weightage" data-toggle="collapse" data-target="#caupdateform" onclick="changedisp();">Update CA Weightage</button>
+
+        <div id="caupdateform" class="disp-text" style="width: 1200px; margin-left:40px;height:0px;display:none;">
+
+          <div class="list-group" id="ass-wt-list" style="overflow: scroll;height:300px;">
+              
+                  <% for(i=0;i< asswt.length;i++) { %>
+                  <li class="list-group-item">
+                      
+                          
+                          <form action="/update_CA_weightage" method="post">
+                            <input type="text" class="form-control score" style="float:left;margin-left:20px;width:400px;" id="assname" name="assname" value="<%= asswt[i][0] %>" readonly>
+                            <input type="number" class="form-control score" style="float:left;margin-left:50px;width:100px;" id="totmarks" name="totmarks" value="<%= asswt[i][1] %>" readonly>
+                            <input type="number" class="form-control score" style="float:left; margin-left:70px;width:100px;" id="weight" name="weight" value="<%= asswt[i][2] %>">
+                            <button id="add" class="btn btn-primary" type="submit" style="float:left; margin-left:15%;margin-bottom:10px;">
+                                Update
+                            </button>    
+                          </form>
+                      
+                  </li>
+                  <% } %>
+              
+          </div>
+        
+          <form action="/re_calc_CA" method="post">
+            <button id="add" class="btn btn-primary" type="submit" style="float:left; margin-left:40%;margin-bottom:10px;">
+                Re-calculate CA marks
+            </button>    
+          </form>
+         
+      </div>
+      
+        <div id="course-text" class="disp-text" style="width: 1200px; margin-left:40px;height:540px;">
+
+            <div class="list-group" id="mark-list" style="overflow: scroll;height:460px;">
+                
+                  <% for(i=0;i< camark.length;i++) { %>
+                    <li class="list-group-item">
+                        
+                            
+                      <form action="/update_CA_weightage" method="post">
+                        <input type="text" class="form-control score" style="float:left;margin-left:20px;width:400px;" id="roll-number" name="roll-number" value="<%= camark[i]['roll_number'] %>" readonly>
+                        <input type="number" class="form-control score" style="float:left;margin-left:50px;width:100px;" id="totmarks" name="totmarks" value="<%= catotal %>" readonly>
+                        <input type="number" class="form-control score" style="float:left; margin-left:70px;width:100px;" id="weight" name="weight" value="<%= camark[i]['CA'] %>">
+                        <button id="add" class="btn btn-primary" type="submit" style="float:left; margin-left:15%;margin-bottom:10px;">
+                            Update
+                        </button>    
+                      </form>  
+                        
+                    </li>
+                  <% } %>
+                
+            </div>
+
+            
+          
+            
+           
+        </div>
+            
+       
+
+    </div>
+    
+    
+    <%- include ("partials/footer") -%>
