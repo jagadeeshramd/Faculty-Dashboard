@@ -12,6 +12,7 @@ insert into assessment_list values('15CSE313_2018_CSE_A','P1',50);
 insert into assessment_list values('15CSE313_2018_CSE_A','P2',50);
 insert into assessment_list values('15CSE313_2018_CSE_A','T1',20);
 insert into assessment_list values('15CSE313_2018_CSE_A','T2',20);
+insert into assessment_list values('15CSE313_2018_CSE_A','CA',0,0);
 alter table assessment_list add column weightage int default 0;
 select ass_name,totalmarks,weightage from assessment_list where course_code_full='15CSE313_2018_CSE_A';
 
@@ -42,4 +43,5 @@ alter table course_15CSE313_2018_CSE_A_student_academic_info drop column Q5,drop
 select roll_number,CA from course_15CSE313_2018_CSE_A_student_academic_info;
 
 -- drop table assessment_list;
-
+update assessment_list set totalmarks=4 where course_code_full='15CSE313_2018_CSE_A' and ass_name='CA'
+update course_15CSE313_2018_CSE_A_student_academic_info set CA=2 where roll_number='CB.EN.U4CSE18006';
