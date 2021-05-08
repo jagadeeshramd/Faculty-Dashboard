@@ -36,11 +36,11 @@
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email address</label>
                         <input type="email" name="email" class="form-control" id="exampleInputEmail1"
-                            aria-describedby="emailHelp" />
+                            aria-describedby="emailHelp" required>
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Password</label>
-                        <input name="password" type="password" class="form-control" id="exampleInputPassword1" />
+                        <input name="password" type="password" class="form-control" id="exampleInputPassword1" required>
                     </div>
 
                     <p style="color: red">
@@ -50,7 +50,7 @@
                         Sign in
                     </button>
                     <br /><br />
-                    <a href="" data-toggle="modal" data-target="#forgotPassword" aria-haspopup="true">Forgot password</a>
+                    <a href="" data-toggle="modal" data-target="#forgotPassword" aria-haspopup="true">Forgot password?</a>
                 </form>
 
             </div>
@@ -60,16 +60,60 @@
     <!-- modal -->
     <div class="container">
         <div class="modal fade" id="forgotPassword">
-            <div class="modal-dialog modal-sm">
+            <div class="modal-dialog">
                 <div class="modal-content">
+                    <!-- header -->
+                    <div class="modal-header text-center">
+                        <h3 class="modal-title text-center">Forgot Password</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
                     <!-- body -->
-                    <div class="modal-body">
-                        <p>Please contact admin.</p>
+                    <div class="modal-body" id="f-modal-body">
+                        <div id="loading"></div>
+                        <form id="forgot-password-form" action="" method="post">
+                            <br>
+                            <p>A password reset link will be sent to the following email id</p>
+                            
+                            <input class="form-control" type="email" name="f-email" id="f-email" placeholder="Enter your Email ID" required>
+                            
+                            <br><br>
+                            <button class="btn btn-sm btn-success" style="margin-right: 1%;"
+                                type="submit">Submit</button>
+                            <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Cancel</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ajaxStart(function() {
+            $("#loading").show();
+        }).ajaxStop(function() {
+            $("#loading").hide();
+        });
+
+        $("#forgot-password-form").submit(function (e) {
+            e.preventDefault();
+            
+            let email = document.getElementById("f-email").value;
+            $.ajax({
+                url: "forgotPassword",
+                type: "POST",
+                data: {'email': email},
+                success: function(res) {
+                    $("#f-modal-body").html("<br>" + res + "<br>");
+                }
+            });
+
+            
+        });
+
+    </script>
+
 </body>
 
 </html>
+
+<!-- A password reset link will be sent to the following email id -->

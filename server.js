@@ -1,4 +1,5 @@
 const express = require("express");
+var nodemailer = require('nodemailer');
 const mysql = require("mysql");
 const https = require("https");
 const bodyParser = require("body-parser");
@@ -730,17 +731,47 @@ app.get("/get_attendance", function (req, res) {
     
 });
 
+app.get("/resetPassword", function (req, res) {
+    let email = req.query.email;
+    if (email) {
+        let decryptedEmail = "";
+        for(let i = 0; i < email.length; i++)
+            decryptedEmail += String.fromCharCode(email.charCodeAt(i)-3)
+    
+        connection.query(
+            "select * from login where email = ?",
+            [decryptedEmail],
+            function (error, results, fields) {
+                if (error) {
+                    console.log(error);
+                    res.redirect("/");
+                } else if (results.length > 0) {
+                    req.session.email = decryptedEmail;
+                    res.render("resetPassword");
+                } else {
+                    res.redirect("/");
+                }
+            }
+
+        );
+        
+    } else {
+        res.redirect("/");
+    }
+    
+});
+
 // POST methods ----------------------------------------------------------
 app.post("/login", function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
-    if (email == "harishcse18501@gmail.com") {
-        if (password == "qwertyui") {
+    if (email == pass.adminEmail) {
+        if (password == pass.adminPass) {
             res.redirect("/admin");
         } else {
             res.render("login", {
-                message: "Incorrect email Id or password.",
+                message: "Incorrect email ID or password.",
             });
         }
     } else {
@@ -763,13 +794,70 @@ app.post("/login", function (req, res) {
                     );
                 } else {
                     res.render("login", {
-                        message: "Incorrect email Id or password.",
+                        message: "Incorrect email ID or password.",
                     });
                 }
             }
         );
     }
 });
+
+app.post("/forgotPassword", function (req, res) {
+    let email = req.body.email;
+    // console.log(email);
+    connection.query(
+        "select * from login where email = ?",
+        [email],
+        function (error, results, fields) {
+            if (error) {
+                console.log(error);
+                res.send(`Some error occured. Try again by refreshing the page. <br>
+                <a href="/">Refresh</a>`);
+            } else {
+                if (results.length > 0) {
+                    var transporter = nodemailer.createTransport({
+                        service: 'gmail',
+                        auth: {
+                            user: pass.GAccount,
+                            pass: pass.GPassword
+                        }
+                    });
+                    
+                    let encryptedEmail = "";
+                    for(let i = 0; i < email.length; i++)
+                        encryptedEmail += String.fromCharCode(email.charCodeAt(i)+3)
+
+                    let link = "http://localhost:3000/resetPassword?email=" + encryptedEmail; 
+
+                    var mailOptions = {
+                        from: pass.GAccount,
+                        to: email,
+                        subject: 'Faculty DashBoard - Request to reset Password',
+                        html: `Hi user!<br><br>Click <a href="` + link +`">here</a> to reset your password.<br>If you did not request a new password, please ignore this email.`
+                    }
+
+                    transporter.sendMail(mailOptions, function(err, info){
+                        if (err) {
+                            console.log("Error occured. Mail not sent");
+                            res.send(`Some error occured. Try again by refreshing the page. <br>
+                            <a href="/">Refresh</a>`);
+                        }
+                        else{
+                            console.log("Email sent: "+ info.response);
+                            res.send("A link to reset your password has been sent to your email address.<br>")
+                        }
+                    });
+
+
+                } else {
+                    res.send(`Invalid email ID. Please enter correct email ID. <br>
+                    <a href="/">Refresh</a>`);
+                }
+            }
+        }
+    )
+    // res.send("Hi there!");
+})
 
 app.post("/updateProfile", function (req, res) {
     let email = req.session.email;
@@ -829,7 +917,20 @@ app.post("/updatePassword", function(req, res) {
             res.redirect("/profile");
         }
     )
-})
+});
+
+app.post("/resetPassword", function (req, res) {
+    connection.query(
+        "UPDATE login SET passwd=? WHERE email=?",
+        [req.body.newpasswd, req.session.email],
+        function (error, results, fields) {
+            if (error) 
+                console.log(error);
+
+            res.redirect("/");
+        }
+    )
+});
 
 app.post("/addNewFaculty", function (req, res) {
     let f = req.body;
