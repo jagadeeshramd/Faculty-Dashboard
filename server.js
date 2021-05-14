@@ -566,6 +566,39 @@ app.get("/calculate_CA",function(req,res){
 });
 
 
+app.get("/feedback",function(req,res){
+    
+    dcname=req.session.course.course_id+" ";
+    dcname=req.session.course.course_id+" ";
+    dcname+=req.session.course.batch+" ";
+    dcname+=req.session.course.dept+" ";
+    dcname+=req.session.course.section;
+
+    cname=req.session.course.course_id+"_";
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+
+    tbname="course_"+cname+"_feedback";
+    connection.query(
+        "select * from "+tbname+";",
+        [cname],
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else{
+                
+                res.render("feedback",{
+                    courseid:dcname,
+                    result:results
+                });
+                
+            } 
+        }
+    );
+   
+});
+
 
 app.get("/det_student_info", function (req, res) {
     rno = req.query.rollno;

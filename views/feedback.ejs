@@ -1,0 +1,123 @@
+<%- include ("partials/header") -%>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <div id="content-header" style="margin-left: 20px;width:300px;">
+        <h6><%= courseid %></h6>
+        
+        <button class="btn btn-secondary" type="button" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff);margin-top: 30px;margin-left:20px;">
+            View Students Feedback
+        </button>
+    </div>
+
+    <div id="disp-content">
+        <div id="course-text" class="disp-text" style="width: 1200px; margin-left:40px;height:540px;">
+
+            
+            <div class="list-group" id="mark-list" style="overflow: scroll;height:460px;">
+                <% for(i=0;i < result.length;i++) { %>
+                    <li class="list-group-item">
+                <div id="qn-text" class="qn" style="float: left;margin-left:20px;">
+                    
+                    <h6 style="background-color:transparent;"><%= i+1 %>. <%= result[i]['question'] %></h6>
+                    <p style="margin-left:30px;" id="x">A. <%= result[i]['opt_a_val'] %>    B. <%= result[i]['opt_b_val'] %>     C. <%= result[i]['opt_c_val'] %>    D. <%= result[i]['opt_a_val'] %></p>
+                </div> 
+                <div id="qn-graph" class="qn" style="float: left;margin-left:30%;">
+                    <button class="btn btn-secondary" type="button" id="<%= i %>"style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff);margin-top: 30px;margin-left:20px;" onclick="sampfn(this.id);">
+                        View Responses
+                    </button>
+                </div>
+
+                <script>
+                    var myChart;
+                    function sampfn(ind){
+                
+                    var samp = '<%- JSON.stringify(result) -%>';
+                    
+                    val=samp.substring(1,samp.length-1).split('}');
+                    
+                    for(k=0;k<val.length;k++)
+                    {
+                        if(val[k].length==0)
+                        continue;
+
+                        val[k]=val[k]+'}';
+
+                        if(k>=1)
+                        val[k]=val[k].substring(1,val[k].length);
+                    }
+                    console.log(val);
+                    resobj=[];
+                    
+                    for(k=0;k<val.length-1;k++){
+                        resobj.push(JSON.parse(val[k]));
+                    
+                    }
+                    console.log(resobj[ind]);
+                    var ctx = document.getElementById("myChart").getContext('2d');
+
+                    if(myChart)
+                    {
+                        myChart.destroy();
+                    }
+                    myChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: [resobj[ind]["opt_a_val"], resobj[ind]["opt_b_val"], resobj[ind]["opt_c_val"], resobj[ind]["opt_d_val"]],
+                            datasets: [{
+                            backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)',
+                            '#49b034'
+                            ],
+                            data: [resobj[ind]["opt_per_a"],resobj[ind]["opt_per_b"],resobj[ind]["opt_per_c"],resobj[ind]["opt_per_d"]]
+                            }],
+                            hoverOffset: 4
+                        }
+                        });
+                        document.getElementById('modal-title').innerHTML=resobj[ind]["question"];
+                    $('#graphmodal').modal('show'); 
+
+                    }
+
+                 </script>
+               
+                <div class="modal fade" id="graphmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modal-title">..</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                            
+                                <div>
+                                    <canvas id="myChart"></canvas>
+                                  </div>
+                                  
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+            
+                <% } %>
+            </div>
+            
+          
+            
+        </div>
+            
+       
+
+    </div>
+    
+
+    <%- include ("partials/footer") -%>
