@@ -103,7 +103,7 @@ app.get("/", function (req, res) {
         wel = msg + ", " + req.session.faculty.name + "!";
         // console.log(wel);
         connection.query(
-            "select course_id,batch,dept,section from course_faculty where faculty_id=?;",
+            "select course_id,batch,dept,section,ismentor from course_faculty where faculty_id=?;",
             [req.session.faculty.id],
             function (error, result, fields) {
                 if (error)
@@ -360,8 +360,10 @@ app.get("/temp", function (req, res) {
 });
 
 app.get("/courseinfo", function (req, res) {
+    console.log(req.session.course.ismentor);
+    ccode=req.session.course.course_id;
     connection.query(
-        "select * from course_list where course_code='15CSE301';",
+        "select * from course_list where course_code='"+ccode+"';",
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length == 1) {
@@ -373,6 +375,8 @@ app.get("/courseinfo", function (req, res) {
                     details: results[0]["course_details"],
                     eval: results[0]["course_eval"],
                     co: results[0]["course_outcome"],
+                    coursecode:ccode,
+                    ismentor: req.session.course.ismentor
                 });
             } else {
                 success = false;
@@ -382,6 +386,8 @@ app.get("/courseinfo", function (req, res) {
                     details: "#",
                     eval: "#",
                     co: "#",
+                    coursecode:ccode,
+                    ismentor: 0
                 });
             }
         }

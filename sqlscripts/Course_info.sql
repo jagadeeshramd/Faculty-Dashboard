@@ -11,6 +11,11 @@ insert into course_list values('15CSE301','COA',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing');
+insert into course_list values('15CSE313','SE',
+							   'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
+                               'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
+                               'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
+                               'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing');
 
 drop table course_list;
 
@@ -25,6 +30,9 @@ insert into course_faculty values('15CSE301',2017,'CSE','B','12465');
 insert into course_faculty values('15CSE313',2018,'CSE','A','12301');
 insert into course_faculty values('15CSE313',2018,'CSE','B','13301');
 insert into course_faculty values('15CSE312',2018,'CSE','B','14312');
-drop table course_faculty;
 
-select course_id,batch,dept,section from course_faculty where faculty_id='12301';
+alter table course_faculty add ismentor boolean default false;
+-- drop table course_faculty;
+
+update course_faculty set ismentor=true where faculty_id='12301';
+select course_id,batch,dept,section,ismentor from course_faculty where faculty_id='12301';

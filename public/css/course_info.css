@@ -16,3 +16,23 @@ a{
     font-family: 'Poppins', sans-serif;
     margin-top: 20px;
 }
+
+#edit-det{
+    margin-left: 30%;
+}
+#filename{
+    width:50%;
+    
+    margin-bottom: 10px;
+}
+#uploader{
+    -webkit-appearance:none ;
+    width:50%;
+    
+    margin-bottom: 10px;
+}
+
+#filebutton{
+    
+    margin-bottom: 10px;
+}
