@@ -17,6 +17,7 @@ insert into course_list values('15CSE313','SE',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing');
 
+select * from course_list;
 drop table course_list;
 
 create table course_faculty(course_id varchar(50) references course_list(course_code),
