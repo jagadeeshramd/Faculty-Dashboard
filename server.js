@@ -1394,6 +1394,39 @@ app.post("/re_calc_CA", function (req, res) {
     );
 });
 
+app.post("/changeurl", function (req, res) {
+    ftype=req.body.filenum;
+    url=req.body.url;
+    ccode=req.session.course.course_id;
+    colname="";
+    if(ftype==1)
+        colname="course_details";
+    else if(ftype==2)
+        colname="course_outcome";
+    else if(ftype==3)
+        colname="course_eval";
+    else if(ftype==4)
+        colname="course_syllabus";
+
+    
+    q="update course_list set "+colname+"='"+url+"' where course_code='"+ccode+"';"
+    console.log(q);
+    connection.query(
+        q,
+        function (error, results, fields) {
+            if (error){
+                console.log(error);
+                res.redirect("/courseinfo");
+            }
+             else {
+                console.log("ok");
+                res.redirect("/courseinfo");
+            }
+        }
+    );
+
+});
+
 
 app.post("/update_attendance", function (req, res) {
     roll_number=req.body.roll_number;
