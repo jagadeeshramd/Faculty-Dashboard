@@ -23,7 +23,7 @@ insert into faculty values('12301', 'Akhil', 'akhil@gmail.com', '1975-03-01', 'M
 							('12465', 'Senthil', 'senthil@gmail.com', '1973-04-02', 'M', 'ABC street, ABC.', '9234561234', 'EEE', 'PhD', 'Assistant professor'),
                             ('13301', 'Venkat', 'venkat@gmail.com', '1978-11-20', 'M', 'PQR street, PQR.', '9212345890', 'CSE', 'PhD', 'Assistant professor');
 insert into faculty values('14312', 'Gowtham', 'Gowtham@gmail.com', '1970-04-16', 'M', 'ZTQ street, UIZ.', '9344678456', 'CSE', 'PhD', 'Assistant professor');
-insert into faculty values('18501', 'Harish', 'harishcse18501@gmail.com', '2000-09-22', 'M', 'NSN street, CBE.', '9677340574', 'CSE', 'PhD', 'Assistant professor',true,false,false);
+insert into faculty values('18501', 'Harish', 'harishcse18501@gmail.com', '2000-09-22', 'M', 'NSN street, CBE.', '9677340574', 'CSE', 'PhD', 'Assistant professor');
 
 select * from faculty;
 
