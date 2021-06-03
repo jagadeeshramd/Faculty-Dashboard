@@ -18,7 +18,6 @@ insert into course_list values('15CSE313','SE',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing');
 
 select * from course_list;
-drop table course_list;
 
 create table course_faculty(course_id varchar(50) references course_list(course_code),
 						    batch int, 
@@ -33,7 +32,5 @@ insert into course_faculty values('15CSE313',2018,'CSE','B','13301');
 insert into course_faculty values('15CSE312',2018,'CSE','B','14312');
 
 alter table course_faculty add ismentor boolean default false;
--- drop table course_faculty;
--- drop table course_list;
 update course_faculty set ismentor=true where faculty_id='12301';
 select course_id,batch,dept,section,ismentor from course_faculty where faculty_id='12301';

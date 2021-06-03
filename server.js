@@ -1195,7 +1195,7 @@ app.post("/add_assessment", function (req, res) {
     assessment=ass_to_fullname(assessment);
                     
     connection.query(
-        "insert into assessment_list values(?,?,?);",
+        "insert into assessment_list(course_code_full,ass_name,totalmarks) values(?,?,?);",
         [cname, colname, tmarks],
         function (error, results, fields) {
             if (error) {
