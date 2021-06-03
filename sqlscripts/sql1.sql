@@ -46,18 +46,22 @@ select * from login;
 -- ********************************************************************************************
 create table course_list(course_code varchar(15) primary key,
 						 course_name varchar(20), 
-                         course_syllabus varchar(100),
-                         course_details varchar(100),
-                         course_outcome varchar(100),
-                         course_eval varchar(100));
-                         
+                         course_syllabus varchar(1000),
+                         course_details varchar(1000),
+                         course_outcome varchar(1000),
+                         course_eval varchar(1000));
 insert into course_list values('15CSE301','COA',
 							   'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing');
+insert into course_list values('15CSE313','SE',
+							   'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
+                               'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
+                               'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing',
+                               'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing');
 
--- drop table course_list; 
+select * from course_list;
 
 create table course_faculty(course_id varchar(50) references course_list(course_code),
 						    batch int, 
@@ -69,9 +73,11 @@ insert into course_faculty values('15CSE301',2017,'CSE','A','12301');
 insert into course_faculty values('15CSE301',2017,'CSE','B','12465');
 insert into course_faculty values('15CSE313',2018,'CSE','A','12301');
 insert into course_faculty values('15CSE313',2018,'CSE','B','13301');
--- drop table course_faculty;
+insert into course_faculty values('15CSE312',2018,'CSE','B','14312');
 
-select course_id,batch,dept,section from course_faculty where faculty_id='12301';
+alter table course_faculty add ismentor boolean default false;
+update course_faculty set ismentor=true where faculty_id='12301';
+select course_id,batch,dept,section,ismentor from course_faculty where faculty_id='12301';
 
 -- *************************************************************************************************
 -- student-info
@@ -142,9 +148,10 @@ insert into assessment_list values('15CSE313_2018_CSE_A','P1',50);
 insert into assessment_list values('15CSE313_2018_CSE_A','P2',50);
 insert into assessment_list values('15CSE313_2018_CSE_A','T1',20);
 insert into assessment_list values('15CSE313_2018_CSE_A','T2',20);
--- select * from assessment_list;
+insert into assessment_list values('15CSE313_2018_CSE_A','CA',0);
+alter table assessment_list add column weightage int default 0;
 
-create table course_15CSE313_2018_CSE_A_student_academic_info(roll_number varchar(20) primary key references student_18(roll_number),
+create table course_15CSE313_2018_CSE_A_student_academic_info(roll_number varchar(20) primary key references student(roll_number),
 								   A1 float default 0,A2 float default 0,A3 float default 0,
                                    Q1 float default 0,Q2 float default 0,Q3 float default 0,Q4 float default 0,
                                    P1 float default 0,P2 float default 0,
@@ -160,14 +167,7 @@ insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18008',10,9,10,13,12.5,11.25,40,48,47,18,17);
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18009',8,9,7,13,14.5,11.25,14,50,47,18,20);
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18010',10,9,9,13,12.5,15,14,48,50,20,19);
-select * from course_15CSE313_2018_CSE_A_student_academic_info;
-
-select * from course_15CSE313_2018_CSE_A_student_academic_info where roll_number='CB.EN.U4CSE18001';
-
--- drop table assessment_list;
--- drop table student_academic_info;
-
--- alter table student_academic_info add t1 float;
+alter table course_15CSE313_2018_CSE_A_student_academic_info add column CA int default 0;
 
 -- *************************************************************************************************
 -- attendance
@@ -317,3 +317,18 @@ select * from assignments;
 
 create table resources(id int primary key AUTO_INCREMENT, name varchar(100), modified_date varchar(10), instructions varchar(1000), course varchar(50));
 select * from resources;
+
+-- *************************************************************************************************
+-- Feedbacks
+-- *************************************************************************************************
+
+create table course_15CSE313_2018_CSE_A_feedback(question varchar(200) primary key,
+												 opt_a_val varchar(50) default null,opt_per_a float default 0.0,
+                                                 opt_b_val varchar(50) default null,opt_per_b float default 0.0,
+                                                 opt_c_val varchar(50) default null,opt_per_c float default 0.0,
+                                                 opt_d_val varchar(50) default null,opt_per_d float default 0.0);
+
+insert into course_15CSE313_2018_CSE_A_feedback values("How much syllabus was completed?","80-100%",78,"60-80%",10,"40-60%",12,"less than 40%",0);
+insert into course_15CSE313_2018_CSE_A_feedback values("Were the classes interactive?","Very interactive",60,"Interactive",20,"Somewhat",10,"Not at all",10);
+insert into course_15CSE313_2018_CSE_A_feedback values("Were your doubts clarified?","80-100%",90,"60-80%",6,"40-60%",3,"less than 40%",1);
+select * from course_15CSE313_2018_CSE_A_feedback;
