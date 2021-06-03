@@ -1,23 +1,8 @@
 -- ********************************************************************************************
 -- login
 -- ********************************************************************************************
-
+create database facultydashboard;
 use facultydashboard;
-
--- drop table login;
--- drop table faculty;
--- drop table department;
--- drop table course_list; 
--- drop table course_faculty;
--- drop table assessment_list;
--- drop table student;
--- drop table student_academic_info;
--- DROP TABLE course_15cse313_2018_cse_a_student_academic_info;
--- DROP TABLE course_15cse313_2018_cse_a_attendance;
--- drop table student_det;
--- drop table parent_det;
--- drop table advisor_class;
--- drop table tests;
 
 create table department(id varchar(5) primary key, name varchar(50), degree varchar(30), HoD_ID varchar(10));
 
@@ -28,16 +13,17 @@ insert into department values ('CSE', 'Computer Science and Engineering', 'B.Tec
 
 select * from department;
 
-create table faculty(id varchar(10), name varchar(50), emailID varchar(50) UNIQUE, DOB varchar(10), gender varchar(1), 
-						address varchar(100), phone varchar(15), deptID varchar(5), qualification varchar(30), designation varchar(30), isAdvisor boolean, isBC boolean, isHOD boolean,
-                        primary key (id), 
-                        foreign key (deptID) references department(id));
-                        
+create table faculty(id varchar(10), name varchar(50), emailID varchar(50) UNIQUE, DOB varchar(10), gender varchar(1),
+address varchar(100), phone varchar(15), deptID varchar(5), qualification varchar(30), designation varchar(30), isAdvisor boolean, isBC boolean, isHOD boolean,
+primary key (id),
+foreign key (deptID) references department(id));
+
 insert into faculty values('12301', 'Akhil', 'akhil@gmail.com', '1975-03-01', 'M', 'XYZ street, XYZ.', '9234567890', 'CSE', 'PhD', 'Assistant professor',true,false,false),
-							('12465', 'Senthil', 'senthil@gmail.com', '1973-04-02', 'M', 'ABC street, ABC.', '9234561234', 'EEE', 'PhD', 'Assistant professor',false,true,false),
-                            ('13301', 'Venkat', 'venkat@gmail.com', '1978-11-20', 'M', 'PQR street, PQR.', '9212345890', 'CSE', 'PhD', 'Assistant professor',true,false,false);
+('12465', 'Senthil', 'senthil@gmail.com', '1973-04-02', 'M', 'ABC street, ABC.', '9234561234', 'EEE', 'PhD', 'Assistant professor',false,true,false),
+('13301', 'Venkat', 'venkat@gmail.com', '1978-11-20', 'M', 'PQR street, PQR.', '9212345890', 'CSE', 'PhD', 'Assistant professor',true,false,false);
 insert into faculty values('14312', 'Gowtham', 'Gowtham@gmail.com', '1970-04-16', 'M', 'ZTQ street, UIZ.', '9344678456', 'CSE', 'PhD', 'Assistant professor',true,false,false);
 insert into faculty values('18501', 'Harish', 'harishcse18501@gmail.com', '2000-09-22', 'M', 'NSN street, CBE.', '9677340574', 'CSE', 'PhD', 'Assistant professor',true,false,false);
+
 
 select * from faculty;
 
@@ -50,20 +36,10 @@ insert into login values('senthil@gmail.com','senthil123');
 insert into login values('Gowtham@gmail.com','gowtham123');
 insert into login values('harishcse18501@gmail.com', 'harry123');
 
-
 select * from login;
 -- drop table login;
 -- drop table faculty;
 -- drop table department;
--- drop table course_list; 
--- drop table course_faculty;
--- drop table assessment_list;
--- drop table student_academic_info;
--- drop table attendance;
--- drop table student_det;
--- drop table parent_det;
--- drop table advisor_class;
--- drop table tests;
 
 -- ********************************************************************************************
 -- course-info
@@ -82,15 +58,6 @@ insert into course_list values('15CSE301','COA',
                                'https://drive.google.com/file/d/1OUFXHFi65onyEmYfk7tvurHgaZ4bij5T/view?usp=sharing');
 
 -- drop table course_list; 
--- drop table course_faculty;
--- drop table assessment_list;
--- drop table student_academic_info;
--- drop table attendance;
--- drop table student_det;
--- drop table parent_det;
--- drop table advisor_class;
--- drop table tests;
-
 
 create table course_faculty(course_id varchar(50) references course_list(course_code),
 						    batch int, 
@@ -102,16 +69,7 @@ insert into course_faculty values('15CSE301',2017,'CSE','A','12301');
 insert into course_faculty values('15CSE301',2017,'CSE','B','12465');
 insert into course_faculty values('15CSE313',2018,'CSE','A','12301');
 insert into course_faculty values('15CSE313',2018,'CSE','B','13301');
-insert into course_faculty values('15CSE312',2018,'CSE','B','14312');
-
 -- drop table course_faculty;
--- drop table assessment_list;
--- drop table student_academic_info;
--- drop table attendance;
--- drop table student_det;
--- drop table parent_det;
--- drop table advisor_class;
--- drop table tests;
 
 select course_id,batch,dept,section from course_faculty where faculty_id='12301';
 
@@ -208,11 +166,6 @@ select * from course_15CSE313_2018_CSE_A_student_academic_info where roll_number
 
 -- drop table assessment_list;
 -- drop table student_academic_info;
--- drop table attendance;
--- drop table student_det;
--- drop table parent_det;
--- drop table advisor_class;
--- drop table tests;
 
 -- alter table student_academic_info add t1 float;
 
@@ -256,11 +209,6 @@ insert into course_15CSE313_2018_CSE_A_attendance values('CB.EN.U4CSE18010',STR_
 
 select roll_number,(sum(classes)/sum(e_period-s_period+1))*100 as percentage from course_15CSE313_2018_CSE_A_attendance group by roll_number having roll_number='CB.EN.U4CSE18001';
 -- drop table attendance;
--- drop table student_det;
--- drop table parent_det;
--- drop table advisor_class;
--- drop table tests;
-
 
 -- *************************************************************************************************
 -- student_advisor_info
@@ -342,7 +290,6 @@ insert into advisor_class values(12301, 'B.TECH. 2018 CSE A'), (13301, 'B.TECH. 
 -- drop table tests;
 
 
-
 -- *************************************************************************************************
 -- tests
 -- *************************************************************************************************
@@ -370,4 +317,3 @@ select * from assignments;
 
 create table resources(id int primary key AUTO_INCREMENT, name varchar(100), modified_date varchar(10), instructions varchar(1000), course varchar(50));
 select * from resources;
-
