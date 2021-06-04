@@ -47,7 +47,7 @@ connection = mysql.createConnection({
     user: "root",
     password: pass.SQLPass,
     port: "3306",
-    database: "facultydashboard",
+    database: "facultydashboard1",
 });
 
 connection.connect(function (err) {

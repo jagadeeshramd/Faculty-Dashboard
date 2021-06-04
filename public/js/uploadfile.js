@@ -36,6 +36,7 @@ var filetype;
 var foldername;
 function getfile()
 {
+    document.getElementById("upload-status").innerHTML="";
     var f = document.getElementById("filebutton");
     selectedFile = f.files[0];
     foldername = '<%- coursecode -%>'+"/";
@@ -102,24 +103,27 @@ function uploadfile()
             csrfmiddlewaretoken: csrftoken
         };
             
-         console.log(downloadURL);
+        console.log(downloadURL);
+        document.getElementById("upload-status").innerHTML="Uploaded Successfully";
+        var uploader = document.getElementById('uploader');
+        uploader.value=0;
 
-            if(filenum==1)
-            {
-                document.getElementById("coursedetlink").href=downloadURL;
-            }
-            else if(filenum==2){
-                document.getElementById("courseoutcometlink").href=downloadURL;
-            }
-            else if(filenum==3){
-                document.getElementById("courseevallink").href=downloadURL;
-            }
-            else if(filenum==2){
-                document.getElementById("coursesyllink").href=downloadURL;
-            }
-            $.post('/changeurl',data,function(data,status){
-                
-            });
+        if(filenum==1)
+        {
+            document.getElementById("coursedetlink").href=downloadURL;
+        }
+        else if(filenum==2){
+            document.getElementById("courseoutcometlink").href=downloadURL;
+        }
+        else if(filenum==3){
+            document.getElementById("courseevallink").href=downloadURL;
+        }
+        else if(filenum==2){
+            document.getElementById("coursesyllink").href=downloadURL;
+        }
+        $.post('/changeurl',data,function(data,status){
+            
+        });
         
       });
     });
