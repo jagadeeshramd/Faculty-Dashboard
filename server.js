@@ -47,7 +47,7 @@ connection = mysql.createConnection({
     user: "root",
     password: pass.SQLPass,
     port: "3306",
-    database: "facultydashboard",
+    database: "facultydashboard1",
 });
 
 connection.connect(function (err) {
@@ -110,8 +110,15 @@ app.get("/", function (req, res) {
                     console.log("Error occured while fetching departments");
                 else if (result.length >= 1) {
                     // console.log(result);
-                    course_sel =result[0]["course_id"] +" " +result[0]["batch"] +" " +result[0]["dept"] +" " +result[0]["section"];
-                    req.session.course = result[0]; // first course in the list is made default
+                    if(req.session.course!=null)
+                    {
+                        course_sel =req.session.course.course_id +" " +req.session.course.batch +" " +req.session.course.dept +" " +req.session.course.section;
+                    
+                    }
+                    else{
+                        course_sel =result[0]["course_id"] +" " +result[0]["batch"] +" " +result[0]["dept"] +" " +result[0]["section"];
+                        req.session.course = result[0]; // first course in the list is made default
+                    }
                     res.render("home", {
                         courselen: result.length,
                         welcomeMessage: wel,
