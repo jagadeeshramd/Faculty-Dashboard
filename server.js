@@ -47,7 +47,7 @@ connection = mysql.createConnection({
     user: "root",
     password: pass.SQLPass,
     port: "3306",
-    database: "facultydashboard1",
+    database: "facultydashboard",
 });
 
 connection.connect(function (err) {
@@ -780,7 +780,9 @@ app.get("/get_attendance_list", function (req, res) {
                     addmsg:"",
                     update:u
                 });
-            } else {
+            } 
+            else 
+            {
                 success = false;
                 q= "select distinct roll_number from "+tablename+"_attendance;"
                 connection.query(
@@ -790,7 +792,7 @@ app.get("/get_attendance_list", function (req, res) {
                         else if (results.length > 0) {
                             success = true;
                             studlist = results;
-                            att=[]
+                            att=[];
                             for(i=0;i<results.length;i++)
                             {
                                 o={}
@@ -800,6 +802,28 @@ app.get("/get_attendance_list", function (req, res) {
                                 o['e_period']=ep;
                                 o['classes']=0;
                                 att.push(o);
+                                q="insert into "+tablename+"_attendance values(?,?,?,?,?);";
+                                connection.query(q,
+                                        [o['roll_number'],d,s,ep,0],
+                                        function (error, resultinsert, fields) {
+                                                        if (error){
+                                                            console.log(error);
+                                                            success = false;
+                                                            res.render("attendance", {
+                                                                status: true,
+                                                                attlist: [],
+                                                                isstatic:true,
+                                                                addmsg:"",
+                                                                update:u
+                                                            });
+                                                        }
+                                                        else {
+                                                            console.log(i);
+                                                            console.log("ok");
+                                                            
+                                                        }
+                                                    }
+                                                );
                             }
                             res.render("attendance", {
                                 status: true,
@@ -808,6 +832,7 @@ app.get("/get_attendance_list", function (req, res) {
                                 addmsg:"",
                                 update:u
                             });
+                            
                         } else {
                             success = false;
                             res.render("attendance", {
