@@ -496,7 +496,9 @@ app.get("/mark_grade", function (req, res) {
                                 stud_marks: smark,
                                 currass: current_ass,
                                 update: u,
-                                courseid: dcname
+                                courseid: dcname,
+                                ismentor: req.session.course.ismentor
+                            
                             });
                         } 
                         else {
@@ -506,7 +508,8 @@ app.get("/mark_grade", function (req, res) {
                                 stud_marks: [],
                                 currass: current_ass,
                                 update: u,
-                                courseid: dcname
+                                courseid: dcname,
+                                ismentor: req.session.course.ismentor
                             });
                         }
                     } );
@@ -517,7 +520,8 @@ app.get("/mark_grade", function (req, res) {
                     stud_marks:[],
                     currass: "",
                     update:u,
-                    courseid: dcname
+                    courseid: dcname,
+                    ismentor: req.session.course.ismentor
                 });
             }
         }
@@ -525,7 +529,13 @@ app.get("/mark_grade", function (req, res) {
 });
 
 app.get("/calculate_CA",function(req,res){
-    
+    u=false;
+    uval="";
+    if(req.query.update !=null)
+        uval=req.query.update;
+    if(uval.localeCompare("true")==0)
+        u=true;
+    console.log(u);
     dcname=req.session.course.course_id+" ";
     dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
@@ -562,12 +572,14 @@ app.get("/calculate_CA",function(req,res){
                     function (error, result_mark, fields) {
                         if (error) console.log(error);
                         else {
-                            console.log(ca_total);
+                            
                             res.render("calculate_CA",{
                                 courseid:dcname,
                                 asswt:ass_wt,
                                 camark:result_mark,
-                                catotal:ca_total
+                                catotal:ca_total,
+                                ismentor: req.session.course.ismentor,
+                                update:u
                             });
                         } 
                     }
@@ -1313,7 +1325,7 @@ app.post("/update_CA_weightage", function (req, res) {
     
     q="update assessment_list set weightage=? where course_code_full=? and ass_name=?;";
 
-    console.log(q);
+    
                     
     connection.query(
         q,
@@ -1321,12 +1333,12 @@ app.post("/update_CA_weightage", function (req, res) {
         function (error, results, fields) {
             if (error){
                 console.log(error);
-                res.redirect("/calculate_CA");
+                res.redirect("/calculate_CA?update=true");
             }
              else {
                 console.log("ok");
                 var msg = encodeURIComponent("Added successfully");
-                res.redirect("/calculate_CA");
+                res.redirect("/calculate_CA?update=true");
             }
         }
     );
@@ -1374,11 +1386,10 @@ app.post("/re_calc_CA", function (req, res) {
                                 ca=0;
                                 for(var k in ass_wt)
                                 {
-                                    console.log(k,result_mark[i][k]*ass_wt[k])
                                     ca+=result_mark[i][k]*ass_wt[k];
                                 }
                                 m[r]=ca.toFixed(2);
-                                console.log(r,m[r]);
+                                
                             }
                             q="update assessment_list set totalmarks=? where course_code_full=? and ass_name='CA'";
 

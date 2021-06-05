@@ -1,5 +1,4 @@
 <%- include ("partials/header") -%>
-<script src="/js/changedisp.js"></script>
     <div id="content-header" style="margin-left: 20px;width:300px;">
         <h6><%= courseid %></h6>
         
@@ -14,6 +13,11 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" href="mark_grade">Enter/Edit Marks</a>
+              <% if(ismentor==true) { %>
+                <a class="dropdown-item" href="view_edit_cutoff">View/Edit Grade Cutoff</a>
+              <% } else { %>
+                <a class="dropdown-item" href="view_cutoff">View Grade Cutoff</a>
+              <% } %>
               <a class="dropdown-item" href="#">Calculate Grades</a>
               
             </div>
@@ -23,8 +27,11 @@
     <div id="disp-content">
 
         <button class="btn btn-secondary" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff); margin-top:20px;margin-left:45%;" id="disp-weightage" data-toggle="collapse" data-target="#caupdateform" onclick="changedisp();">Update CA Weightage</button>
-
-        <div id="caupdateform" class="disp-text" style="width: 1200px; margin-left:40px;height:0px;display:none;">
+        <% if(update==true) { %>
+        <div id="caupdateform" class="disp-text" style="width: 1200px; margin-left:40px;height:350px;display:block;">
+        <% } else { %>
+          <div id="caupdateform" class="disp-text" style="width: 1200px; margin-left:40px;height:0px;display:none;">
+        <% } %>
 
           <div class="list-group" id="ass-wt-list" style="overflow: scroll;height:300px;">
               
@@ -54,7 +61,7 @@
          
       </div>
       
-        <div id="course-text" class="disp-text" style="width: 1200px; margin-left:40px;height:540px;">
+        <div id="course-text" class="disp-text" style="width: 1200px; position:relative; margin-left:40px;height:540px;">
 
             <div class="list-group" id="mark-list" style="overflow: scroll;height:460px;">
                 

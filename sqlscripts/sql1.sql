@@ -170,6 +170,19 @@ insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18010',10,9,9,13,12.5,15,14,48,50,20,19);
 alter table course_15CSE313_2018_CSE_A_student_academic_info add column CA int default 0;
 
+alter table course_15CSE313_2018_CSE_A_student_academic_info add column endsem int default 0;
+alter table course_15CSE313_2018_CSE_A_student_academic_info add column total int default 0;
+alter table course_15CSE313_2018_CSE_A_student_academic_info add column grade varchar(2) default null references course_15CSE313_2018_grade_cutoff(grade);
+
+create table course_15CSE313_2018_grade_cutoff(grade varchar(2) primary key,marks int default null);
+insert into course_15CSE313_2018_grade_cutoff values('O',90);
+insert into course_15CSE313_2018_grade_cutoff values('A+',80);
+insert into course_15CSE313_2018_grade_cutoff values('A',70);
+insert into course_15CSE313_2018_grade_cutoff values('B+',60);
+insert into course_15CSE313_2018_grade_cutoff values('B',50);
+insert into course_15CSE313_2018_grade_cutoff values('C',40);
+insert into course_15CSE313_2018_grade_cutoff values('P',30);
+
 -- *************************************************************************************************
 -- attendance
 -- *************************************************************************************************
