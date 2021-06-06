@@ -1,0 +1,141 @@
+<%- include ("partials/header") -%>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+
+    <div id="content-header" style="margin-left: 20px;width:300px;">
+        <h6><%= courseid %></h6>
+        
+        <button class="btn btn-secondary" type="button" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff);margin-top: 30px;margin-left:20px;">
+            Marks and Grades
+          </button>
+
+
+        <div class="dropdown" style="margin-top: 30px;margin-left:20px;">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff);" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    View Grade Cutoff
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="mark_grade">Enter/Edit Marks</a>
+              <a class="dropdown-item" href="calculate_CA">Calculate CA</a>
+              <a class="dropdown-item" href="calculate_grade">Calculate Grades</a>  
+            </div>
+        </div>
+    </div>
+    
+    <div id="disp-content">
+        <div id="course-text" class="disp-text" style="width: 1000px; margin-left:150px;height:490px;">
+            <table class="table" style="text-align: center;border-radius:5px;">
+                <thead style="background-color:#45b1ef;color:white;">
+                    <tr>
+                    <th scope="col">Filter Type</th>
+                    <th scope="col">
+                        <button id="choose-filter" class="btn btn-light" style="color:#45b1ef;">
+                            Choose Filter
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button id="clear-filter" class="btn btn-light" style="color:#45b1ef;">
+                            Clear Filter
+                        </button>
+                    </th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="visual-info" style="height:435px;margin-top:0px;">
+               <div id="visual" style="float: left;width:700px;">
+                   <canvas id="visual-graph"></canvas>
+                   <h6 id="graph-status" style="padding-top: 15%;background-color:transparent;margin-left:20%;">Graph not available</h6>
+               </div> 
+               <div id="info" style="float: left;">
+                <ul class="list-group">
+                    <li class="list-group-item" style="height: 100px;width:292px;">Maximum Mark: </li>
+                    <li class="list-group-item" style="height: 100px;width:292px;">Minimum Mark: </li>
+                    <li class="list-group-item" style="height: 100px;width:292px;">Average Mark: </li>
+                    <li class="list-group-item" style="height: 100px;width:292px;">Total Number of Students: </li>
+                  </ul>
+               </div>
+            </div>
+           
+        </div>
+    </div>
+    <script>
+        var myChart;
+        var ctx = document.getElementById("visual-graph").getContext('2d');
+        document.getElementById("graph-status").style.display="none";
+        if(myChart)
+        {
+            myChart.destroy();
+        }
+        var dataValues = [12, 19, 3, 5,6,7,8,9];
+        var dataLabels = ['', '', '', '', '','','',''];
+        var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dataLabels,
+            datasets: [{
+            label: 'Students Marks',
+            data: dataValues,
+            backgroundColor: '#2a26ff',
+            }]
+        },
+        options: {
+            scales: {
+            xAxes: [{
+                display: false,
+                barPercentage: 1.3,
+                
+            }, {
+                display: true,
+                ticks: {
+                    autoSkip: false,
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                beginAtZero:true
+                }
+            }]
+            }
+        }
+        });    
+     </script>
+   
+    <div id="disp-content">
+        <div id="course-text" class="disp-text" style="width: 460px; margin-left:440px;height:500px;">
+
+            
+            <div class="list-group" id="mark-list" style="height:420px;">
+                <table class="table" style="text-align: center;">
+                    <thead style="background-color:#45b1ef;color:white;">
+                      <tr>
+                        <th scope="col">Grade</th>
+                        <th scope="col">Cutoff Mark</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <% for(i=0; i < grade_cutoff.length ; i++) { %>
+                        <tr>
+                            <th scope="row"><%= grade_cutoff[i]['grade'] %></th>
+                            <td class="tdclass">
+                                <input type="number" class="form-control score" id="<%= grade_cutoff[i]['grade'] %>" name="marks" value="<%= grade_cutoff[i]['marks'] %>">
+                                
+                            </td>
+                            
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+            </div>
+          
+            
+           
+        </div>
+            
+        <button class="btn btn-secondary" type="button" style="background-color:#45b1ef; border-color: #45b1ef;margin-top: 2px;margin-left:48%;">
+            Update Cutoff
+        </button>
+
+    </div>
+    
+
+    <%- include ("partials/footer") -%>

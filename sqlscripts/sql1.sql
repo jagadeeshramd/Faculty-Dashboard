@@ -165,7 +165,7 @@ insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18005',10,10,7,13,13.5,11.25,15,48,47,18,17);
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18006',9,9,10,13,14.5,13.25,14,48,49,20,17);
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18007',8,9,9,13,12.75,14.25,14,48,47,20,17);
-insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18008',10,9,10,13,12.5,11.25,40,48,47,18,17);
+insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18008',10,9,10,13,12.5,11.25,13,48,47,18,17);
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18009',8,9,7,13,14.5,11.25,14,50,47,18,20);
 insert into course_15CSE313_2018_CSE_A_student_academic_info values('CB.EN.U4CSE18010',10,9,9,13,12.5,15,14,48,50,20,19);
 alter table course_15CSE313_2018_CSE_A_student_academic_info add column CA int default 0;
@@ -173,6 +173,17 @@ alter table course_15CSE313_2018_CSE_A_student_academic_info add column CA int d
 alter table course_15CSE313_2018_CSE_A_student_academic_info add column endsem int default 0;
 alter table course_15CSE313_2018_CSE_A_student_academic_info add column total int default 0;
 alter table course_15CSE313_2018_CSE_A_student_academic_info add column grade varchar(2) default null references course_15CSE313_2018_grade_cutoff(grade);
+
+select * from course_15CSE313_2018_CSE_A_student_academic_info;
+
+CREATE TRIGGER ins_sum BEFORE UPDATE ON course_15CSE313_2018_CSE_A_student_academic_info 
+FOR EACH ROW 
+BEGIN
+   IF !(NEW.endsem <=> OLD.endsem) THEN
+      set NEW.total=NEW.endsem+OLD.CA;
+   END IF;
+END;
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=46 where roll_number='CB.EN.U4CSE18010';
 
 create table course_15CSE313_2018_grade_cutoff(grade varchar(2) primary key,marks int default null);
 insert into course_15CSE313_2018_grade_cutoff values('O',90);
@@ -182,6 +193,9 @@ insert into course_15CSE313_2018_grade_cutoff values('B+',60);
 insert into course_15CSE313_2018_grade_cutoff values('B',50);
 insert into course_15CSE313_2018_grade_cutoff values('C',40);
 insert into course_15CSE313_2018_grade_cutoff values('P',30);
+
+
+select * from course_15CSE313_2018_grade_cutoff order by marks desc;
 
 -- *************************************************************************************************
 -- attendance

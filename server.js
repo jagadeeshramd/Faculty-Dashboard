@@ -590,16 +590,75 @@ app.get("/calculate_CA",function(req,res){
    
 });
 
-
-app.get("/feedback",function(req,res){
-    
-    dcname=req.session.course.course_id+" ";
+app.get("/calculate_grade",function(req,res){
+    mentor=req.session.course.ismentor;
     dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
     dcname+=req.session.course.dept+" ";
     dcname+=req.session.course.section;
 
+
     cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    
+
+    tbname="course_"+cname+"grade_cutoff";
+    connection.query(
+        "select * from "+tbname+" order by marks desc;",
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else{
+                res.render("calculate_grade",{
+                    grade_cutoff:results,
+                    ismentor: mentor,
+                    courseid: dcname
+                });
+                
+            } 
+        }
+    );
+
+});
+
+app.get("/view_edit_cutoff",function(req,res){
+    mentor=req.session.course.ismentor;
+    dcname=req.session.course.course_id+" ";
+    dcname+=req.session.course.batch+" ";
+    dcname+=req.session.course.dept+" ";
+    dcname+=req.session.course.section;
+
+
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    
+
+    tbname="course_"+cname+"grade_cutoff";
+    connection.query(
+        "select * from "+tbname+" order by marks desc;",
+        function (error, results, fields) {
+            if (error) console.log(error);
+            else{
+                res.render("view_edit_cutoff",{
+                    grade_cutoff:results,
+                    ismentor: mentor,
+                    courseid: dcname
+                });
+                
+            } 
+        }
+    );
+
+});
+
+
+app.get("/feedback",function(req,res){
+    
+    dcname=req.session.course.course_id+" ";
+    dcname+=req.session.course.batch+" ";
+    dcname+=req.session.course.dept+" ";
+    dcname+=req.session.course.section;
+
+    
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
