@@ -176,14 +176,27 @@ alter table course_15CSE313_2018_CSE_A_student_academic_info add column grade va
 
 select * from course_15CSE313_2018_CSE_A_student_academic_info;
 
-CREATE TRIGGER ins_sum BEFORE UPDATE ON course_15CSE313_2018_CSE_A_student_academic_info 
+DELIMITER $$
+CREATE TRIGGER update_total BEFORE UPDATE ON course_15CSE313_2018_CSE_A_student_academic_info 
 FOR EACH ROW 
 BEGIN
-   IF !(NEW.endsem <=> OLD.endsem) THEN
+   IF NEW.endsem <> OLD.endsem THEN
       set NEW.total=NEW.endsem+OLD.CA;
+   elseif NEW.ca <> OLD.ca THEN
+      set NEW.total=OLD.endsem+NEW.CA;
    END IF;
-END;
-update course_15CSE313_2018_CSE_A_student_academic_info set endsem=46 where roll_number='CB.EN.U4CSE18010';
+END$$
+DELIMITER ;
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=35 where roll_number='CB.EN.U4CSE18001';
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=50 where roll_number='CB.EN.U4CSE18002';
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=40 where roll_number='CB.EN.U4CSE18003';
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=43 where roll_number='CB.EN.U4CSE18004';
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=46 where roll_number='CB.EN.U4CSE18005';
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=48 where roll_number='CB.EN.U4CSE18006';
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=41 where roll_number='CB.EN.U4CSE18007';
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=42 where roll_number='CB.EN.U4CSE18008';
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=49 where roll_number='CB.EN.U4CSE18009';
+update course_15CSE313_2018_CSE_A_student_academic_info set endsem=47 where roll_number='CB.EN.U4CSE18010';
 
 create table course_15CSE313_2018_grade_cutoff(grade varchar(2) primary key,marks int default null);
 insert into course_15CSE313_2018_grade_cutoff values('O',90);
