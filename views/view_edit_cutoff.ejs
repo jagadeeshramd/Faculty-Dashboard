@@ -23,13 +23,13 @@
     </div>
     
     <div id="disp-content">
-        <div id="course-text" class="disp-text" style="width: 1000px; margin-left:150px;height:490px;">
+        <div id="course-text" class="disp-text" style="width: 1000px; margin-left:20%;height:490px;">
             <table class="table" style="text-align: center;border-radius:5px;">
                 <thead style="background-color:#45b1ef;color:white;">
                     <tr>
                     <th scope="col">Filter Type</th>
                     <th scope="col">
-                        <button id="choose-filter" class="btn btn-light" style="color:#45b1ef;">
+                        <button id="choose-filter" class="btn btn-light" style="color:#45b1ef;" data-toggle="modal" data-target="#exampleModal">
                             Choose Filter
                         </button>
                     </th>
@@ -41,19 +41,84 @@
                     </tr>
                 </thead>
             </table>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Filter</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            
+                            <div class="form-group">
+                              <label for="filter-type">Choose Filter Type</label>
+                              <select class="form-control" id="filter-type" onchange="changefilter(this);">
+                                <option value="0">marks >= <em>low</em></option>
+                                <option value="1">marks > <em>low</em></option>
+                                <option value="2">marks <= <em>high</em></option>
+                                <option value="3">marks < <em>high</em></option>
+                                <option value="4"><em>low</em> <= marks <= <em>high</em></option>
+                                <option value="5"><em>low</em> <= marks < <em>high</em></option>
+                                <option value="6"><em>low</em> < marks <= <em>high</em></option>
+                                <option value="7"><em>low</em> < marks < <em>high</em></option>
+                              </select>
+                            </div>
+
+                            <div class="form-group" id="lower-bound-grp">
+                                <label for="lower-bound">Lower Bound: </label>
+                                <input type="number" class="form-control" id="lower-bound">
+                            </div>
+
+                            <div class="form-group" id="upper-bound-grp" style="display: none;">
+                                <label for="upper-bound">Upper Bound: </label>
+                                <input type="number" class="form-control" id="upper-bound">
+                            </div>
+                            
+                          </form>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="applyfilter();">Apply Filter</button>
+                    </div>
+                </div>
+                </div>
+            </div>
             <div id="visual-info" style="height:435px;margin-top:0px;">
-               <div id="visual" style="float: left;width:700px;">
-                   <canvas id="visual-graph"></canvas>
+               <div id="visual" style="float: left;width:680px;">
+                   <canvas id="visual-graph" style="max-width: 675px;"></canvas>
                    <h6 id="graph-status" style="padding-top: 15%;background-color:transparent;margin-left:20%;">Graph not available</h6>
                </div> 
+               
                <div id="info" style="float: left;">
                 <ul class="list-group">
-                    <li class="list-group-item" style="height: 100px;width:292px;">Maximum Mark: </li>
-                    <li class="list-group-item" style="height: 100px;width:292px;">Minimum Mark: </li>
-                    <li class="list-group-item" style="height: 100px;width:292px;">Average Mark: </li>
-                    <li class="list-group-item" style="height: 100px;width:292px;">Total Number of Students: </li>
-                  </ul>
+                    <li class="list-group-item" style="height: 100px;width:292px;">
+                        Maximum Mark: 
+                        <br>
+                        <%= maxmark %>
+                    </li>
+                    <li class="list-group-item" style="height: 100px;width:292px;">
+                        Minimum Mark: 
+                        <br>
+                        <%= minmark %>
+                    </li>
+                    <li class="list-group-item" style="height: 100px;width:292px;">
+                        Average Mark: 
+                        <br>
+                        <%= avgmark %>
+                    </li>
+                    <li class="list-group-item" style="height: 100px;width:292px;">
+                        Total Number of Students Mark: 
+                        <br>
+                        <%= totalstud %>
+                    </li>
+                 </ul>
                </div>
+               
             </div>
            
         </div>
@@ -66,8 +131,19 @@
         {
             myChart.destroy();
         }
-        var dataValues = [12, 19, 3, 5,6,7,8,9];
-        var dataLabels = ['', '', '', '', '','','',''];
+        var samp = '<%- JSON.stringify(totalmark) -%>';
+        obj=JSON.parse(samp);
+        console.log(obj);
+        marks=[];
+        for(i=0;i<obj.length;i++)
+        {
+            marks.push(obj[i]['total']);
+        }
+
+        var dataValues = marks;
+        var dataLabels = [];
+        for(i=0;i<dataValues.length;i++)
+        dataLabels.push('');
         var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -82,7 +158,7 @@
             scales: {
             xAxes: [{
                 display: false,
-                barPercentage: 1.3,
+                barPercentage: 1.1
                 
             }, {
                 display: true,
@@ -101,7 +177,7 @@
      </script>
    
     <div id="disp-content">
-        <div id="course-text" class="disp-text" style="width: 460px; margin-left:440px;height:500px;">
+        <div id="course-text" class="disp-text" style="width: 460px; margin-left:38%;height:500px;">
 
             
             <div class="list-group" id="mark-list" style="height:420px;">
@@ -131,11 +207,12 @@
            
         </div>
             
-        <button class="btn btn-secondary" type="button" style="background-color:#45b1ef; border-color: #45b1ef;margin-top: 2px;margin-left:48%;">
+        <button class="btn btn-secondary" type="button" style="background-color:#45b1ef; border-color: #45b1ef;margin-top: 2px;margin-left:49%;">
             Update Cutoff
         </button>
 
     </div>
-    
+    <script src="/js/filter.js"></script>
+
 
     <%- include ("partials/footer") -%>

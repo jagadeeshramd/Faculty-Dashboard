@@ -86,7 +86,26 @@ function ass_to_short(ass_name)
     return ass_name;
 }
 
+function minmaxavg(x)
+{
+    var minm,maxm,avgm;
+    minm=100;
+    maxm=0;
+    avgm=0;
+    
+    for(i=0;i<x.length;i++)
+    {
+        if(x[i]['total']<minm)
+        minm=x[i]['total'];
 
+        else if(x[i]['total']>maxm)
+        maxm=x[i]['total'];
+
+        avgm+=x[i]['total'];
+    }
+    avgm=avgm/x.length;
+    return [minm,maxm,avgm];
+}
 
 // GET methods ===================================================================
 app.get("/", function (req, res) {
@@ -630,24 +649,40 @@ app.get("/view_edit_cutoff",function(req,res){
 
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
-    
-
     tbname="course_"+cname+"grade_cutoff";
     connection.query(
         "select * from "+tbname+" order by marks desc;",
-        function (error, results, fields) {
+        function (error, cutoff, fields) {
             if (error) console.log(error);
             else{
-                res.render("view_edit_cutoff",{
-                    grade_cutoff:results,
-                    ismentor: mentor,
-                    courseid: dcname
-                });
-                
+                cname+=req.session.course.dept+"_";
+                cname+=req.session.course.section;
+                tbname="course_"+cname+"_student_academic_info";
+                q="select total from "+tbname+";"
+                connection.query(
+                    q,
+                    function (error, totalm, fields) {
+                        if (error) console.log(error);
+                        else{
+                            console.log(totalm);
+                            f=minmaxavg(totalm);
+                            console.log(f);
+                            res.render("view_edit_cutoff",{
+                                grade_cutoff:cutoff,
+                                totalmark:totalm,
+                                minmark:f[0],
+                                maxmark:f[1],
+                                avgmark:f[2],
+                                totalstud:totalm.length,
+                                ismentor: mentor,
+                                courseid: dcname
+                            });            
+                        } 
+                    }
+                );
             } 
         }
     );
-
 });
 
 
