@@ -6,16 +6,16 @@
     <div class="row">
         <div class="col-lg-3">
             <% if(faculty.isAdvisor) { %>
-                <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Class</a>
+                <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Class</a><br><br>
 
                 <% } else if(faculty.isBC) { %>
-                    <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Batch</a>
+                    <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Batch</a><br><br>
 
                     <% } else if(faculty.isHOD) { %>
-                        <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Department</a>
+                        <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My
+                            Department</a><br><br>
                         <% } %>
 
-                            <br><br>
                             <!-- Button trigger modal -->
                             <button class="btn btn-primary" id="your-courses" style="width: 60%;" data-toggle="modal"
                                 data-target="#exampleModal">
@@ -187,24 +187,26 @@
 
     </div>
 
-    <!-- <br><br>
+    <br><br>
 
-    <div class="row">
-        <div class="col-lg-3">
-            <h1>Hi</h1>
-        </div>
-        
-        <div class="col-lg-8">
-            <img id="time-table" style="width: 100%;" src="https://raw.githubusercontent.com/HarishK501/my-sample/master/faculty-timetables/akhil.jpg" alt="time-table">
+    <section id="time-table" style="margin-left: 1%;">
+        <h2>Timetable — Even semester 2020-21</h2>
+        <br>
+        <div class="row" style="margin-left: 1%;">
+            <div class="col-lg-11 time-table-div">
+                <img height="600" style="width: 100%;" src="<%= timetable_link %> ">
 
+            </div>
         </div>
-    </div> -->
+
+    </section>
+
 
     <br><br><br>
-    
 
 
 
-    
+
+
 
     <%- include ("partials/footer") -%>

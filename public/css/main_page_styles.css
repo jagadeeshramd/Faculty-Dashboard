@@ -265,3 +265,9 @@ mark {
 input[type='file'] {
     cursor: pointer;
 }
+
+.time-table-div {
+    padding: 1%;
+    border: 2px solid #45b1ef;
+    border-radius: 10px;
+}

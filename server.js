@@ -7,8 +7,8 @@ const session = require("express-session");
 const { request } = require("http");
 const e = require("express");
 const { type } = require("os");
-//const nodemailer = require("nodemailer");
 const pass = require("./config.js");
+const _ = require("lodash");
 
 const app = express();
 
@@ -165,6 +165,8 @@ app.get("/", function (req, res) {
         else msg = "Good night";
 
         wel = msg + ", " + req.session.faculty.name + "!";
+        tl = "https://raw.githubusercontent.com/HarishK501/my-sample/master/faculty-timetables/";
+        tl_file = _.lowerCase(req.session.faculty.name) + ".jpg";
         // console.log(wel);
         connection.query(
             "select course_id,batch,dept,section,ismentor from course_faculty where faculty_id=?;",
@@ -189,6 +191,7 @@ app.get("/", function (req, res) {
                         courses: result,
                         coursesel: course_sel,
                         faculty: req.session.faculty,
+                        timetable_link: tl + tl_file
                     });
                 } else {
                     res.render("home", {
@@ -197,6 +200,7 @@ app.get("/", function (req, res) {
                         courses: [],
                         coursesel: "",
                         faculty: req.session.faculty,
+                        timetable_link: tl + tl_file
                     });
                 }
             }
