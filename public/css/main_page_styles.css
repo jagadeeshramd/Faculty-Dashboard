@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins:wght@300;800&family=Raleway&display=swap");
 @import url("https://fonts.googleapis.com/css?family=Yeseva One");
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: #fffaef;
     font-family: "Poppins", sans-serif;
@@ -49,6 +53,18 @@ body {
     margin-bottom: 50px;
 }
 
+.disp-text-home {
+    /* margin-left: 20px; */
+    /* width: 500px; */
+    /* margin-top: 2.5%; */
+    /* float: left; */
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+    border: 2px solid #45b1ef;
+    border-radius: 10px;
+    margin: 1%;
+}
+
 
 .disp-text textarea {
     border: none;
@@ -74,6 +90,15 @@ body {
     color: beige;
     margin-left: 50px;
     margin-bottom: 50px;
+}
+
+#fn-text-home {
+    font-family: "Poppins", sans-serif;
+    /* float: left;
+    width: 55%; */
+    color: beige;
+    /* margin-left: 50px;
+    margin-bottom: 50px; */
 }
 
 #search-list {
