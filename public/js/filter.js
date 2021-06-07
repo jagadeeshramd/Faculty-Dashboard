@@ -253,19 +253,35 @@ function updatecutoff(){
     if(f==1)
     {
         document.getElementById("err-content").innerHTML="Overlapping Cutoff Values. Error!!!";
+        $('#errormodal').modal('show');
     }
 
     else{
         document.getElementById("err-content").innerHTML="Sucessfully Updated!!!";
-    }
-    
-    const csrftoken = getCookie('csrftoken');
+        const csrftoken = getCookie('csrftoken');
     data={
         mark: marks,
         csrfmiddlewaretoken: csrftoken
     };
-    $.post('changecutoff',data,function(data,status){
+    $.post('changecutoff',data,function(rdata,status){
         console.log(status);
-        console.log("yes");
+        console.log(rdata+" "+rdata['res']+" "+(rdata['res']==true));
+        if(status.localeCompare("success")==0){
+            if(rdata['res']==true)
+            {
+                document.getElementById("err-content").innerHTML="Sucessfully Updated!!!";
+            }
+            else{
+                document.getElementById("err-content").innerHTML="Overlapping Cutoff Values. Error!!!";
+    
+            }
+        }
+        else{
+            document.getElementById("err-content").innerHTML="Overlapping Cutoff Values. Error!!!";
+        }
+        $('#errormodal').modal('show');
     });
+    }
+    
+    
 }

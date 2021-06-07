@@ -107,6 +107,51 @@ function minmaxavg(x)
     return [minm,maxm,avgm];
 }
 
+function calcgrade(x,lm,g){
+
+    console.log(x,lm,g);
+    l=0;
+    r=lm.length-1;
+    ind=-1;
+   
+    while(l<=r)
+    {
+        m=Math.floor((l+r)/2);
+        if(m==(lm.length-1))
+        {
+            if(x>=lm[m])
+            {
+                ind=m;
+                break;
+            }
+            else{
+                r-=1;
+            }
+        }
+        else{
+            if((lm[m]<=x)&&(x<lm[m+1]))
+            {
+                ind=m;
+                break;
+            }
+            else if(x>lm[m])
+            {
+                l+=1;
+            }
+            else{
+                r-=1;
+            }
+        }
+    }
+    if(ind==-1)
+    {
+        return 'F';
+    }
+    else{
+        return g[ind];
+    }
+}
+
 // GET methods ===================================================================
 app.get("/", function (req, res) {
     // console.log("hi");
@@ -624,14 +669,27 @@ app.get("/calculate_grade",function(req,res){
     tbname="course_"+cname+"grade_cutoff";
     connection.query(
         "select * from "+tbname+" order by marks desc;",
-        function (error, results, fields) {
+        function (error, cutoff, fields) {
             if (error) console.log(error);
             else{
-                res.render("calculate_grade",{
-                    grade_cutoff:results,
-                    ismentor: mentor,
-                    courseid: dcname
-                });
+                cname+=req.session.course.dept+"_";
+                cname+=req.session.course.section+"_";
+                tbname="course_"+cname+"student_academic_info";
+                connection.query(
+                    "select roll_number,total,grade from "+tbname+" order by roll_number;",
+                    function (error, stud_grades, fields) {
+                        if (error) console.log(error);
+                        else{
+                            res.render("calculate_grade",{
+                                grade_cutoff:cutoff,
+                                grades:stud_grades,
+                                ismentor: mentor,
+                                courseid: dcname
+                            });
+                            
+                        } 
+                    }
+                );
                 
             } 
         }
@@ -740,6 +798,10 @@ app.get("/filter_data",function(req,res){
         });
       }
     });
+});
+
+app.get("/get_grade",function(req,res){
+
 });
 
 app.get("/feedback",function(req,res){
@@ -1688,8 +1750,6 @@ app.post("/changecutoff",function(req,res){
     mark=req.body.mark;
     console.log("inside change");
     grades=['O','A+','A','B+','B','C','P'];
-    cname=req.session.course.course_id+"_";
-    cname+=req.session.course.batch+"_";
     
     
 
@@ -1697,9 +1757,11 @@ app.post("/changecutoff",function(req,res){
 
         for(i=0;i<mark.length;i++){
 
-            console.log("yes");
+           
+            cname=req.session.course.course_id+"_";
+            cname+=req.session.course.batch+"_";
             tbname="course_"+cname+"grade_cutoff";
-            q="update "+tbname+" set marks="+mark[i]+"' where grades='"+grades[i]+"';";
+            q="update "+tbname+" set marks="+mark[i]+" where grade='"+grades[i]+"';";
             connection.query(
                 q,
                 function (error, results, fields) {
@@ -1708,33 +1770,82 @@ app.post("/changecutoff",function(req,res){
                         
                     }
                     else {
-                        console.log("ok");
                        
                     }
                 }
             );
 
-            cname+=req.session.course.dept+"_";
-            cname+=req.session.course.section;
-            tbname="course_"+cname+"_student_academic_info";
-            q="update "+tbname+" set grade='"+grades[i]+"' where total>="+mark[i]+";";
-            connection.query(
-                q,
-                function (error, results, fields) {
-                    if (error){
-                        console.log(error);
-                        
-                    }
-                    else {
-                        console.log("ok");
-                       
-                    }
-                }
-            );
         }
-        
+        res.send({res:true});
     }
 });
+
+app.post("/re_calc_grade",function(req,res){
+    mark=req.body.mark;
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    tbname="course_"+cname+"grade_cutoff";
+    q="select * from "+tbname+" order by marks;";
+    connection.query(
+        q,
+        function (error, results, fields) {
+            if (error){
+                console.log(error);
+            }
+            else {
+                g=[];
+                marklist=[];
+                for(i=0;i<results.length;i++)
+                {
+                    g.push(results[i]['grade']);
+                    marklist.push(results[i]['marks']);
+                }
+                cname=req.session.course.course_id+"_";
+                cname+=req.session.course.batch+"_";
+                cname+=req.session.course.dept+"_";
+                cname+=req.session.course.section+"_";
+                tbname="course_"+cname+"student_academic_info";
+                q="select roll_number,total,grade from "+tbname+";";
+                connection.query(
+                    q,
+                    function (error, rollno, fields) {
+                        if (error){
+                            console.log(error);
+                        }
+                        else {
+                            
+                            for(i=0;i<rollno.length;i++)
+                            {
+                                console.log(marklist);
+                                j=calcgrade(rollno[i]['total'],marklist,g);
+                                if(j!=rollno[i]['grade'])
+                                {
+                                    q="update "+tbname+" set grade='"+j+"' where roll_number='"+rollno[i]['roll_number']+"';";
+                                    connection.query(
+                                        q,
+                                        function (error, rollno, fields) {
+                                            if (error){
+                                                console.log(error);
+                                            }
+                                            else {
+                                                
+                                            }
+                                        }
+                                    );
+                                }
+                            }
+                            
+                        }
+                    }
+                );
+            }
+        }
+    );
+
+      res.send({res:true});  
+      
+});
+
 var server=app.listen(process.env.PORT || 3000, function () {
     console.log("Server started running");
 });

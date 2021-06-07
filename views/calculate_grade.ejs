@@ -12,12 +12,14 @@
 
         <div class="dropdown" style="margin-top: 30px;margin-left:20px;">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" style="background-image:linear-gradient(90deg,#05a7e7,#2a26ff);" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    View Grade Cutoff
+                    Validate Grades
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" href="mark_grade">Enter/Edit Marks</a>
               <a class="dropdown-item" href="calculate_CA">Calculate CA</a>
-              <a class="dropdown-item" href="#">Calculate Grades</a>  
+              <% if(ismentor==true) { %>
+                <a class="dropdown-item" href="view_edit_cutoff">View/Edit Grade Cutoff</a>
+              <% } %> 
             </div>
         </div>
     </div>
@@ -44,28 +46,55 @@
                   </table>
             </div>
         </div>
-        <div id="course-text" class="disp-text" style="float:left;width: 460px;height:420px;">    
-          <div class="list-group" id="mark-list" style="height:420px;">
+        <div id="course-text" class="disp-text" style="float:left;margin-left:20%;width: 460px;height:600px;">    
+          <div class="list-group" id="mark-list" style="height:590px;overflow: scroll;">
               <table class="table" style="text-align: center;">
                   <thead style="background-color:#45b1ef;color:white;">
                     <tr>
+                      <th scope="col">Roll Number</th>
+                      <th scope="col">Total Marks</th>
                       <th scope="col">Grade</th>
-                      <th scope="col">Cutoff Mark</th>
                     </tr>
                   </thead>
                   <tbody>
-                      <% for(i=0; i < grade_cutoff.length ; i++) { %>
+                      <% for(i=0; i < grades.length ; i++) { %>
                       <tr>
-                          <th scope="row"><%= grade_cutoff[i]['grade'] %></th>
-                          <td id="<%= grade_cutoff[i]['grade'] %>"><%= grade_cutoff[i]['marks'] %></td>
+                          <th scope="row"><%= grades[i]['roll_number'] %></th>
+                          <td><%= grades[i]['total'] %></td>
+                          <td><%= grades[i]['grade'] %></td>
                           
                       </tr>
                     <% } %>
                   </tbody>
-                </table>
+              </table>
           </div>
+        </div>
+
+        <button class="btn btn-secondary" type="button" style="background-color:#45b1ef; border-color: #45b1ef;margin-top: 2px;margin-left:35%;" onclick="rc_grade();">
+          Discrepancy !!! Re-calculate Grades
+      </button>
+    </div>
+
+    <div class="modal hide fade" id="errormodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Status</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="err-content">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            
+          </div>
+        </div>
       </div>
     </div>
-    
+    <script src="/js/grade.js"></script>
+
 
     <%- include ("partials/footer") -%>
