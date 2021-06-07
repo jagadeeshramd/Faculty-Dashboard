@@ -685,6 +685,62 @@ app.get("/view_edit_cutoff",function(req,res){
     );
 });
 
+app.get("/filter_data",function(req,res){
+    filtype=req.query.option;
+    if(req.query.lb!=null)
+    x=req.query.lb;
+
+    if(req.query.ub!=null)
+    y=req.query.ub;
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    cname+=req.session.course.dept+"_";
+    cname+=req.session.course.section;
+    tbname="course_"+cname+"_student_academic_info";
+    if(filtype==0){
+        q="select total from "+tbname+" where total>="+x+";";
+    }
+    else if(filtype==1){
+        q="select total from "+tbname+" where total>"+x+";";
+    }
+    else if(filtype==2){
+        q="select total from "+tbname+" where total<="+y+";";
+    }
+    else if(filtype==3){
+        q="select total from "+tbname+" where total<"+y+";";
+    }
+    else if(filtype==4){
+        q="select total from "+tbname+" where total>="+x+" and total<="+y+";";
+    }
+    else if(filtype==5){
+        q="select total from "+tbname+" where total>="+x+" and total<"+y+";";
+    }
+    else if(filtype==6){
+        q="select total from "+tbname+" where total>"+x+" and total<="+y+";";
+    }
+    else if(filtype==7){
+        q="select total from "+tbname+" where total>"+x+" and total<"+y+";";
+    }
+    else if(filtype==8){
+        q="select total from "+tbname+";";
+    }
+    console.log(q);
+    connection.query(q,function(error,result,fields){
+        console.log(result);
+        if(result!=null){
+        
+        f=minmaxavg(result);
+        res.send({
+            comp:true,
+            marks:result,
+            minmark:f[0],
+            maxmark:f[1],
+            avgmark:f[2],
+            totalstud:result.length
+        });
+      }
+    });
+});
 
 app.get("/feedback",function(req,res){
     
@@ -1628,6 +1684,57 @@ app.post("/update_attendance", function (req, res) {
     );
 });
 
+app.post("/changecutoff",function(req,res){
+    mark=req.body.mark;
+    console.log("inside change");
+    grades=['O','A+','A','B+','B','C','P'];
+    cname=req.session.course.course_id+"_";
+    cname+=req.session.course.batch+"_";
+    
+    
+
+    if(mark.length==grades.length){
+
+        for(i=0;i<mark.length;i++){
+
+            console.log("yes");
+            tbname="course_"+cname+"grade_cutoff";
+            q="update "+tbname+" set marks="+mark[i]+"' where grades='"+grades[i]+"';";
+            connection.query(
+                q,
+                function (error, results, fields) {
+                    if (error){
+                        console.log(error);
+                        
+                    }
+                    else {
+                        console.log("ok");
+                       
+                    }
+                }
+            );
+
+            cname+=req.session.course.dept+"_";
+            cname+=req.session.course.section;
+            tbname="course_"+cname+"_student_academic_info";
+            q="update "+tbname+" set grade='"+grades[i]+"' where total>="+mark[i]+";";
+            connection.query(
+                q,
+                function (error, results, fields) {
+                    if (error){
+                        console.log(error);
+                        
+                    }
+                    else {
+                        console.log("ok");
+                       
+                    }
+                }
+            );
+        }
+        
+    }
+});
 var server=app.listen(process.env.PORT || 3000, function () {
     console.log("Server started running");
 });

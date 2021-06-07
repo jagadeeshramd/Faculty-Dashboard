@@ -27,14 +27,14 @@
             <table class="table" style="text-align: center;border-radius:5px;">
                 <thead style="background-color:#45b1ef;color:white;">
                     <tr>
-                    <th scope="col">Filter Type</th>
+                    <th scope="col" id="fil-type-disp">Filter Type</th>
                     <th scope="col">
                         <button id="choose-filter" class="btn btn-light" style="color:#45b1ef;" data-toggle="modal" data-target="#exampleModal">
                             Choose Filter
                         </button>
                     </th>
                     <th scope="col">
-                        <button id="clear-filter" class="btn btn-light" style="color:#45b1ef;">
+                        <button id="clear-filter" class="btn btn-light" style="color:#45b1ef;" onclick="nofilter();">
                             Clear Filter
                         </button>
                     </th>
@@ -99,25 +99,27 @@
                     <li class="list-group-item" style="height: 100px;width:292px;">
                         Maximum Mark: 
                         <br>
-                        <%= maxmark %>
+                        <strong id="maxm"><%= maxmark %></strong>
                     </li>
                     <li class="list-group-item" style="height: 100px;width:292px;">
                         Minimum Mark: 
                         <br>
-                        <%= minmark %>
+                        <strong id="minm"><%= minmark %></strong>
                     </li>
                     <li class="list-group-item" style="height: 100px;width:292px;">
                         Average Mark: 
                         <br>
-                        <%= avgmark %>
+                        <strong id="avgm"><%= avgmark %></strong>
                     </li>
                     <li class="list-group-item" style="height: 100px;width:292px;">
                         Total Number of Students Mark: 
                         <br>
-                        <%= totalstud %>
+                        <strong id="totalstud"><%= totalstud %></strong>
                     </li>
                  </ul>
                </div>
+
+               
                
             </div>
            
@@ -207,9 +209,29 @@
            
         </div>
             
-        <button class="btn btn-secondary" type="button" style="background-color:#45b1ef; border-color: #45b1ef;margin-top: 2px;margin-left:49%;">
+        <button class="btn btn-secondary" type="button" style="background-color:#45b1ef; border-color: #45b1ef;margin-top: 2px;margin-left:49%;" onclick="updatecutoff();">
             Update Cutoff
         </button>
+
+        <div class="modal hide fade" id="errormodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Status</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="err-content">
+                  ...
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
 
     </div>
     <script src="/js/filter.js"></script>
