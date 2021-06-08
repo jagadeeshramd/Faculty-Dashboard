@@ -37,7 +37,6 @@
                             <th style="width: 65%;" scope="col">Test</th>
                             <th scope="col">Scheduled date</th>
                             <th scope="col">Time</th>
-                            <th scope="col"></th>
                         </tr>
     
                     </thead>
@@ -55,9 +54,6 @@
                                 </td>
                                 <td>
                                     <%= data.time %>
-                                </td>
-                                <td style="padding: 7px;">
-                                    <a class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
                                 </td>
     
                             </tr>
@@ -248,6 +244,10 @@
             $("#tests-section").removeClass("hidden");
             $("#assignments-tab").removeClass("btn-info");
             $("#assignments-section").addClass("hidden");
+            $.ajax({
+                url: "setTestsActive",
+                type: "GET",
+            });
 
         });
 
