@@ -9,7 +9,7 @@ const e = require("express");
 const { type } = require("os");
 const pass = require("./config.js");
 const _ = require("lodash");
-
+const fnreq=require("./functionreq.js");
 const app = express();
 
 cid = "";
@@ -59,98 +59,6 @@ connection.connect(function (err) {
 });
 
 //functions required =============================================================
-
-function ass_to_fullname(assessment)
-{
-    if(assessment.startsWith('A'))
-        assessment="Assignment "+assessment.slice(1,assessment.length);
-    else if(assessment.startsWith('Q'))
-        assessment="Quiz "+assessment.slice(1,assessment.length);
-    else if(assessment.startsWith('P'))
-        assessment="Periodical "+assessment.slice(1,assessment.length);
-    else if(assessment.startsWith('T'))
-        assessment="Tutorial "+assessment.slice(1,assessment.length);
-    return assessment;
-}
-
-function ass_to_short(ass_name)
-{
-    if(ass_name.startsWith('Assignment'))
-        ass_name="A"+ass_name.slice(11,ass_name.length);
-    else if(ass_name.startsWith('Quiz'))
-        ass_name="Q"+ass_name.slice(5,ass_name.length);
-    else if(ass_name.startsWith('Periodical'))
-        ass_name="P"+ass_name.slice(11,ass_name.length);
-    else if(ass_name.startsWith('Tutorial'))
-        ass_name="T"+ass_name.slice(9,ass_name.length);
-    return ass_name;
-}
-
-function minmaxavg(x)
-{
-    var minm,maxm,avgm;
-    minm=100;
-    maxm=0;
-    avgm=0;
-    
-    for(i=0;i<x.length;i++)
-    {
-        if(x[i]['total']<minm)
-        minm=x[i]['total'];
-
-        else if(x[i]['total']>maxm)
-        maxm=x[i]['total'];
-
-        avgm+=x[i]['total'];
-    }
-    avgm=avgm/x.length;
-    return [minm,maxm,avgm];
-}
-
-function calcgrade(x,lm,g){
-
-    console.log(x,lm,g);
-    l=0;
-    r=lm.length-1;
-    ind=-1;
-   
-    while(l<=r)
-    {
-        m=Math.floor((l+r)/2);
-        if(m==(lm.length-1))
-        {
-            if(x>=lm[m])
-            {
-                ind=m;
-                break;
-            }
-            else{
-                r-=1;
-            }
-        }
-        else{
-            if((lm[m]<=x)&&(x<lm[m+1]))
-            {
-                ind=m;
-                break;
-            }
-            else if(x>lm[m])
-            {
-                l+=1;
-            }
-            else{
-                r-=1;
-            }
-        }
-    }
-    if(ind==-1)
-    {
-        return 'F';
-    }
-    else{
-        return g[ind];
-    }
-}
 
 // GET methods ===================================================================
 app.get("/", function (req, res) {
@@ -550,21 +458,21 @@ app.get("/mark_grade", function (req, res) {
                 ass_list=[];
                 ass_name=req.query.assname;
                 if(ass_name!=null){
-                    ass_name=ass_to_short(ass_name);
+                    ass_name=fnreq.ass_to_short(ass_name);
                 }
                 for(i in results){
                     assessment=results[i]['ass_name'];
                     if(ass_name==null)
                         ass_name=assessment;
                     
-                    ans=ass_to_fullname(assessment);
+                    ans=fnreq.ass_to_full(assessment);
                     ass_list.push(ans);
 
 
                 }
                 
                 current_ass=ass_name;
-                current_ass=ass_to_fullname(current_ass);
+                current_ass=fnreq.ass_to_full(current_ass);
                     
 
                 tablename="course_"+cname;
@@ -654,7 +562,7 @@ app.get("/calculate_CA",function(req,res){
                         ca_total=results[i]['totalmarks'];
                         continue;
                     }
-                    r=ass_to_fullname(results[i]['ass_name']);
+                    r=fnreq.ass_to_full(results[i]['ass_name']);
                     ass_wt.push([r,results[i]['totalmarks'],results[i]['weightage']]);
                 }
                 connection.query(
@@ -749,7 +657,7 @@ app.get("/view_edit_cutoff",function(req,res){
                         if (error) console.log(error);
                         else{
                             console.log(totalm);
-                            f=minmaxavg(totalm);
+                            f=fnreq.mma(totalm);
                             console.log(f);
                             res.render("view_edit_cutoff",{
                                 grade_cutoff:cutoff,
@@ -813,7 +721,7 @@ app.get("/filter_data",function(req,res){
         console.log(result);
         if(result!=null){
         
-        f=minmaxavg(result);
+        f=fnreq.mma(result);
         res.send({
             comp:true,
             marks:result,
@@ -1475,7 +1383,7 @@ app.post("/add_assessment", function (req, res) {
     cname += req.session.course.section;
 
     assessment=colname;
-    assessment=ass_to_fullname(assessment);
+    assessment=fnreq.ass_to_full(assessment);
                     
     connection.query(
         "insert into assessment_list(course_code_full,ass_name,totalmarks) values(?,?,?);",
@@ -1524,7 +1432,7 @@ app.post("/update_marks", function (req, res) {
     console.log("update marks");
     ass_name=req.body.assignment;
     a=req.body.assignment;;
-    ass_name=ass_to_short(ass_name);
+    ass_name=fnreq.ass_to_short(ass_name);
     m=req.body.marks;
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
@@ -1555,7 +1463,7 @@ app.post("/update_CA_weightage", function (req, res) {
     
     console.log("update CA weightage");
     ass_name=req.body.assname;
-    ass_name=ass_to_short(ass_name);
+    ass_name=fnreq.ass_to_short(ass_name);
     w=req.body.weight;
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
@@ -1617,19 +1525,9 @@ app.post("/re_calc_CA", function (req, res) {
                     function (error, result_mark, fields) {
                         if (error) console.log(error);
                         else {
-                            m={};
-                            l=result_mark.length;
-                            for(i=0;i<result_mark.length;i++){
-                    
-                                r=result_mark[i]['roll_number'];
-                                ca=0;
-                                for(var k in ass_wt)
-                                {
-                                    ca+=result_mark[i][k]*ass_wt[k];
-                                }
-                                m[r]=ca.toFixed(2);
-                                
-                            }
+
+                            m=fnreq.rc_CA(result_mark,ass_wt);
+                            
                             q="update assessment_list set totalmarks=? where course_code_full=? and ass_name='CA'";
 
                             connection.query(
@@ -1844,7 +1742,7 @@ app.post("/re_calc_grade",function(req,res){
                             for(i=0;i<rollno.length;i++)
                             {
                                 console.log(marklist);
-                                j=calcgrade(rollno[i]['total'],marklist,g);
+                                j=fnreq.cgrade(rollno[i]['total'],marklist,g);
                                 if(j!=rollno[i]['grade'])
                                 {
                                     q="update "+tbname+" set grade='"+j+"' where roll_number='"+rollno[i]['roll_number']+"';";

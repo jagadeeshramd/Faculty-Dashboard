@@ -1,3 +1,4 @@
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -227,11 +228,10 @@ function updatecutoff(){
     p=document.getElementById("P").value;
     marks.push(p);
 
-    console.log("Cutoff"+marks);
     var f=0;
     for(i=1;i<marks.length;i++)
     {
-        x=marks[i-1];
+        var x=marks[i-1];
         
         if(x==0)
         {
@@ -249,6 +249,7 @@ function updatecutoff(){
             }
         }
     }
+    
 
     if(f==1)
     {
@@ -264,8 +265,7 @@ function updatecutoff(){
         csrfmiddlewaretoken: csrftoken
     };
     $.post('changecutoff',data,function(rdata,status){
-        console.log(status);
-        console.log(rdata+" "+rdata['res']+" "+(rdata['res']==true));
+        
         if(status.localeCompare("success")==0){
             if(rdata['res']==true)
             {
