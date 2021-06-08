@@ -2,6 +2,7 @@
 -- ********************************************************************************************
 -- login
 -- ********************************************************************************************
+drop database if exists facultydashboard;
 create database facultydashboard;
 use facultydashboard;
 
@@ -335,12 +336,13 @@ insert into advisor_class values(12301, 'B.TECH. 2018 CSE A'), (13301, 'B.TECH. 
 -- tests
 -- *************************************************************************************************
 
-create table tests(id int primary key AUTO_INCREMENT, name varchar(100), date varchar(10), time varchar(5), instructions varchar(1000), course varchar(50));
+create table tests(id int primary key AUTO_INCREMENT, name varchar(100), 
+date varchar(10), time varchar(5), instructions varchar(1000), course varchar(50), f_id varchar(10) references faculty(id));
 
-insert into tests(name, date,time, instructions, course) 
-	values	('Test 1', '2021-01-30','11:00','No negative marking. Duration: 15 minutes','15CSE301'),
-			('Tutorial 1', '2021-02-14','15:00','Negative marking. Duration: 1 hour','15CSE301');
-	
+insert into tests(name, date,time, instructions, course, f_id) 
+	values	('Test 1', '2021-01-30','11:00','No negative marking. Duration: 15 minutes','15CSE301', '12301'),
+			('Tutorial 1', '2021-02-14','15:00','Negative marking. Duration: 1 hour','15CSE301', '14312');
+
 select * from tests;
 
 -- drop table tests;
@@ -349,8 +351,11 @@ select * from tests;
 -- assignments
 -- *************************************************************************************************
 
-create table assignments(id int primary key AUTO_INCREMENT, name varchar(100), date varchar(10), time varchar(5), instructions varchar(1000), course varchar(50));
+create table assignments(id int primary key AUTO_INCREMENT, name varchar(100), date varchar(10), 
+time varchar(5), instructions varchar(1000), course varchar(50), f_id varchar(10) references faculty(id));
 select * from assignments;
+
+-- drop table assignments;
 
 -- *************************************************************************************************
 -- Resources
