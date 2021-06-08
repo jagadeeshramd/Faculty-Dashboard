@@ -251,25 +251,29 @@ app.get("/updatecoursetab", function (req, res) {
 
 app.get("/tests-and-assignments", function (req, res) {
     connection.query(
-        "SELECT * FROM tests WHERE course=?",
-        [req.session.course.course_id],
+        "SELECT * FROM tests WHERE course=? and f_id=?",
+        [req.session.course.course_id, req.session.faculty.id],
         function (err, result1, fields) { 
             if (err) console.log(err);
             else {
                 connection.query(
-                    "SELECT * FROM assignments WHERE course=?",
-                    [req.session.course.course_id],
+                    "SELECT * FROM assignments WHERE course=? and f_id=?",
+                    [req.session.course.course_id, req.session.faculty.id],
                     function (err, result2, fields) { 
                         if (err) console.error(err);
                         let msg = req.session.notifyMSG;
                         let color = req.session.msgStatusColor;
                         req.session.notifyMSG = null;
                         req.session.msgStatusColor = null;
+                        var active_section = "tests"
+                        if (req.session.assignment_last_active) 
+                            active_section = "assignments"
                         res.render("testAssignment", {
                             tests: result1,
                             assignments: result2,
                             notification: msg,
                             bgcolor: color,
+                            active_section: active_section
                         });
                      }
                 );
@@ -1382,8 +1386,8 @@ app.post("/addNewFaculty", function (req, res) {
 app.post("/addNewTest", function(req, res){
     // console.log(req.body);
     connection.query(
-        "INSERT INTO tests(name, date,time, instructions, course) VALUES(?,?,?,?,?)",
-        [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id],
+        "INSERT INTO tests(name, date,time, instructions, course, f_id) VALUES(?,?,?,?,?,?)",
+        [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id, req.session.faculty.id],
         function (err, results, fields) { 
             if (err) {
                 req.session.notifyMSG = "Error occured. Test not scheduled.";
@@ -1400,9 +1404,10 @@ app.post("/addNewTest", function(req, res){
 
 app.post("/addNewAssignment", function(req, res){
     // console.log(req.body);
+    req.session.assignment_last_active = true;
     connection.query(
-        "INSERT INTO assignments(name, date,time, instructions, course) VALUES(?,?,?,?,?)",
-        [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id],
+        "INSERT INTO assignments(name, date,time, instructions, course, f_id) VALUES(?,?,?,?,?,?)",
+        [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id, req.session.faculty.id],
         function (err, results, fields) { 
             if (err) {
                 req.session.notifyMSG = "Error occured. Assignment not created.";
