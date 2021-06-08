@@ -169,7 +169,7 @@ app.get("/", function (req, res) {
         tl_file = _.lowerCase(req.session.faculty.name) + ".jpg";
         // console.log(wel);
         connection.query(
-            "select course_id,batch,dept,section,ismentor from course_faculty where faculty_id=?;",
+            "select course_id,batch,dept,section,ismentor from course_faculty where faculty_id=? order by batch desc;",
             [req.session.faculty.id],
             function (error, result, fields) {
                 if (error)
