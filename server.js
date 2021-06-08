@@ -282,6 +282,24 @@ app.get("/tests-and-assignments", function (req, res) {
         });
 });
 
+app.get("/tests/:id", function(req, res){
+    let test_id = parseInt(req.params.id) / 25625;
+    connection.query(
+        "SELECT * FROM tests WHERE course=? and f_id=? and id=?",
+        [req.session.course.course_id, req.session.faculty.id, test_id],
+        function(err, results, fields) {
+            if (err) {
+                console.log(err);
+                res.render("failure");
+            } else {
+                res.render("tests", {
+                    test: results[0]
+                });
+            }
+        }
+    );
+});
+
 app.get("/resources", function (req, res) {
     connection.query(
         "SELECT * FROM resources WHERE course=?",

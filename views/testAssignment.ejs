@@ -37,6 +37,7 @@
                             <th style="width: 65%;" scope="col">Test</th>
                             <th scope="col">Scheduled date</th>
                             <th scope="col">Time</th>
+                            <th scope="col"></th>
                         </tr>
     
                     </thead>
@@ -47,13 +48,16 @@
                                     <%= i; %>
                                 </td>
                                 <td>
-                                    <%= data.name %>
+                                    <a style="color: rgb(27, 26, 26);" href="/tests/<%= data.id * 25625 %>"><%= data.name %></a>
                                 </td>
                                 <td>
                                     <%= data.date %>
                                 </td>
                                 <td>
                                     <%= data.time %>
+                                </td>
+                                <td style="padding: 7px;">
+                                    <a class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
                                 </td>
     
                             </tr>
