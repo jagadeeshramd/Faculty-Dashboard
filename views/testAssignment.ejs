@@ -1,102 +1,135 @@
 <%- include ("partials/header") -%>
 
-    <section style="padding: 2% 10%">
-        <!-- tests section -->
-        <h2>Tests</h2>
-        <br>
-        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-            <table class="table table-hover table-light table-striped">
-                <thead class="thead-dark ">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th style="width: 65%;" scope="col">Test</th>
-                        <th scope="col">Scheduled date</th>
-                        <th scope="col">Time</th>
-                    </tr>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
 
-                </thead>
-                <tbody>
-                    <% if (tests.length !=0) { var i=1; tests.forEach(function(data){ %>
-                        <tr>
-                            <td>
-                                <%= i; %>
-                            </td>
-                            <td>
-                                <%= data.name %>
-                            </td>
-                            <td>
-                                <%= data.date %>
-                            </td>
-                            <td>
-                                <%= data.time %>
-                            </td>
+    <section style="padding: 2% 7%">
+        <% var tests_display, assignments_display, t_btn_info, a_btn_info; %> 
+        <% if (active_section == "tests") { %> 
+            <% t_btn_info = "btn-info"; %>
+            <% a_btn_info = "" %> 
+            <% tests_display = ""; %>
+            <% assignments_display = "hidden" %>  
+        <% } else { %>
+            <% t_btn_info = ""; %>
+            <% a_btn_info = "btn-info" %> 
+            <% tests_display = "hidden"; %>
+            <% assignments_display = "" %>  
+        <% } %>  
 
-                        </tr>
-                        <% i++; }) %>
-                            <% } else{ %>
-                                <tr>
-                                    <td colspan="7"> - No test scheduled so far - </td>
-                                </tr>
-                                <% } %>
-                </tbody>
-            </table>
-
+        <div id="tabs">
+            <button id="tests-tab" class="btn <%= t_btn_info %>">Tests</button>
+            <button id="assignments-tab" class="btn <%= a_btn_info %>">Assignments</button>
         </div>
+        <br>
 
-        <br><br>
-        <button style="margin-right: 2%;" data-toggle="modal" data-target="#createTest" aria-haspopup="true"
-            class="btn btn-success">Schedule test</button>
-
-        <br><br>
+        <!-- tests section -->
+        <div id="tests-section" class="<%= tests_display %>">
+            <br>
+            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table class="table table-hover table-light table-striped">
+                    <thead class="thead-dark ">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th style="width: 65%;" scope="col">Test</th>
+                            <th scope="col">Scheduled date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col"></th>
+                        </tr>
+    
+                    </thead>
+                    <tbody>
+                        <% if (tests.length !=0) { var i=1; tests.forEach(function(data){ %>
+                            <tr>
+                                <td>
+                                    <%= i; %>
+                                </td>
+                                <td>
+                                    <a style="color: rgb(27, 26, 26);" href="/tests/<%= data.id * 25625 %>"><%= data.name %></a>
+                                </td>
+                                <td>
+                                    <%= data.date %>
+                                </td>
+                                <td>
+                                    <%= data.time %>
+                                </td>
+                                <td style="padding: 7px;">
+                                    <a class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
+                                </td>
+    
+                            </tr>
+                            <% i++; }) %>
+                                <% } else{ %>
+                                    <tr>
+                                        <td colspan="7"> - No test scheduled so far - </td>
+                                    </tr>
+                                    <% } %>
+                    </tbody>
+                </table>
+    
+            </div>
+    
+            <br><br>
+            <button style="margin-right: 2%;" data-toggle="modal" data-target="#createTest" aria-haspopup="true"
+                class="btn btn-success">Schedule test</button>
+    
+            <br><br>
+        </div>
+        
 
         <!-- assignments section -->
-        <br><br>
-        <h2>Assignments</h2>
-        <br>
-        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-            <table class="table table-hover table-light table-striped">
-                <thead class="thead-dark ">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th style="width: 65%;" scope="col">Assignment</th>
-                        <th scope="col">Scheduled date</th>
-                        <th scope="col">Time</th>
-                    </tr>
-
-                </thead>
-                <tbody>
-                    <% if (assignments.length !=0) { var i=1; assignments.forEach(function(data){ %>
+        <div id="assignments-section" class="<%= assignments_display %> ">
+            <br>
+            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table class="table table-hover table-light table-striped">
+                    <thead class="thead-dark ">
                         <tr>
-                            <td>
-                                <%= i; %>
-                            </td>
-                            <td>
-                                <%= data.name %>
-                            </td>
-                            <td>
-                                <%= data.date %>
-                            </td>
-                            <td>
-                                <%= data.time %>
-                            </td>
-
+                            <th scope="col">#</th>
+                            <th style="width: 65%;" scope="col">Assignment</th>
+                            <th scope="col">Deadline</th>
                         </tr>
-                        <% i++; }) %>
-                            <% } else{ %>
-                                <tr>
-                                    <td colspan="7"> - No assignment scheduled so far - </td>
-                                </tr>
-                                <% } %>
-                </tbody>
-            </table>
-
+    
+                    </thead>
+                    <tbody>
+                        <% if (assignments.length !=0) { var i=1; assignments.forEach(function(data){ %>
+                            <tr>
+                                <td>
+                                    <%= i; %>
+                                </td>
+                                <td>
+                                    <%= data.name %>
+                                </td>
+                                <td>
+                                    <%= data.date %> <em style="margin-left: 5%;">
+                                            <%= data.time %>
+                                        </em>
+                                </td>
+    
+    
+                            </tr>
+                            <% i++; }) %>
+                                <% } else{ %>
+                                    <tr>
+                                        <td colspan="7"> - No assignment scheduled so far - </td>
+                                    </tr>
+                                    <% } %>
+                    </tbody>
+                </table>
+    
+            </div>
+    
+            <br><br>
+            <button style="margin-right: 2%;" data-toggle="modal" data-target="#createAssignment" aria-haspopup="true"
+                class="btn btn-primary">Assign one!</button>
+            <br><br>
         </div>
-
-        <br><br>
-        <button style="margin-right: 2%;" data-toggle="modal" data-target="#createAssignment" aria-haspopup="true"
-            class="btn btn-primary">Assign one!</button>
-        <br><br>
+        
     </section>
+
+    <!-- modals -->
 
     <div class="container">
         <div class="modal fade" id="createTest">
@@ -190,7 +223,7 @@
                             <div class="custom-file">
                                 <label class="custom-file-label" for="customFile">Choose a file</label>
                                 <input type="file" class="custom-file-input" id="customFile">
-                                
+
                             </div>
 
                             <br><br><br>
@@ -210,14 +243,29 @@
 
 
     <script>
+        $("#tests-tab").click(function(event) {
+            $(this).addClass("btn-info");
+            $("#tests-section").removeClass("hidden");
+            $("#assignments-tab").removeClass("btn-info");
+            $("#assignments-section").addClass("hidden");
+
+        });
+
+        $("#assignments-tab").click(function(event) {
+            $(this).addClass("btn-info");
+            $("#tests-section").addClass("hidden");
+            $("#tests-tab").removeClass("btn-info");
+            $("#assignments-section").removeClass("hidden");
+        });
+
         $("#notification").fadeIn();
         setTimeout(() => {
             $("#notification").fadeOut();
         }, 3000);
 
-        $(".custom-file-input").on("change", function() {
-          var fileName = $(this).val().split("\\").pop();
-          $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
         });
     </script>
 
