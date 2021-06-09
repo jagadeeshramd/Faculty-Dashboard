@@ -10,6 +10,7 @@ const { type } = require("os");
 const pass = require("./config.js");
 const _ = require("lodash");
 const fnreq=require("./functionreq.js");
+const { connect } = require("http2");
 const app = express();
 
 cid = "";
@@ -76,40 +77,50 @@ app.get("/", function (req, res) {
         tl = "https://raw.githubusercontent.com/HarishK501/my-sample/master/faculty-timetables/";
         tl_file = _.lowerCase(req.session.faculty.name) + ".jpg";
         // console.log(wel);
+
         connection.query(
-            "select course_id,batch,dept,section,ismentor from course_faculty where faculty_id=? order by batch desc;",
+            "SELECT * FROM notifications WHERE id IN (SELECT n_id FROM faculty_notifications WHERE f_id=? AND isRead=FALSE);",
             [req.session.faculty.id],
-            function (error, result, fields) {
-                if (error)
-                    console.log("Error occured while fetching departments");
-                else if (result.length >= 1) {
-                    // console.log(result);
-                    if(req.session.course!=null)
-                    {
-                        course_sel =req.session.course.course_id +" " +req.session.course.batch +" " +req.session.course.dept +" " +req.session.course.section;
-                    
-                    }
-                    else{
-                        course_sel =result[0]["course_id"] +" " +result[0]["batch"] +" " +result[0]["dept"] +" " +result[0]["section"];
-                        req.session.course = result[0]; // first course in the list is made default
-                    }
-                    res.render("home", {
-                        courselen: result.length,
-                        welcomeMessage: wel,
-                        courses: result,
-                        coursesel: course_sel,
-                        faculty: req.session.faculty,
-                        timetable_link: tl + tl_file
-                    });
-                } else {
-                    res.render("home", {
-                        courselen: result.length,
-                        welcomeMessage: wel,
-                        courses: [],
-                        coursesel: "",
-                        faculty: req.session.faculty,
-                        timetable_link: tl + tl_file
-                    });
+            function (err, notifications, fields) {
+                if (err) console.log("Error occured while fetching notifications.\n" + err);
+                else {
+                    connection.query(
+                        "select course_id,batch,dept,section,ismentor from course_faculty where faculty_id=? order by batch desc;",
+                        [req.session.faculty.id],
+                        function (error, result, fields) {
+                            if (error)
+                                console.log("Error occured while fetching departments");
+                            else {
+                                if (result.length >= 1) {
+                                    if(req.session.course!=null)
+                                        course_sel =req.session.course.course_id +" " +req.session.course.batch +" " +req.session.course.dept +" " +req.session.course.section;
+                                    else{
+                                        course_sel =result[0]["course_id"] +" " +result[0]["batch"] +" " +result[0]["dept"] +" " +result[0]["section"];
+                                        req.session.course = result[0]; // first course in the list is made default
+                                    }
+                                    res.render("home", {
+                                        courselen: result.length,
+                                        welcomeMessage: wel,
+                                        courses: result,
+                                        coursesel: course_sel,
+                                        faculty: req.session.faculty,
+                                        timetable_link: tl + tl_file,
+                                        notifications: notifications
+                                    });
+                                } else {
+                                    res.render("home", {
+                                        courselen: result.length,
+                                        welcomeMessage: wel,
+                                        courses: [],
+                                        coursesel: "",
+                                        faculty: req.session.faculty,
+                                        timetable_link: tl + tl_file,
+                                        notifications: notifications
+                                    });
+                                }
+                            }
+                        }
+                    );
                 }
             }
         );
@@ -118,6 +129,54 @@ app.get("/", function (req, res) {
             message: "",
         });
     }
+});
+
+app.get("/announcements-and-circulars", function(req, res) {
+    connection.query(
+        "SELECT * FROM notifications WHERE id IN (SELECT n_id FROM faculty_notifications WHERE f_id=?);",
+        [req.session.faculty.id],
+        function(err, results, fields) {
+            if (err) console.log(err);
+            else {
+                res.render("allPosts", {posts: results})
+            }
+        }
+    );
+});
+
+app.get("/notifications/:id", function(req, res) {
+    var id = req.params.id;
+    connection.query(
+        "UPDATE faculty_notifications SET isRead=true WHERE f_id=? and n_id=?",
+        [req.session.faculty.id, id],
+        function(err, results, fields) {
+            if (err) console.log(err);
+            else {
+                connection.query(
+                    "SELECT * FROM notifications WHERE id=?",
+                    [id],
+                    function(err, results, fields) {
+                        if (err) console.log(err);
+                        else {
+                            res.render("post", {data: results[0]})
+                        }
+                    }
+                );
+            }
+        }
+    );
+});
+
+app.get("/markAsRead/:id", function(req, res) {
+    var id = req.params.id;
+    connection.query(
+        "UPDATE faculty_notifications SET isRead=true WHERE f_id=? and n_id=?",
+        [req.session.faculty.id, id],
+        function(err, results, fields) {
+            if (err) console.log(err);
+            else res.send("200");
+        }
+    );
 });
 
 app.get("/updatecoursetab", function (req, res) {
