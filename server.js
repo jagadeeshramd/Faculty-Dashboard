@@ -1065,6 +1065,11 @@ app.get("/resetPassword", function (req, res) {
     
 });
 
+app.get("/setTestsActive", function(req, res){
+    req.session.assignment_last_active = false;
+    res.send("200");
+});
+
 // POST methods ----------------------------------------------------------
 app.post("/login", function (req, res) {
     var email = req.body.email;
@@ -1311,6 +1316,7 @@ app.post("/addNewFaculty", function (req, res) {
 
 app.post("/addNewTest", function(req, res){
     // console.log(req.body);
+    req.session.assignment_last_active = false;
     connection.query(
         "INSERT INTO tests(name, date,time, instructions, course, f_id) VALUES(?,?,?,?,?,?)",
         [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id, req.session.faculty.id],
@@ -1327,6 +1333,43 @@ app.post("/addNewTest", function(req, res){
     )
     
 });
+
+app.post("/tests/editTest/:id", function(req, res) {
+    let test_id = parseInt(req.params.id);
+    connection.query(
+        "UPDATE tests SET name=?, date=?, time=?, instructions=? WHERE course=? and f_id=? and id=?",
+        [req.body.name, req.body.date, req.body.time, req.body.instructions, req.session.course.course_id, req.session.faculty.id, test_id],
+        function (err, results, fields) { 
+            if (err) {
+                req.session.notifyMSG = "Error occured.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Editted test successfully!";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/tests-and-assignments");
+        }
+    );
+});
+
+app.post("/tests/cancelTest/:id", function(req, res){
+    let test_id = parseInt(req.params.id);
+    connection.query(
+        "DELETE FROM tests WHERE course=? and f_id=? and id=?",
+        [req.session.course.course_id, req.session.faculty.id, test_id],
+        function (err, results, fields) { 
+            if (err) {
+                req.session.notifyMSG = "Error occured.";
+                req.session.msgStatusColor = "bg-danger";
+            } else {
+                req.session.notifyMSG = "Cancelled test successfully!";
+                req.session.msgStatusColor = "bg-success";
+            }
+            res.redirect("/tests-and-assignments");
+        }
+    );
+});
+
 
 app.post("/addNewAssignment", function(req, res){
     // console.log(req.body);

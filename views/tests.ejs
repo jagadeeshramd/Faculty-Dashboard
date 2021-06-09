@@ -1,14 +1,98 @@
 <%- include ("partials/header") -%>
-<br><br>
-<section style="padding: 2% 7%">
-    <h1><%= test.name %></h1>
-    <% var date = new Date(); %>
-    <% var strDate = date.getFullYear().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getDate().toString(); %>  
-    <p>Test id: 00<%= test.id %> <em style="margin-left: 4%;">Created on <%= strDate %></em></p>
     <br><br>
-    <h4>Instructions</h4>
-    <p><%= test.instructions %> </p>
-</section>
+    <section style="padding: 2% 7%">
+        <h1>
+            <%= test.name %>
+        </h1>
+        <% var date=new Date(); %>
+            <% var strDate=date.getFullYear().toString() + '/' + (date.getMonth() + 1).toString() + '/' +
+                date.getDate().toString(); %>
+                <p>Test id: 00<%= test.id %> <em style="margin-left: 4%;">Created on <%= strDate %></em></p>
+                <br>
+                <button onclick="makeEditable()" style="width: 10%;" class="btn btn-sm btn-warning">Edit details</button>
+
+                <button style="margin-left: 2%; width: 10%;" data-toggle="modal" data-target="#cancelTest"
+                aria-haspopup="true" class="btn btn-sm btn-danger" id="cancel-test">Cancel Test</button>
+
+                <br><br><br>
+                <form action="editTest/<%= test.id %>" method="post">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label for="name">Name</label>
+                                    <input class="form-control" value="<%= test.name %>" type="text" name="name" id="name" readonly />
+                                </div>
+        
+                            </div><br>
+        
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label for="date">Date</label>
+                                    <input id="date" class="form-control" name="date" value="<%= test.date %>" type="date"
+                                        readonly />
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="time">Time</label>
+                                    <input id="time" class="form-control" name="time" value="<%= test.time %>" type="time"
+                                        readonly />
+                                </div>
+                            </div><br>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="ins">Instructions</label>
+                            <textarea class="form-control" name="instructions" id="ins" cols="10" rows="5"
+                                readonly><%= test.instructions %></textarea><br />
+
+                        </div>
+                    </div>
+
+                    <br>
+                    <button id="save-button" class="btn btn-sm btn-success" type="submit" disabled>Save</button>
+                    <a style="margin-left: 3%;" href="/tests-and-assignments" type="button" class="btn btn-sm btn-dark">Back to tests</a>
+                </form>
+                <br><br>
+
+    </section>
+
+<!-- modal -->
+    <div class="container">
+        <div class="modal fade" id="cancelTest">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- header -->
+                    <div class="modal-header text-center">
+                        <h3 class="modal-title text-center">Cancel Test</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- body -->
+                    <div class="modal-body">
+                        <p>Do you want to cancel <strong><%= test.name %></strong> ?</p>
+                        <form action="cancelTest/<%= test.id %>" method="post">
+                            <br>
+                            <button class="btn btn-sm btn-danger" style="margin-right: 1%;" type="submit">Yes, proceed!</button>
+                            <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">No, abort!</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function makeEditable() {
+            $(".form-control").prop('readonly', false);
+            $("#save-button").prop('disabled', false);
+        }
+    </script>
 
 
-<%- include ("partials/footer") -%>
+    <%- include ("partials/footer") -%>
+<!-- 
+    <p>Do you want to cancel <%= test.name %>?</p>
+                        <form action="/cancelTest/<%= test.id %>" method="post">
+                            <br>
+                            <button class="btn btn-sm btn-success" style="margin-right: 1%;" type="submit">Yes, proceed!</button>
+                            <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">No, abort!</button>
+                        </form>
+                     -->
