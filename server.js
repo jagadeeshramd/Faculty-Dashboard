@@ -169,12 +169,28 @@ app.get("/notifications/:id", function(req, res) {
 
 app.get("/markAsRead/:id", function(req, res) {
     var id = req.params.id;
+
+    //stub
+    var params = null;
+    if (id[0] === 'T') {
+        var str = id.split("&");
+        params = [false, str[1], str[2]];
+    } else params = [true, req.session.faculty.id, id];
+        
     connection.query(
-        "UPDATE faculty_notifications SET isRead=true WHERE f_id=? and n_id=?",
-        [req.session.faculty.id, id],
+        "UPDATE faculty_notifications SET isRead=? WHERE f_id=? and n_id=?",
+        params, 
         function(err, results, fields) {
-            if (err) console.log(err);
-            else res.send("200");
+            if (err) {
+                console.log(err); 
+                res.sendStatus(500);
+            } 
+            else {
+                if (results.affectedRows === 0) 
+                    res.sendStatus(404);
+                else
+                    res.sendStatus(200);
+            } 
         }
     );
 });
@@ -198,7 +214,7 @@ app.get("/updatecoursetab", function (req, res) {
     else{
         for(i=0;i<s.length;i++)
             s[i]=s[i].trim();
-        console.log(s);
+        // console.log(s);
         if(s.length==4){
             req.session.course.course_id = s[0];
             req.session.course.batch = parseInt(s[1]);
@@ -217,51 +233,85 @@ app.get("/updatecoursetab", function (req, res) {
 });
 
 app.get("/tests-and-assignments", function (req, res) {
+
+    // stub
+    var params = null;
+    if (req.query.test) params = [req.query.course, req.query.faculty];
+    else params = [req.session.course.course_id, req.session.faculty.id];
+
     connection.query(
         "SELECT * FROM tests WHERE course=? and f_id=?",
-        [req.session.course.course_id, req.session.faculty.id],
+        params,
         function (err, result1, fields) { 
-            if (err) console.log(err);
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
             else {
                 connection.query(
                     "SELECT * FROM assignments WHERE course=? and f_id=?",
-                    [req.session.course.course_id, req.session.faculty.id],
+                    params,
                     function (err, result2, fields) { 
-                        if (err) console.error(err);
-                        let msg = req.session.notifyMSG;
-                        let color = req.session.msgStatusColor;
-                        req.session.notifyMSG = null;
-                        req.session.msgStatusColor = null;
-                        var active_section = "tests"
-                        if (req.session.assignment_last_active) 
-                            active_section = "assignments"
-                        res.render("testAssignment", {
-                            tests: result1,
-                            assignments: result2,
-                            notification: msg,
-                            bgcolor: color,
-                            active_section: active_section
-                        });
+                        if (err) {
+                            console.error(err);
+                            res.sendStatus(500);
+                        }
+                        else {
+                            if (req.query.test) res.sendStatus(200);
+                            else {
+                                let msg = req.session.notifyMSG;
+                                let color = req.session.msgStatusColor;
+                                req.session.notifyMSG = null;
+                                req.session.msgStatusColor = null;
+                                var active_section = "tests"
+                                if (req.session.assignment_last_active) 
+                                    active_section = "assignments"
+                                res.render("testAssignment", {
+                                    tests: result1,
+                                    assignments: result2,
+                                    notification: msg,
+                                    bgcolor: color,
+                                    active_section: active_section
+                                });
+                            }
+                        }
                      }
                 );
-                
             }
         });
 });
 
 app.get("/tests/:id", function(req, res){
-    let test_id = parseInt(req.params.id) / 25625;
+    let test_id = req.params.id;
+
+    // stub
+    if (test_id[0] === 'T') {
+        var str = test_id.split("&");
+        params = [str[2], str[3], parseInt(str[1])/25625];
+    } else {
+        test_id = parseInt(req.params.id) / 25625;   
+        params = [req.session.course.course_id, req.session.faculty.id, test_id];
+    }
+
+
     connection.query(
         "SELECT * FROM tests WHERE course=? and f_id=? and id=?",
-        [req.session.course.course_id, req.session.faculty.id, test_id],
+        params,
         function(err, results, fields) {
             if (err) {
                 console.log(err);
-                res.render("failure");
+                res.sendStatus(500);
             } else {
-                res.render("tests", {
-                    test: results[0]
-                });
+                if (results.length === 0) res.sendStatus(404);
+                else {
+                    if (req.params.id[0] === "T") {
+                        res.status(200).send({"message": results[0].name});
+                    } else {
+                        res.render("tests", {
+                            test: results[0]
+                        });
+                    }
+                }
             }
         }
     );

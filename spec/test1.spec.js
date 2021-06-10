@@ -1,6 +1,6 @@
-const { response } = require("express");
+// const { response } = require("express");
 
-req  = require("request");
+Request  = require("request");
 fnreq = require("../functionreq.js");
 chkvalid = require("../public/js/checkvalid.js");
 describe("server",()=>{
@@ -200,7 +200,7 @@ describe("server",()=>{
     describe("GET /",()=>{
         var data={};
         beforeAll((done)=>{
-            req.get("http://localhost:3000/updatecoursetab?course=15CSE313_2018_CSE_A",(error,response,body)=>{
+            Request.get("http://localhost:3000/updatecoursetab?course=15CSE313_2018_CSE_A",(error,response,body)=>{
                 data.status=response.statusCode;
                 data.body=body;
                 done();
@@ -221,7 +221,7 @@ describe("server",()=>{
     describe("GET /",()=>{
         var data={};
         beforeAll((done)=>{
-            req.get("http://localhost:3000/updatecoursetab?course=15CSE3132018_CSE_A",(error,response,body)=>{
+            Request.get("http://localhost:3000/updatecoursetab?course=15CSE3132018_CSE_A",(error,response,body)=>{
                 data.status=response.statusCode;
                 data.body=body;
                 done();
@@ -242,7 +242,7 @@ describe("server",()=>{
     describe("GET /", () => {
         var data = {};
         beforeAll((done) => {
-            req.get("http://localhost:3000/det_student_info?rollno=CB.EN.U4CSE18001", (error, response, body) => {
+            Request.get("http://localhost:3000/det_student_info?rollno=CB.EN.U4CSE18001", (error, response, body) => {
                 data.status = response.statusCode;
                 data.body = body;
                 done();
@@ -263,7 +263,7 @@ describe("server",()=>{
     describe("GET /", () => {
         var data = {};
         beforeAll((done) => {
-            req.get("http://localhost:3000/det_student_info?rollno=CB.EN.U4CSE18011", (error, response, body) => {
+            Request.get("http://localhost:3000/det_student_info?rollno=CB.EN.U4CSE18011", (error, response, body) => {
                 data.status = response.statusCode;
                 data.body = body;
                 done();
@@ -284,7 +284,7 @@ describe("server",()=>{
     describe("GET /",()=>{
         var data={};
         beforeAll((done)=>{
-            req.get("http://localhost:3000/get_quiz_marks?course=15CSE313_2018_CSE_A&rollno=CB.EN.U4CSE18001",(error,response,body)=>{
+            Request.get("http://localhost:3000/get_quiz_marks?course=15CSE313_2018_CSE_A&rollno=CB.EN.U4CSE18001",(error,response,body)=>{
                 data.status=response.statusCode;
                 data.body=body;
                 done();
@@ -302,7 +302,7 @@ describe("server",()=>{
     describe("GET /",()=>{
         var data={};
         beforeAll((done)=>{
-            req.get("http://localhost:3000/get_quiz_marks?course=15CSE313_2018_CSE_A&rollno=CB.EN.U4CSE18011",(error,response,body)=>{
+            Request.get("http://localhost:3000/get_quiz_marks?course=15CSE313_2018_CSE_A&rollno=CB.EN.U4CSE18011",(error,response,body)=>{
                 data.status=response.statusCode;
                 data.body=body;
                 done();
@@ -321,7 +321,7 @@ describe("server",()=>{
     describe("GET /", () => {
         var data = {};
         beforeAll((done) => {
-            req.get("http://localhost:3000/det_student_detail_info?rollno=CB.EN.U4CSE18001", (error, response, body) => {
+            Request.get("http://localhost:3000/det_student_detail_info?rollno=CB.EN.U4CSE18001", (error, response, body) => {
                 data.status = response.statusCode;
                 data.body = body;
                 done();
@@ -342,7 +342,7 @@ describe("server",()=>{
     describe("GET /", () => {
         var data = {};
         beforeAll((done) => {
-            req.get("http://localhost:3000/det_student_detail_info?rollno=CB.EN.U4CSE18011", (error, response, body) => {
+            Request.get("http://localhost:3000/det_student_detail_info?rollno=CB.EN.U4CSE18011", (error, response, body) => {
                 data.status = response.statusCode;
                 data.body = body;
                 done();
@@ -359,5 +359,105 @@ describe("server",()=>{
 
     });
 
-}
-);
+    // ------------------------
+    // Marking notifications
+    // Case 1: no error
+    describe("Mark notification as read", () => {
+        var data = {};
+        beforeAll((done) => {
+            Request.get("http://localhost:3000/markAsRead/T&12301&1001", (error, response, body) => {
+                data.status = response.statusCode;
+                done();
+            });
+        });
+        
+        it("Status 200", () => {
+            expect(data.status).toBe(200);
+        });
+        
+    });
+
+    // Case 2 : wrong notification id
+    describe("Cannot mark notification as read. Wrong notification id.", () => {
+        var data = {};
+        beforeAll((done) => {
+            Request.get("http://localhost:3000/markAsRead/T&12301&2001", (error, response, body) => {
+                data.status = response.statusCode;
+                done();
+            });
+        });
+        
+        it("Status 404", () => {
+            expect(data.status).toBe(404);
+        });
+        
+    });
+
+    // Case 3: wrong faculty id
+    describe("Cannot mark notification as read. Wrong faculty id.", () => {
+        var data = {};
+        beforeAll((done) => {
+            Request.get("http://localhost:3000/markAsRead/T&11111&1001", (error, response, body) => {
+                data.status = response.statusCode;
+                done();
+            });
+        });
+        
+        it("Status 404", () => {
+            expect(data.status).toBe(404);
+        });
+        
+    });
+
+    // testing GET request for the route /tests-and-assignments
+    describe("GET /tests-and-assignments", () => {
+        var data = {};
+        beforeAll((done) => {
+            Request.get("http://localhost:3000/tests-and-assignments?test=true&course=15CSE313&faculty=12301", (error, response, body) => {
+                data.status = response.statusCode;
+                done();
+            });
+        });
+        
+        it("Status 200", () => {
+            expect(data.status).toBe(200);
+        });
+    });
+
+    // testing GET request for the route /tests/:id
+    // Case 1: no error
+    describe("GET /tests/102500", () => {
+        var data = {};
+        beforeAll((done) => {
+            Request.get("http://localhost:3000/tests/T&102500&15CSE313&12301", (error, response, body) => {
+                data.status = response.statusCode;
+                data.body = JSON.parse(body);
+                done();
+            });
+        });
+        
+        it("Status 200", () => {
+            expect(data.status).toBe(200);
+        });
+
+        it("Test title", () => {
+            expect(data.body.message).toBe('Tutorial 1');
+        });
+    });
+
+    // Case 2: Invalid test id
+    describe("GET /tests/76875", () => {
+        var data = {};
+        beforeAll((done) => {
+            Request.get("http://localhost:3000/tests/T&76875&15CSE313&12301", (error, response, body) => {
+                data.status = response.statusCode;
+                done();
+            });
+        });
+        
+        it("Status 404", () => {
+            expect(data.status).toBe(404);
+        });
+    });
+
+});
