@@ -3,33 +3,6 @@
     <h1 style="padding: 2% 0 0 0">
         <%= welcomeMessage %>
     </h1><br>
-    <div class="row">
-        <div class="col-lg-3">
-            <% if(faculty.isAdvisor) { %>
-                <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Class</a><br><br>
-
-            <% } else if(faculty.isBC) { %>
-                <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Batch</a><br><br>
-
-            <% } else if(faculty.isHOD) { %>
-                <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Department</a><br><br>
-
-            <% } %>
-
-            <!-- Button trigger modal -->
-            <button class="btn btn-primary" id="your-courses" style="width: 60%;" data-toggle="modal"
-                data-target="#exampleModal">
-                My Courses
-            </button>
-
-        </div>
-        <div class="col-lg-3">
-            <a href="#time-table" class="btn btn-info" style="width: 60%;">My Timetable</a>
-            <br><br>
-        </div>
-    </div>
-    <br><br>
-
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
