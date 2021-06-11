@@ -1,0 +1,27 @@
+<%- include ("partials/header") -%>
+
+<div style="padding: 5% 2%;">
+    <h1><%= data.title %> </h1>
+    <br>
+    <em>Posted on <%= data.date %> </em>
+
+    <br><br>
+
+    <textarea style="font-size: large;" class="form-control" cols="30" rows="7" readonly><%= data.content %></textarea>
+
+    <% if (data.link != "NA") { %> 
+        <br><br>
+        <div style="width: 100%; text-align: center;">
+            <embed style="width: 90%;height: 50rem;" src="<%= data.link %>#toolbar=0">
+        </div>
+        
+    <% } %> 
+
+    <br><br>
+    <a href="/" class="btn btn-dark" style="width: 15%;"><i class="fas fa-chevron-left"></i> <span style="margin-left: 10%;">Back to home</span> </a>
+    
+</div>
+
+
+
+<%- include ("partials/footer") -%>

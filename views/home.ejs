@@ -8,19 +8,20 @@
             <% if(faculty.isAdvisor) { %>
                 <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Class</a><br><br>
 
-                <% } else if(faculty.isBC) { %>
-                    <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Batch</a><br><br>
+            <% } else if(faculty.isBC) { %>
+                <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Batch</a><br><br>
 
-                    <% } else if(faculty.isHOD) { %>
-                        <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My
-                            Department</a><br><br>
-                        <% } %>
+            <% } else if(faculty.isHOD) { %>
+                <a href="myclass" id="my_class" style="width: 60%;" class="btn btn-info">My Department</a><br><br>
 
-                            <!-- Button trigger modal -->
-                            <button class="btn btn-primary" id="your-courses" style="width: 60%;" data-toggle="modal"
-                                data-target="#exampleModal">
-                                My Courses
-                            </button>
+            <% } %>
+
+            <!-- Button trigger modal -->
+            <button class="btn btn-primary" id="your-courses" style="width: 60%;" data-toggle="modal"
+                data-target="#exampleModal">
+                My Courses
+            </button>
+
         </div>
         <div class="col-lg-3">
             <a href="#time-table" class="btn btn-info" style="width: 60%;">My Timetable</a>
@@ -87,14 +88,8 @@
 
     <div class="row">
         <div id="course-text" class="col-lg-4 disp-text-home" style="height: 670px;">
-            <nav class="navbar navbar-expand-lg" id="search-list" style="
-                background-image: linear-gradient(
-                    90deg,
-                    #05a7e7,
-                    #2a26ff
-                );">
-                <a class="navbar-brand" href="#" style="color: beige;"><strong>Announcements and
-                        Circulars</strong></a>
+            <nav class="navbar navbar-expand-lg" id="search-list" style="background-image: linear-gradient(90deg,#05a7e7,#2a26ff);">
+                <a class="navbar-brand" href="/announcements-and-circulars" style="color: beige;"><strong>Announcements and Circulars</strong></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -102,7 +97,23 @@
                 </button>
             </nav>
             <div>
-                ...
+                <% if (notifications.length != 0) { %> 
+                    <% notifications.forEach(data => { %>
+                        <div style="position: relative;">
+                            <a href="notifications/<%= data.id %>" class="notification-card btn">
+                                <h5><%= data.title %></h5>
+                                <% var truncatedContent = data.content.substring(0, 40) + "..."; %> 
+                                <p class="notification-content"><%= truncatedContent %></p>
+                            </a>
+                            <button id="<%= data.id %>" class="mark-as-read" data-toggle="tooltip" data-placement="right" title="Mark as read"><i class="fab fa-readme"></i><i class="fas fa-check"></i></button>
+
+                        </div>
+                        
+                    <% }); %> 
+                <% } else { %> 
+                        <br><br><br>
+                        <div style="text-align: center;width: 100%;">No new notifications</div>
+                <% } %> 
             </div>
         </div>
 
@@ -203,5 +214,18 @@
 
 
     <br><br><br>
+
+    <script>
+        $(".mark-as-read").click(function() {
+            var n = $(this).attr("id");
+            $.ajax({
+                url: "markAsRead/" + n,
+                type: "GET",
+                success: () => {
+                    $(this).parent().fadeOut();
+                }
+            });
+        });
+    </script>
 
     <%- include ("partials/footer") -%>

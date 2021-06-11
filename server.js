@@ -10,6 +10,7 @@ const { type } = require("os");
 const pass = require("./config.js");
 const _ = require("lodash");
 const fnreq=require("./functionreq.js");
+const { connect } = require("http2");
 const app = express();
 
 cid = "";
@@ -76,40 +77,50 @@ app.get("/", function (req, res) {
         tl = "https://raw.githubusercontent.com/HarishK501/my-sample/master/faculty-timetables/";
         tl_file = _.lowerCase(req.session.faculty.name) + ".jpg";
         // console.log(wel);
+
         connection.query(
-            "select course_id,batch,dept,section,ismentor from course_faculty where faculty_id=? order by batch desc;",
+            "SELECT * FROM notifications WHERE id IN (SELECT n_id FROM faculty_notifications WHERE f_id=? AND isRead=FALSE);",
             [req.session.faculty.id],
-            function (error, result, fields) {
-                if (error)
-                    console.log("Error occured while fetching departments");
-                else if (result.length >= 1) {
-                    // console.log(result);
-                    if(req.session.course!=null)
-                    {
-                        course_sel =req.session.course.course_id +" " +req.session.course.batch +" " +req.session.course.dept +" " +req.session.course.section;
-                    
-                    }
-                    else{
-                        course_sel =result[0]["course_id"] +" " +result[0]["batch"] +" " +result[0]["dept"] +" " +result[0]["section"];
-                        req.session.course = result[0]; // first course in the list is made default
-                    }
-                    res.render("home", {
-                        courselen: result.length,
-                        welcomeMessage: wel,
-                        courses: result,
-                        coursesel: course_sel,
-                        faculty: req.session.faculty,
-                        timetable_link: tl + tl_file
-                    });
-                } else {
-                    res.render("home", {
-                        courselen: result.length,
-                        welcomeMessage: wel,
-                        courses: [],
-                        coursesel: "",
-                        faculty: req.session.faculty,
-                        timetable_link: tl + tl_file
-                    });
+            function (err, notifications, fields) {
+                if (err) console.log("Error occured while fetching notifications.\n" + err);
+                else {
+                    connection.query(
+                        "select course_id,batch,dept,section,ismentor from course_faculty where faculty_id=? order by batch desc;",
+                        [req.session.faculty.id],
+                        function (error, result, fields) {
+                            if (error)
+                                console.log("Error occured while fetching departments");
+                            else {
+                                if (result.length >= 1) {
+                                    if(req.session.course!=null)
+                                        course_sel =req.session.course.course_id +" " +req.session.course.batch +" " +req.session.course.dept +" " +req.session.course.section;
+                                    else{
+                                        course_sel =result[0]["course_id"] +" " +result[0]["batch"] +" " +result[0]["dept"] +" " +result[0]["section"];
+                                        req.session.course = result[0]; // first course in the list is made default
+                                    }
+                                    res.render("home", {
+                                        courselen: result.length,
+                                        welcomeMessage: wel,
+                                        courses: result,
+                                        coursesel: course_sel,
+                                        faculty: req.session.faculty,
+                                        timetable_link: tl + tl_file,
+                                        notifications: notifications
+                                    });
+                                } else {
+                                    res.render("home", {
+                                        courselen: result.length,
+                                        welcomeMessage: wel,
+                                        courses: [],
+                                        coursesel: "",
+                                        faculty: req.session.faculty,
+                                        timetable_link: tl + tl_file,
+                                        notifications: notifications
+                                    });
+                                }
+                            }
+                        }
+                    );
                 }
             }
         );
@@ -118,6 +129,70 @@ app.get("/", function (req, res) {
             message: "",
         });
     }
+});
+
+app.get("/announcements-and-circulars", function(req, res) {
+    connection.query(
+        "SELECT * FROM notifications WHERE id IN (SELECT n_id FROM faculty_notifications WHERE f_id=?);",
+        [req.session.faculty.id],
+        function(err, results, fields) {
+            if (err) console.log(err);
+            else {
+                res.render("allPosts", {posts: results})
+            }
+        }
+    );
+});
+
+app.get("/notifications/:id", function(req, res) {
+    var id = req.params.id;
+    connection.query(
+        "UPDATE faculty_notifications SET isRead=true WHERE f_id=? and n_id=?",
+        [req.session.faculty.id, id],
+        function(err, results, fields) {
+            if (err) console.log(err);
+            else {
+                connection.query(
+                    "SELECT * FROM notifications WHERE id=?",
+                    [id],
+                    function(err, results, fields) {
+                        if (err) console.log(err);
+                        else {
+                            res.render("post", {data: results[0]})
+                        }
+                    }
+                );
+            }
+        }
+    );
+});
+
+app.get("/markAsRead/:id", function(req, res) {
+    var id = req.params.id;
+
+    //stub
+    var params = null;
+    if (id[0] === 'T') {
+        var str = id.split("&");
+        params = [false, str[1], str[2]];
+    } else params = [true, req.session.faculty.id, id];
+        
+    connection.query(
+        "UPDATE faculty_notifications SET isRead=? WHERE f_id=? and n_id=?",
+        params, 
+        function(err, results, fields) {
+            if (err) {
+                console.log(err); 
+                res.sendStatus(500);
+            } 
+            else {
+                if (results.affectedRows === 0) 
+                    res.sendStatus(404);
+                else
+                    res.sendStatus(200);
+            } 
+        }
+    );
 });
 
 app.get("/updatecoursetab", function (req, res) {
@@ -139,7 +214,7 @@ app.get("/updatecoursetab", function (req, res) {
     else{
         for(i=0;i<s.length;i++)
             s[i]=s[i].trim();
-        console.log(s);
+        // console.log(s);
         if(s.length==4){
             req.session.course.course_id = s[0];
             req.session.course.batch = parseInt(s[1]);
@@ -158,51 +233,85 @@ app.get("/updatecoursetab", function (req, res) {
 });
 
 app.get("/tests-and-assignments", function (req, res) {
+
+    // stub
+    var params = null;
+    if (req.query.test) params = [req.query.course, req.query.faculty];
+    else params = [req.session.course.course_id, req.session.faculty.id];
+
     connection.query(
         "SELECT * FROM tests WHERE course=? and f_id=?",
-        [req.session.course.course_id, req.session.faculty.id],
+        params,
         function (err, result1, fields) { 
-            if (err) console.log(err);
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
             else {
                 connection.query(
                     "SELECT * FROM assignments WHERE course=? and f_id=?",
-                    [req.session.course.course_id, req.session.faculty.id],
+                    params,
                     function (err, result2, fields) { 
-                        if (err) console.error(err);
-                        let msg = req.session.notifyMSG;
-                        let color = req.session.msgStatusColor;
-                        req.session.notifyMSG = null;
-                        req.session.msgStatusColor = null;
-                        var active_section = "tests"
-                        if (req.session.assignment_last_active) 
-                            active_section = "assignments"
-                        res.render("testAssignment", {
-                            tests: result1,
-                            assignments: result2,
-                            notification: msg,
-                            bgcolor: color,
-                            active_section: active_section
-                        });
+                        if (err) {
+                            console.error(err);
+                            res.sendStatus(500);
+                        }
+                        else {
+                            if (req.query.test) res.sendStatus(200);
+                            else {
+                                let msg = req.session.notifyMSG;
+                                let color = req.session.msgStatusColor;
+                                req.session.notifyMSG = null;
+                                req.session.msgStatusColor = null;
+                                var active_section = "tests"
+                                if (req.session.assignment_last_active) 
+                                    active_section = "assignments"
+                                res.render("testAssignment", {
+                                    tests: result1,
+                                    assignments: result2,
+                                    notification: msg,
+                                    bgcolor: color,
+                                    active_section: active_section
+                                });
+                            }
+                        }
                      }
                 );
-                
             }
         });
 });
 
 app.get("/tests/:id", function(req, res){
-    let test_id = parseInt(req.params.id) / 25625;
+    let test_id = req.params.id;
+
+    // stub
+    if (test_id[0] === 'T') {
+        var str = test_id.split("&");
+        params = [str[2], str[3], parseInt(str[1])/25625];
+    } else {
+        test_id = parseInt(req.params.id) / 25625;   
+        params = [req.session.course.course_id, req.session.faculty.id, test_id];
+    }
+
+
     connection.query(
         "SELECT * FROM tests WHERE course=? and f_id=? and id=?",
-        [req.session.course.course_id, req.session.faculty.id, test_id],
+        params,
         function(err, results, fields) {
             if (err) {
                 console.log(err);
-                res.render("failure");
+                res.sendStatus(500);
             } else {
-                res.render("tests", {
-                    test: results[0]
-                });
+                if (results.length === 0) res.sendStatus(404);
+                else {
+                    if (req.params.id[0] === "T") {
+                        res.status(200).send({"message": results[0].name});
+                    } else {
+                        res.render("tests", {
+                            test: results[0]
+                        });
+                    }
+                }
             }
         }
     );

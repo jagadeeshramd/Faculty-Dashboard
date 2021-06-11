@@ -271,3 +271,36 @@ input[type='file'] {
     border: 2px solid #45b1ef;
     border-radius: 10px;
 }
+
+.notification-card {
+    margin: 0.5% 1% 0 1%;
+    padding: 2%;
+    text-align: left;
+    width: 98%;
+    background-color: #E2E6EA;
+    z-index: -1;
+}
+
+.notification-card:hover {
+    background-color: #c5cbd1;
+}
+
+.notification-content {
+    opacity: 0.7;
+}
+
+.mark-as-read {
+    border: none;
+    color: #8b9096;
+    font-size: 0.8rem;
+    position: absolute;
+    right: 4%;
+    top: 10%;
+    z-index: 10;
+
+}
+
+.mark-as-read:hover {
+    background-color: #8b9096;
+    color: white;
+}
