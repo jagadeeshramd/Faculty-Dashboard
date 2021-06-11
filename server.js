@@ -49,9 +49,10 @@ app.use(
 // database connection
 
 connection = mysql.createConnection({
-    host: "localhost",
+    host: "35.193.55.202",
     user: "root",
-    password: pass.SQLPass,
+    // password: pass.SQLPass,
+    password: "password",
     port: "3306",
     database: "facultydashboard",
 });
