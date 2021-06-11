@@ -7,7 +7,7 @@ const session = require("express-session");
 const { request } = require("http");
 const e = require("express");
 const { type } = require("os");
-// const pass = require("./config.js");
+const pass = require("./config.js");
 const _ = require("lodash");
 const fnreq=require("./functionreq.js");
 const { connect } = require("http2");
@@ -51,8 +51,7 @@ app.use(
 connection = mysql.createConnection({
     host: "35.193.55.202",
     user: "root",
-    // password: pass.SQLPass,
-    password: "password",
+    password: pass.SQLPass,
     port: "3306",
     database: "facultydashboard",
 });
