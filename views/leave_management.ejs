@@ -1,0 +1,199 @@
+<%- include ("partials/header") -%>
+<style>
+    .status-div {
+        width: 70%;
+        text-align: center;
+        color: aliceblue;
+        border-radius: 10px;
+    }
+
+    .leave-cards {
+        padding: 4%;
+        padding-top: 2%;
+        text-align: center  ;
+    }
+
+    .stat-numbers {
+        font-size: 3rem;
+        font-weight: bold;
+    }
+
+    .med {
+        color: green;
+    }
+
+    .form-div {
+        padding: 2%; 
+        /* padding-top: 0; */
+        border: 1px solid rgb(192, 189, 189);
+        border-radius: 10px;
+    }
+
+</style>
+
+<br>
+
+<section style="padding: 2% 3%;padding-bottom: 0;">
+    <h3>Leave Management</h3><br>
+    <h5>Leave Applications</h5>
+    
+    
+    <br>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+        <table class="table table-hover table-light table-striped">
+            <thead class="thead-dark ">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ID</th>
+                    <th style="width: 20%;" scope="col">Leave Type</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col">Start date</th>
+                    <th scope="col">End date</th>
+                    <th style="padding-left: 3%;" scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (records.length !=0) { var i=1; records.forEach(function(data){ %>
+                    <tr>
+                        <td>
+                            <%= i %>
+                        </td>
+                        <td>
+                            <%= data.id %>
+                        </td>
+                        <td>
+                            <%= data.type %>
+                        </td>
+                        <td style="padding-left: 2%;">
+                            <button style="border-radius: 50%;" data-toggle="tooltip" data-placement="right" title="<%= data.reason %>" class="btn btn-sm btn-light">
+                                <i class="far fa-question-circle"></i>
+                            </button>
+                            
+                        </td>
+                        <td>
+                            <%= data.start_date %>
+                        </td>
+                        <td>
+                            <%= data.end_date %>
+                        </td>
+                        <td>
+                            <% if(data.status == "Applied") { %> 
+                                <div class="status-div bg-primary"><%= data.status %></div>
+                            <% } else if(data.status == "Approved"){ %>
+                                <div class="status-div bg-success"><%= data.status %></div>
+                            <% } else { %>
+                                <div class="status-div bg-danger"><%= data.status %></div>
+                            <% } %> 
+                        </td>
+    
+                    </tr>
+                    <% i++; }) %>
+                    <% } else{ %>
+                        <tr>
+                            <td colspan="7"> - No leave applications so far - </td>
+                        </tr>
+                    <% } %>
+            </tbody>
+        </table>
+    
+    </div>
+</section>
+<br>
+<section style="padding: 2% 0;">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="leave-cards col-lg-6">
+                    <h4>Casual Leaves</h4>
+                    <span class="stat-numbers"><%= leaves.casual %> </span>
+                    <br><br><p>You have <%= leaves.casual %> out of 12 days available</p>
+                </div>
+                <div class="leave-cards col-lg-6">
+                    <h4>Special Casual Leaves</h4>
+                    <span class="stat-numbers"><%= leaves.sp_casual %> </span>
+                    <br><br><p>You have <%= leaves.sp_casual %> out of 15 days available</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="leave-cards col-lg-6">
+                    <h4>Vacation Leaves</h4>
+                    <span class="stat-numbers"><%= leaves.vacation %> </span>
+                    <br><br><p>You have <%= leaves.vacation %> out of 45 days available</p> 
+                </div>
+                <div class="leave-cards col-lg-6">
+                    <h4>Medical Leaves</h4>
+                    <span class="stat-numbers med"><%= leaves.medical %> </span>
+                    <% if (leaves.medical == 0) { %> 
+                        <br><br><p>You haven't taken any medical leave</p>
+                    <% } else { %>
+                        <br><br><p>You have taken <%= leaves.medical %> days in medical leave</p>
+                    <% } %> 
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 form-div" >
+            <h4>Apply Leave</h4><br>
+            <form action="/applyLeave" method="post">
+                <div class="row">
+                    <div class="col-lg-6">
+                            <label for="type">Leave type</label>
+                            <select class="form-control" id="type" name="type" required>
+                                <option value="Casual leave">Casual leave</option>
+                                <option value="Special Casual leave">Special Casual leave</option>
+                                <option value="Vacation leave">Vacation Leave</option>
+                                <option value="Medical leave">Medical Leave</option>
+                            </select>
+                    </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="startDate">Start Date</label>
+                        <input id="startDate" name="startDate" type="date" class="form-control" required/>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="days">Number of days needed</label>
+                        <input id="days" name="days" type="number" class="form-control" max="5" required/>
+                    </div>
+                </div><br>
+                <label for="reason">Reason</label>
+                <textarea name="reason" class="form-control" id="reason" cols="30" rows="3" required></textarea><br>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+            
+            
+        </div>
+    </div>
+    
+</section>
+<br><br>
+<script>
+    var type = document.getElementById("type");
+    type.onchange = () => {
+        if (type.value == "Casual leave")
+            document.getElementById("days").setAttribute("max", "5");
+        else if (type.value == "Special Casual leave")
+                document.getElementById("days").setAttribute("max", "5");
+             else if (type.value == "Vacation leave")
+                    document.getElementById("days").setAttribute("max", "10");
+                        else document.getElementById("days").setAttribute("max", "");
+    }
+    $(document).ready(()=>{
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; 
+        var yyyy = today.getFullYear();
+        if(dd<10){
+                dd='0'+dd
+            } 
+            if(mm<10){
+                mm='0'+mm
+            } 
+
+        today = yyyy+'-'+mm+'-'+dd;
+        document.getElementById("startDate").setAttribute("min", today);
+    });
+    
+</script>
+
+
+<%- include ("partials/footer") -%>

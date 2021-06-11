@@ -13,6 +13,11 @@ const fnreq=require("./functionreq.js");
 const { connect } = require("http2");
 const app = express();
 
+Date.prototype.addDays = function(date, days) {
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
 cid = "";
 cbatch = "";
 cdept = "";
@@ -1180,6 +1185,35 @@ app.get("/setTestsActive", function(req, res){
     res.send("200");
 });
 
+app.get("/leave-management", (req, res) => {
+    connection.query(
+        "select * from leave_records where f_id=? order by id desc;",
+        [req.session.faculty.id],
+        (err, records, fields) => {
+            if (err) {
+                console.log(err);
+                res.sendStatus(500);
+            } else {
+                connection.query(
+                    "select * from faculty_leaves where f_id=?;",
+                    [req.session.faculty.id],
+                    (err, leaves, fields) => {
+                        if (err) {
+                            console.log(err);
+                            res.sendStatus(500);
+                        } else {
+                            res.render("leave_management", {
+                                records: records,
+                                leaves: leaves[0]
+                            });
+                        }
+                    }
+                );
+            }
+        }
+    );
+});
+
 // POST methods ----------------------------------------------------------
 app.post("/login", function (req, res) {
     var email = req.body.email;
@@ -1924,7 +1958,38 @@ app.post("/re_calc_grade",function(req,res){
       
 });
 
-var server=app.listen(process.env.PORT || 3000, function () {
+app.post("/applyLeave", (req, res) => {
+    var days = parseInt(req.body.days) - 1;
+    var startDate = new Date(req.body.startDate);
+    var endDate = startDate.addDays(startDate, days);
+    var dd = endDate.getDate();
+    var mm = endDate.getMonth()+1; 
+    var yyyy = endDate.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd
+    } 
+    if(mm<10){
+        mm = '0' + mm
+    } 
+
+    endDate = yyyy+'-'+mm+'-'+dd;
+
+    connection.query(
+        "insert into leave_records(f_id, type, start_date, end_date, reason, status) values(?, ?, ?, ?, ?, 'Applied');",
+        [req.session.faculty.id, req.body.type, req.body.startDate, endDate, req.body.reason],
+        (err, results, fields) => {
+            if (err) {
+                console.log(err);
+                res.sendStatus(500);
+            } else {
+                res.redirect("/leave-management");
+            }
+        }
+    );
+});
+
+var server = app.listen(process.env.PORT || 3000, function () {
     console.log("Server started running");
 });
 
