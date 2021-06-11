@@ -26,6 +26,7 @@
 </head>
 
 <body>
+    <button id="menu-button" class="btn btn-info" onclick="openNav()"><i class="fas fa-bars"></i></button>
 
     <nav class="navbar navbar-expand-lg" style="background-image:linear-gradient(90deg,#00c4cc,#7d2ae8); height:70px; ">
         <a class="navbar-brand" id="home-button" href="/" style="color:beige; margin-left:5%;"><strong>Faculty
@@ -50,4 +51,31 @@
             </ul>
         </div>
     </nav>
-    <div style="padding: 0 5%;">
+
+    <div id="mySidenav" class="sidenav">
+        <button class="btn btn-primary closebtn" onclick="closeNav()"><i class="fas fa-times"></i></button>
+        <h4 style="margin-left: 32px;">Faculty <br> Dashboard</h1>
+            <br><br>
+        <a class="btn btn-info sidenav-link" href="/"><i class="fas fa-home sidenav-icon"></i> Dashboard</a>
+        <% if(locals.faculty && !locals.profile) { %>
+            <% if(faculty.isAdvisor) { %>
+                <a href="myclass" id="my_class" class="btn btn-info sidenav-link"><i class="fas fa-door-open sidenav-icon"></i> My Class</a>
+    
+            <% } else if(faculty.isBC) { %>
+                <a href="myclass" id="my_class" class="btn btn-info sidenav-link"><i class="fas fa-door-open sidenav-icon"></i> My Batch</a>
+    
+            <% } else if(faculty.isHOD) { %>
+                <a href="myclass" id="my_class" class="btn btn-info sidenav-link"><i class="fas fa-door-open sidenav-icon"></i> My Department</a>
+            <% } %>
+            <button class="btn btn-info sidenav-link" id="your-courses"  data-toggle="modal" data-target="#exampleModal">
+                <i class="fas fa-book-open sidenav-icon"></i> My Courses
+            </button>
+        <% } %>
+        
+        <a href="#time-table" class="btn btn-info sidenav-link" onclick="closeNav()"><i class="fas fa-table sidenav-icon"></i> My Timetable</a>
+        <a class="btn btn-info sidenav-link" href="/profile"><i class="fas fa-user sidenav-icon"></i> My profile</a>
+        <a class="btn btn-info sidenav-link" href="/logout"><i class="fas fa-sign-out-alt sidenav-icon"></i> Log out</a>
+    </div>
+
+    <div id="main" style="padding: 0 5%;">
+        <div id="dim" onclick="closeNav()"></div>

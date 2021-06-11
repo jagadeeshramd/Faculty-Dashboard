@@ -350,6 +350,7 @@ app.get("/profile", function (req, res) {
         faculty: req.session.faculty,
         notification: msg,
         bgcolor: color,
+        profile: true
     });
 });
 
