@@ -2,6 +2,6 @@ FROM node:14
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
-COPY /var/lib/jenkins/workspace/faculty-dashboard-CI-CD-pipeline .
+COPY . .
 EXPOSE 3000
 CMD ["npm","start"]
