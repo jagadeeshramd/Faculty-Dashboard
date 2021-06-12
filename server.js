@@ -723,7 +723,7 @@ app.get("/calculate_grade",function(req,res){
 
 app.get("/view_edit_cutoff",function(req,res){
     var mentor=req.session.course.ismentor;
-    dcname=req.session.course.course_id+" ";
+    var dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
     dcname+=req.session.course.dept+" ";
     dcname+=req.session.course.section;
@@ -775,7 +775,7 @@ app.get("/filter_data",function(req,res){
     if(req.query.ub!=null)
         var y=req.query.ub;
 
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
@@ -840,7 +840,7 @@ app.get("/feedback",function(req,res){
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
 
-    tbname="course_"+cname+"_feedback";
+    var tbname="course_"+cname+"_feedback";
     connection.query(
         "select * from "+tbname+";",
         [cname],
@@ -994,7 +994,7 @@ app.get("/get_attendance_list", function (req, res) {
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
-    tablename="course_"+cname;
+    var tablename="course_"+cname;
     let d=req.query.attdate;
     let s=req.query.speriod;
     let ep=req.query.eperiod;
@@ -1627,11 +1627,11 @@ app.post("/re_calc_CA", function (req, res) {
 
                 var ass_wt={};
                 var ca_total=0;
-                for(i=0;i<results.length;i++){
+                for(var i of results){
                     
-                    let r=results[i]['ass_name'];
-                    let t=results[i]['totalmarks'];
-                    let w=results[i]['weightage'];
+                    let r=i['ass_name'];
+                    let t=i['totalmarks'];
+                    let w=i['weightage'];
                     if(w==0)
                         continue;
 
