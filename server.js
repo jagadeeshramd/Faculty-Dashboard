@@ -879,7 +879,7 @@ app.get("/det_student_info", function (req, res) {
 
 app.get("/get_quiz_marks", function (req, res) {
     var rno = req.query.rollno;
-
+    var cname = null;
     if(req.query.course!=null)
         cname=req.query.course;
     else{
@@ -1004,7 +1004,7 @@ app.get("/get_attendance_list", function (req, res) {
     
     console.log(d+" "+s+" "+ep);
     
-    q="select * from "+tablename+"_attendance where att_date=? and s_period=? and e_period=?;";
+    var q="select * from "+tablename+"_attendance where att_date=? and s_period=? and e_period=?;";
     connection.query(
         q,
         [d,s,ep],
@@ -1517,9 +1517,8 @@ app.post("/add_assessment", function (req, res) {
                 );
                 res.redirect("/mark_grade?addmsg=" + msg+"&assname="+assessment);
             } else {
-                tablename = "course_" + cname;
-                q =
-                    "alter table " +
+                var tablename = "course_" + cname;
+                var q = "alter table " +
                     tablename +
                     "_student_academic_info add " +
                     colname +
@@ -1799,8 +1798,8 @@ app.post("/changecutoff",function(req,res){
            
             cname=req.session.course.course_id+"_";
             cname+=req.session.course.batch+"_";
-            tbname="course_"+cname+"grade_cutoff";
-            q="update "+tbname+" set marks="+mark[i]+" where grade='"+grades[i]+"';";
+            var tbname="course_"+cname+"grade_cutoff";
+            var q="update "+tbname+" set marks="+mark[i]+" where grade='"+grades[i]+"';";
             connection.query(
                 q,
                 function (error, results, fields) {
@@ -1829,10 +1828,10 @@ app.post("/re_calc_grade",function(req,res){
             else {
                 let g=[];
                 let marklist=[];
-                for(i=0;i<results.length;i++)
+                for(var p of results)
                 {
-                    g.push(results[i]['grade']);
-                    marklist.push(results[i]['marks']);
+                    g.push(p['grade']);
+                    marklist.push(p['marks']);
                 }
                 cname=req.session.course.course_id+"_";
                 cname+=req.session.course.batch+"_";
