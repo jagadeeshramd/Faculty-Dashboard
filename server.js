@@ -1847,13 +1847,13 @@ app.post("/re_calc_grade",function(req,res){
                         }
                         else {
                             
-                            for(var i=0;i<rollno.length;i++)
+                            for(var i of rollno)
                             {
                                 console.log(marklist);
-                                let j=fnreq.cgrade(rollno[i]['total'],marklist,g);
-                                if(j!=rollno[i]['grade'])
+                                let j=fnreq.cgrade(i['total'],marklist,g);
+                                if(j!=i['grade'])
                                 {
-                                    q="update "+tbname+" set grade='"+j+"' where roll_number='"+rollno[i]['roll_number']+"';";
+                                    q="update "+tbname+" set grade='"+j+"' where roll_number='"+i['roll_number']+"';";
                                     connection.query(
                                         q,
                                         function (error2, rollno2, fields2) {
