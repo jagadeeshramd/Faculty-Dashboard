@@ -136,7 +136,6 @@ function nofilter(){
 
 function changegraph(obj){
     var myChart;
-    var ctx = document.getElementById("visual-graph").getContext('2d');
     document.getElementById("graph-status").style.display="none";
     if(myChart)
     {
@@ -150,10 +149,6 @@ function changegraph(obj){
         marks.push(obj[i]['total']);
     }
 
-    var dataValues = marks;
-    var dataLabels = [];
-    for(i=0;i<dataValues.length;i++)
-    dataLabels.push(''); 
 }
 
 function updatecutoff(){
