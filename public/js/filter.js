@@ -170,20 +170,9 @@ function updatecutoff(){
     {
         var x=marks[i-1];
         
-        if(x==0)
-        {
-            if(x<marks[i])
-            {
-                f=1;
-                break;
-            }
-        }
-        else{
-            if(x<=marks[i])
-            {
-                f=1;
-                break;
-            }
+        if((x==0 && x<marks[i]) || x<=marks[i]) {
+            f=1;
+            break;
         }
     }
     
