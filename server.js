@@ -919,7 +919,7 @@ app.get("/get_quiz_marks", function (req, res) {
 app.get("/get_assignment_marks", function (req, res) {
     var rno = req.query.rollno;
 
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
@@ -1558,8 +1558,8 @@ app.post("/update_marks", function (req, res) {
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
-    tablename="course_"+cname+"_student_academic_info";
-    q="update "+tablename+" set "+ass_name+"=? where roll_number=?";
+    var tablename="course_"+cname+"_student_academic_info";
+    var q="update "+tablename+" set "+ass_name+"=? where roll_number=?";
     console.log(q);
                     
     connection.query(
@@ -1817,8 +1817,8 @@ app.post("/changecutoff",function(req,res){
 app.post("/re_calc_grade",function(req,res){
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
-    tbname="course_"+cname+"grade_cutoff";
-    q="select * from "+tbname+" order by marks;";
+    var tbname="course_"+cname+"grade_cutoff";
+    var q="select * from "+tbname+" order by marks;";
     connection.query(
         q,
         function (error, results, fields) {
@@ -1847,7 +1847,7 @@ app.post("/re_calc_grade",function(req,res){
                         }
                         else {
                             
-                            for(i=0;i<rollno.length;i++)
+                            for(var i=0;i<rollno.length;i++)
                             {
                                 console.log(marklist);
                                 let j=fnreq.cgrade(rollno[i]['total'],marklist,g);
