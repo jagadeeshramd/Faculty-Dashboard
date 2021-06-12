@@ -136,59 +136,29 @@ function nofilter(){
 
 function changegraph(obj){
     var myChart;
-        var ctx = document.getElementById("visual-graph").getContext('2d');
-        document.getElementById("graph-status").style.display="none";
-        if(myChart)
-        {
-            myChart.destroy();
-        }
-        
-        console.log(obj);
-        marks=[];
-        for(i=0;i<obj.length;i++)
-        {
-            marks.push(obj[i]['total']);
-        }
+    var ctx = document.getElementById("visual-graph").getContext('2d');
+    document.getElementById("graph-status").style.display="none";
+    if(myChart)
+    {
+        myChart.destroy();
+    }
+    
+    console.log(obj);
+    marks=[];
+    for(i=0;i<obj.length;i++)
+    {
+        marks.push(obj[i]['total']);
+    }
 
-        var dataValues = marks;
-        var dataLabels = [];
-        for(i=0;i<dataValues.length;i++)
-        dataLabels.push('');
-        myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: dataLabels,
-            datasets: [{
-            label: 'Students Marks',
-            data: dataValues,
-            backgroundColor: '#2a26ff',
-            }]
-        },
-        options: {
-            scales: {
-            xAxes: [{
-                display: false,
-                barPercentage: 1.1
-                
-            }, {
-                display: true,
-                ticks: {
-                    autoSkip: false,
-                }
-            }],
-            yAxes: [{
-                ticks: {
-                beginAtZero:true
-                }
-            }]
-            }
-        }
-        }); 
+    var dataValues = marks;
+    var dataLabels = [];
+    for(i=0;i<dataValues.length;i++)
+    dataLabels.push(''); 
 }
 
 function updatecutoff(){
-    marks=[];
-    o=document.getElementById("O").value;
+    var marks=[];
+    var o=document.getElementById("O").value;
     marks.push(o);
     a1=document.getElementById("A+").value;
     marks.push(a1);
