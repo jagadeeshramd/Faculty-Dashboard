@@ -154,7 +154,7 @@ app.get("/notifications/:id", function(req, res) {
                     "SELECT * FROM notifications WHERE id=?",
                     [id],
                     function(err1, results1, fields1) {
-                        if (err) console.log(err);
+                        if (err1) console.log(err1);
                         else {
                             res.render("post", {data: results1[0]})
                         }
@@ -250,8 +250,8 @@ app.get("/tests-and-assignments", function (req, res) {
                     "SELECT * FROM assignments WHERE course=? and f_id=?",
                     params,
                     function (err2, result2, fields2) { 
-                        if (err) {
-                            console.error(err);
+                        if (err2) {
+                            console.error(err2);
                             res.sendStatus(500);
                         }
                         else {
@@ -387,8 +387,9 @@ app.get("/admin", function (req, res) {
 
 app.get("/myclass", function (req, res) {
     req.session.classID = null;
+    var l = null;
     if (req.query.facultyid != null) {
-        let l = req.query.facultyid;
+        l = req.query.facultyid;
     }
     else {
         l = req.session.faculty.id;
@@ -461,16 +462,12 @@ app.get("/temp", function (req, res) {
 });
 
 app.get("/courseinfo", function (req, res) {
-    var success = false;
-    var studlist = [];
     var ccode=req.session.course.course_id;
     connection.query(
         "select * from course_list where course_code='"+ccode+"';",
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length == 1) {
-                success = true;
-                studlist = results;
                 res.render("courseinfo", {
                     status: true,
                     syllabus: results[0]["course_syllabus"],
@@ -481,7 +478,6 @@ app.get("/courseinfo", function (req, res) {
                     ismentor: req.session.course.ismentor
                 });
             } else {
-                success = false;
                 res.render("courseinfo", {
                     status: false,
                     syllabus: "#",
@@ -528,9 +524,6 @@ app.get("/reg_students", function (req, res) {
 });
 
 app.get("/mark_grade", function (req, res) {
-    
-    let ttype=req.query.testtype;
-    let tnum=req.query.testnum;
     let add_msg=req.query.addmsg;
     
     dcname=req.session.course.course_id+" ";
@@ -577,7 +570,7 @@ app.get("/mark_grade", function (req, res) {
                 
                 connection.query(
                     q,
-                    function (error1, results1, fields) {
+                    function (error1, results1, fields1) {
                         if (error1) console.log(error1);
                         else if (results1.length >= 1) {
                             smark=[]
@@ -1053,9 +1046,9 @@ app.get("/get_attendance_list", function (req, res) {
                                 q="insert into "+tablename+"_attendance values(?,?,?,?,?);";
                                 connection.query(q,
                                         [o['roll_number'],d,s,ep,0],
-                                        function (error1, resultinsert, fields1) {
-                                                        if (error1){
-                                                            console.log(error1);
+                                        function (error2, resultinsert, fields2) {
+                                                        if (error2){
+                                                            console.log(error2);
                                                             success = false;
                                                             res.render("attendance", {
                                                                 status: true,
@@ -1531,10 +1524,10 @@ app.post("/add_assessment", function (req, res) {
                     colname +
                     " float default 0.0;";
                 console.log("ok");
-                connection.query(q, function (error1, results, fields1) {
+                connection.query(q, function (error1, results1, fields1) {
                     if (error1) {
                         console.log(error1);
-                        var msg = encodeURIComponent(
+                        msg = encodeURIComponent(
                             "Sorry assessment is already available"
                         );
                         res.redirect("/mark_grade?addmsg=" + msg+"&assname="+assessment);
@@ -1588,7 +1581,7 @@ app.post("/update_marks", function (req, res) {
 app.post("/update_CA_weightage", function (req, res) {
     
     var ass_name=req.body.assname;
-    var ass_name=fnreq.ass_to_short(ass_name);
+    ass_name=fnreq.ass_to_short(ass_name);
     var w=req.body.weight;
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
@@ -1733,7 +1726,6 @@ app.post("/changeurl", function (req, res) {
 
 
 app.post("/update_attendance", function (req, res) {
-    var roll_number=req.body.roll_number;
     console.log("update att");
     let r=req.body.roll_number;
     let d=req.body.attdate;
