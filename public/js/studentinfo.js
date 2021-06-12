@@ -84,7 +84,7 @@ function dispquiz(record){
 }
 
 function dispassignment(record){
-    ul=document.getElementById("assignment");
+    var ul=document.getElementById("assignment");
 
   
     while (ul.firstChild) {

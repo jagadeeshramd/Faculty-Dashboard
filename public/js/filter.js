@@ -139,13 +139,6 @@ function changegraph(obj){
     {
         myChart.destroy();
     }
-    
-    var marks=[];
-    for(var i of obj)
-    {
-        marks.push(i['total']);
-    }
-
 }
 
 function updatecutoff(){
@@ -166,7 +159,7 @@ function updatecutoff(){
     marks.push(p);
 
     var f=0;
-    for(i=1;i<marks.length;i++)
+    for(var i=1;i<marks.length;i++)
     {
         var x=marks[i-1];
         

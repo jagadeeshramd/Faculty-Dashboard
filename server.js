@@ -632,7 +632,6 @@ app.get("/calculate_CA",function(req,res){
     dcname+=req.session.course.section;
 
     var cname=req.session.course.course_id+"_";
-    cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
@@ -647,7 +646,7 @@ app.get("/calculate_CA",function(req,res){
 
                 let ass_wt=[];
                 let ca_total=0;
-                for(i=0;i<results.length;i++){
+                for(var i=0;i<results.length;i++){
                     if(results[i]['ass_name'].localeCompare("CA")==0)
                     {
                         ca_total=results[i]['totalmarks'];
@@ -781,6 +780,7 @@ app.get("/filter_data",function(req,res){
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
     tbname="course_"+cname+"_student_academic_info";
+    var q = null;
     if(filtype==0){
         q="select total from "+tbname+" where total>="+x+";";
     }
@@ -1026,7 +1026,7 @@ app.get("/get_attendance_list", function (req, res) {
             } 
             else 
             {
-                var success = false;
+                success = false;
                 q= "select distinct roll_number from "+tablename+"_attendance;"
                 connection.query(
                     q,
