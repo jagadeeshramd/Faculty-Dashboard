@@ -829,13 +829,13 @@ app.get("/filter_data",function(req,res){
 
 app.get("/feedback",function(req,res){
     
-    dcname=req.session.course.course_id+" ";
+    var dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
     dcname+=req.session.course.dept+" ";
     dcname+=req.session.course.section;
 
     
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
@@ -958,7 +958,7 @@ app.get("/get_periodical_marks", function (req, res) {
     cname+=req.session.course.section;
     var tablename="course_"+cname;
     
-    q="select * from "+tablename+"_student_academic_info where roll_number=?;";
+    var q="select * from "+tablename+"_student_academic_info where roll_number=?;";
     connection.query(
         q,
         [rno],
@@ -1096,11 +1096,11 @@ app.get("/get_attendance", function (req, res) {
     
     var rno = req.query.rollno;
 
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
-    tablename="course_"+cname;
+    var tablename="course_"+cname;
     
     connection.query(
         "select roll_number,(sum(classes)/sum(e_period-s_period+1))*100 as percentage from " +
@@ -1613,11 +1613,11 @@ app.post("/re_calc_CA", function (req, res) {
     
     console.log("re-calculating CA");
     
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
-    tbname="course_"+cname+"_student_academic_info";
+    var tbname="course_"+cname+"_student_academic_info";
     connection.query(
         "select ass_name,totalmarks,weightage from assessment_list where course_code_full=? and ass_name!='CA';",
         [cname],
@@ -1794,7 +1794,7 @@ app.post("/changecutoff",function(req,res){
 
     if(mark.length==grades.length){
 
-        for(i=0;i<mark.length;i++){
+        for(var i=0;i<mark.length;i++){
 
            
             cname=req.session.course.course_id+"_";
