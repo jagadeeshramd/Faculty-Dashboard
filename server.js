@@ -495,7 +495,7 @@ app.get("/courseinfo", function (req, res) {
 app.get("/reg_students", function (req, res) {
     var success = false;
     var studlist = [];
-    l="%U4";
+    var l="%U4";
     l+=req.session.course.dept;
     l+=req.session.course.batch%2000;
     l+=req.session.course.section.charCodeAt(0) - 'A'.charCodeAt(0);

@@ -17,42 +17,17 @@ function getCookie(name) {
 
 function changefilter(x){
     console.log(x.value);
-    if(x.value==0)
+    if(x.value==0 || x.value==1)
     {
         $('#lower-bound-grp').show();
         $('#upper-bound-grp').hide();
     }
-    else if(x.value==1)
-    {
-        $('#lower-bound-grp').show();
-        $('#upper-bound-grp').hide();
-    }
-    else if(x.value==2)
+    else if(x.value==2 || x.value==3)
     {
         $('#lower-bound-grp').hide();
         $('#upper-bound-grp').show();
     }
-    else if(x.value==3)
-    {
-        $('#lower-bound-grp').hide();
-        $('#upper-bound-grp').show();
-    }
-    else if(x.value==4)
-    {
-        $('#lower-bound-grp').show();
-        $('#upper-bound-grp').show();
-    }
-    else if(x.value==5)
-    {
-        $('#lower-bound-grp').show();
-        $('#upper-bound-grp').show();
-    }
-    else if(x.value==6)
-    {
-        $('#lower-bound-grp').show();
-        $('#upper-bound-grp').show();
-    }
-    else if(x.value==7)
+    else if(x.value >= 4 && x.value <= 7 )
     {
         $('#lower-bound-grp').show();
         $('#upper-bound-grp').show();
@@ -60,9 +35,9 @@ function changefilter(x){
 }
 
 function applyfilter(){
-    o=document.getElementById("filter-type").value;
-    x=document.getElementById("lower-bound").value;
-    y=document.getElementById("upper-bound").value;
+    var o=document.getElementById("filter-type").value;
+    var x=document.getElementById("lower-bound").value;
+    var y=document.getElementById("upper-bound").value;
     var val={};
     if(o==0)
     {
@@ -148,13 +123,13 @@ function nofilter(){
     data={
         option:8
     };
-    $.get('filter_data',data,function(rdata,status){
-        if(rdata['comp']){
-            document.getElementById("maxm").innerHTML=rdata['maxmark'];
-            document.getElementById("minm").innerHTML=rdata['minmark'];
-            document.getElementById("avgm").innerHTML=rdata['avgmark'];
-            document.getElementById("totalstud").innerHTML=rdata['totalstud'];
-            changegraph(rdata['marks']);
+    $.get('filter_data',data,function(data_r,status){
+        if(data_r['comp']){
+            document.getElementById("maxm").innerHTML=data_r['maxmark'];
+            document.getElementById("minm").innerHTML=data_r['minmark'];
+            document.getElementById("avgm").innerHTML=data_r['avgmark'];
+            document.getElementById("totalstud").innerHTML=data_r['totalstud'];
+            changegraph(data_r['marks']);
         }
     });
 }   
@@ -179,7 +154,7 @@ function changegraph(obj){
         var dataLabels = [];
         for(i=0;i<dataValues.length;i++)
         dataLabels.push('');
-        var myChart = new Chart(ctx, {
+        myChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: dataLabels,
