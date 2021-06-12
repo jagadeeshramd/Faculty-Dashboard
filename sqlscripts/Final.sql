@@ -340,11 +340,13 @@ CREATE TABLE tests(id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100),
 date VARCHAR(10), time VARCHAR(5), instructions VARCHAR(1000), course VARCHAR(50), f_id VARCHAR(10) REFERENCES faculty(id));
 
 INSERT INTO tests(name, date,time, instructions, course, f_id) 
-	VALUES	('Test 1', '2021-01-30','11:00','No negative marking. Duration: 15 minutes','15CSE301', '12301'),
-			('Tutorial 1', '2021-02-14','15:00','Negative marking. Duration: 1 hour','15CSE301', '14312');
-
+	VALUES	('Test 1', '2021-01-30','11:00','No negative marking. Duration: 15 minutes','15CSE301', 12301),
+			('Tutorial 1', '2021-02-14','15:00','Negative marking. Duration: 1 hour','15CSE301', 14312);
+INSERT INTO tests(name, date,time, instructions, course, f_id) 
+	VALUES	('Test 1', '2021-01-30','11:00','No negative marking. Duration: 15 minutes','15CSE313', 12301),
+			('Tutorial 1', '2021-06-14','15:00','Negative marking. Duration: 1 hour','15CSE313', 12301);
 SELECT * FROM tests;
-
+DELETE FROM tests WHERE id=3;
 -- drop table tests;
 
 -- *************************************************************************************************
