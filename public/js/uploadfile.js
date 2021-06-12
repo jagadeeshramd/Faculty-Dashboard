@@ -52,7 +52,7 @@ function getfile()
     else if(filenum==3){
         filetype="course_eval";
     }
-    else if(filenum==2){
+    else if(filenum==4){
         filetype="course_syll";
     }
     console.log(foldername+"/"+filetype);
@@ -118,7 +118,7 @@ function uploadfile()
         else if(filenum==3){
             document.getElementById("courseevallink").href=downloadURL;
         }
-        else if(filenum==2){
+        else if(filenum==4){
             document.getElementById("coursesyllink").href=downloadURL;
         }
         $.post('/changeurl',data,function(data,status){
