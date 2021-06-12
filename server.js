@@ -626,7 +626,7 @@ app.get("/calculate_CA",function(req,res){
     if(uval.localeCompare("true")==0)
         u=true;
     console.log(u);
-    dcname=req.session.course.course_id+" ";
+    var dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
     dcname+=req.session.course.dept+" ";
     dcname+=req.session.course.section;
@@ -646,14 +646,14 @@ app.get("/calculate_CA",function(req,res){
 
                 let ass_wt=[];
                 let ca_total=0;
-                for(var i=0;i<results.length;i++){
-                    if(results[i]['ass_name'].localeCompare("CA")==0)
+                for(var i of results){
+                    if(i['ass_name'].localeCompare("CA")==0)
                     {
-                        ca_total=results[i]['totalmarks'];
+                        ca_total=i['totalmarks'];
                         continue;
                     }
-                    var r=fnreq.ass_to_full(results[i]['ass_name']);
-                    ass_wt.push([r,results[i]['totalmarks'],results[i]['weightage']]);
+                    var r=fnreq.ass_to_full(i['ass_name']);
+                    ass_wt.push([r,i['totalmarks'],i['weightage']]);
                 }
                 connection.query(
                     "select roll_number,CA from "+tbname+"_student_academic_info;",
@@ -686,7 +686,7 @@ app.get("/calculate_grade",function(req,res){
     dcname+=req.session.course.section;
 
 
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     
 
@@ -731,7 +731,7 @@ app.get("/view_edit_cutoff",function(req,res){
 
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
-    tbname="course_"+cname+"grade_cutoff";
+    var tbname="course_"+cname+"grade_cutoff";
     connection.query(
         "select * from "+tbname+" order by marks desc;",
         function (error, cutoff, fields) {
@@ -889,7 +889,7 @@ app.get("/get_quiz_marks", function (req, res) {
         cname+=req.session.course.section;  
     }
     var tablename="course_"+cname;
-    q="select * from "+tablename+"_student_academic_info where roll_number=?;";
+    var q="select * from "+tablename+"_student_academic_info where roll_number=?;";
     connection.query(
         q,
         [rno],
@@ -923,7 +923,7 @@ app.get("/get_assignment_marks", function (req, res) {
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
-    tablename="course_"+cname;
+    var tablename="course_"+cname;
     q="select * from "+tablename+"_student_academic_info where roll_number=?;";
     connection.query(
         q,
@@ -965,10 +965,10 @@ app.get("/get_periodical_marks", function (req, res) {
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length == 1) {
-                marks={}
-                for(k in results[0]){
+                var marks={};
+                for(var k in results[0]){
                     if(k.startsWith("P")){
-                        k1=k.slice(1,k.length);
+                        var k1=k.slice(1,k.length);
                         marks[k1]=results[0][k];
                     }
                 }
@@ -1012,9 +1012,9 @@ app.get("/get_attendance_list", function (req, res) {
             if (error) console.log(error);
             else if (results.length > 0) {
                 var success = true;
-                for(i=0;i<results.length;i++)
+                for(i of results)
                 {
-                    results[i]['att_date']=d;
+                    i['att_date']=d;
                 }
                 res.render("attendance", {
                     status: success,

@@ -179,7 +179,7 @@ function updatecutoff(){
     else{
         document.getElementById("err-content").innerHTML="Sucessfully Updated!!!";
         const csrftoken = getCookie('csrftoken');
-    data={
+    var data={
         mark: marks,
         csrfmiddlewaretoken: csrftoken
     };
