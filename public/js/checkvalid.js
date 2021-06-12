@@ -1,6 +1,6 @@
 exports.vcutoff=function cutoffvalid(marks){
     var f=0;
-    for(i=1;i<marks.length;i++)
+    for(var i=1;i<marks.length;i++)
     {
         var x=marks[i-1];
         

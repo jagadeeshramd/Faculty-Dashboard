@@ -3,15 +3,15 @@ exports.mma = function minmaxavg(x) {
     minm = 100;
     maxm = 0;
     avgm = 0;
-    for (var i = 0; i < x.length; i++) {
+    for (let i of x) {
 
-        if (x[i]['total'] < minm)
-            minm = x[i]['total'];
+        if (i['total'] < minm)
+            minm = i['total'];
 
-        if (x[i]['total'] > maxm)
-            maxm = x[i]['total'];
+        if (i['total'] > maxm)
+            maxm = i['total'];
 
-        avgm += x[i]['total'];
+        avgm += i['total'];
     }
     avgm = avgm / x.length;
     return [minm, maxm, avgm];
