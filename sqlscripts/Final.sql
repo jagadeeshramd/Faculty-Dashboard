@@ -406,11 +406,31 @@ INSERT INTO faculty_notifications VALUES
 SELECT * FROM faculty_notifications;
 
 SELECT * FROM notifications WHERE id IN (SELECT n_id FROM faculty_notifications WHERE f_id=12301 AND isRead=FALSE);
-UPDATE faculty_notifications SET isRead=false WHERE f_id=18501;
+UPDATE faculty_notifications SET isRead=FALSE WHERE f_id=12301;
 
 SELECT * FROM notifications WHERE id IN (SELECT n_id FROM faculty_notifications WHERE f_id=12301);
 -- drop table notifications;
 -- drop table faculty_notifications;
 
+-- *************************************************************************************************
+-- Leave Management
+-- *************************************************************************************************
+
+CREATE TABLE leave_records(id INT PRIMARY KEY AUTO_INCREMENT, f_id VARCHAR(10) REFERENCES faculty(id), type VARCHAR(30), start_date VARCHAR(10), end_date VARCHAR(10), reason VARCHAR(5000), status VARCHAR(10));
+ALTER TABLE leave_records AUTO_INCREMENT=157681;
+
+INSERT INTO leave_records(f_id, type, start_date, end_date, reason, status) VALUES(12301, 'Casual leave', '2021-04-22', '2021-04-24', 'Family function', 'Approved');
+INSERT INTO leave_records(f_id, type, start_date, end_date, reason, status) VALUES(18501, 'Casual leave', '2021-05-20', '2021-05-22', 'Family function', 'Approved');
+INSERT INTO leave_records(f_id, type, start_date, end_date, reason, status) VALUES(12301, 'Special Casual leave', '2021-06-15', '2021-06-18', 'Attending International Conference on Internet of Things, Big Data Analytics and Information Technology (ICITBDIT) in Chennai', 'Applied');
+INSERT INTO leave_records(f_id, type, start_date, end_date, reason, status) VALUES(18501, 'Special Casual leave', '2021-06-15', '2021-06-18', 'Attending International Conference on Internet of Things, Big Data Analytics and Information Technology (ICITBDIT) in Chennai', 'Applied');
+
+SELECT * FROM leave_records WHERE f_id=12301 ORDER BY id DESC;
+
+CREATE TABLE faculty_leaves(f_id VARCHAR(10) PRIMARY KEY REFERENCES faculty(id), casual INT, sp_casual INT, vacation INT, medical INT);
+INSERT INTO faculty_leaves VALUES(12301, 9, 11, 37, 0), (18501, 9, 11, 39, 0), (13301, 12, 15, 45, 0), (12465, 12, 15, 45, 0), (14312, 12, 15, 45, 0);
+
+SELECT * FROM faculty_leaves;
+-- drop table leave_records;
+-- drop table faculty_leaves;
 
 

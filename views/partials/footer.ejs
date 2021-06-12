@@ -3,7 +3,7 @@
 <script>
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip({
-            delay: { "show": 1000, "hide": 0 }
+            delay: { "show": 500, "hide": 0 }
         });
     });
 
@@ -11,14 +11,21 @@
         document.getElementById("mySidenav").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
         document.getElementById("dim").style.display = "block";
+        $(".sidenav-link").fadeIn();
+        
     }
 
     /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
     function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        document.getElementById("main").style.marginLeft = "0";
-        document.getElementById("dim").style.display = "none";
+        $(".sidenav-link").fadeOut("fast", () => {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+            document.getElementById("dim").style.display = "none";
+        });
+        
     }
+
+    $(".sidenav-link").click(() => {closeNav();});
 </script>
 
 </body>
