@@ -113,10 +113,7 @@ function uploadfile()
         else if(filenum==4){
             document.getElementById("coursesyllink").href=downloadURL;
         }
-        $.post('/changeurl',data,function(data,status){
-            
-        });
-        
+        $.post('/changeurl',data);
       });
     });
 }

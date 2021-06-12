@@ -74,18 +74,13 @@ exports.cgrade = function calcgrade(x, lm, g) {
             else {
                 r -= 1;
             }
-        }
-        else {
-            if ((lm[m] <= x) && (x < lm[m + 1])) {
-                ind = m;
-                break;
-            }
-            else if (x > lm[m]) {
-                l += 1;
-            }
-            else {
-                r -= 1;
-            }
+        } else if ((lm[m] <= x) && (x < lm[m + 1])) {
+            ind = m;
+            break;
+        } else if (x > lm[m]) {
+            l += 1;
+        } else {
+            r -= 1;
         }
     }
     if (ind == -1) {
