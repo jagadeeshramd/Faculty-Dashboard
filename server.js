@@ -18,10 +18,6 @@ Date.prototype.addDays = function(date, days) {
     return date;
 }
 
-cid = "";
-cbatch = "";
-cdept = "";
-csect = "";
 process.stdin.resume();
 
 app.set("view engine", "ejs");
@@ -32,7 +28,6 @@ app.use(
     })
 );
 
-// app.use(express.urlencoded()); //Parse URL-encoded bodies, instead of bodyParser
 
 app.use(express.static("public"));
 
@@ -48,7 +43,7 @@ app.use(
 
 // database connection
 
-connection = mysql.createConnection({
+var connection = mysql.createConnection({
     host: "35.193.55.202",
     user: pass.SQLUser,
     password: pass.SQLPass,
@@ -68,7 +63,6 @@ connection.connect(function (err) {
 
 // GET methods ===================================================================
 app.get("/", function (req, res) {
-    // console.log("hi");
     if (req.session.loggedin) {
         let date = new Date();
         let hours = date.getHours();
@@ -78,10 +72,9 @@ app.get("/", function (req, res) {
         else if (hours >= 16 && hours < 21) msg = "Good evening";
         else msg = "Good night";
 
-        wel = msg + ", " + req.session.faculty.name + "!";
-        tl = "https://raw.githubusercontent.com/HarishK501/my-sample/master/faculty-timetables/";
-        tl_file = _.lowerCase(req.session.faculty.name) + ".jpg";
-        // console.log(wel);
+        let wel = msg + ", " + req.session.faculty.name + "!";
+        let tl = "https://raw.githubusercontent.com/HarishK501/my-sample/master/faculty-timetables/";
+        let tl_file = _.lowerCase(req.session.faculty.name) + ".jpg";
 
         connection.query(
             "SELECT * FROM notifications WHERE id IN (SELECT n_id FROM faculty_notifications WHERE f_id=? AND isRead=FALSE);",
@@ -92,13 +85,13 @@ app.get("/", function (req, res) {
                     connection.query(
                         "select course_id,batch,dept,section,ismentor from course_faculty where faculty_id=? order by batch desc;",
                         [req.session.faculty.id],
-                        function (error, result, fields) {
+                        function (error, result, fields1) {
                             if (error)
                                 console.log("Error occured while fetching departments");
                             else {
                                 if (result.length >= 1) {
                                     if(req.session.course!=null)
-                                        course_sel =req.session.course.course_id +" " +req.session.course.batch +" " +req.session.course.dept +" " +req.session.course.section;
+                                        var course_sel =req.session.course.course_id +" " +req.session.course.batch +" " +req.session.course.dept +" " +req.session.course.section;
                                     else{
                                         course_sel =result[0]["course_id"] +" " +result[0]["batch"] +" " +result[0]["dept"] +" " +result[0]["section"];
                                         req.session.course = result[0]; // first course in the list is made default
@@ -160,10 +153,10 @@ app.get("/notifications/:id", function(req, res) {
                 connection.query(
                     "SELECT * FROM notifications WHERE id=?",
                     [id],
-                    function(err, results, fields) {
+                    function(err1, results1, fields1) {
                         if (err) console.log(err);
                         else {
-                            res.render("post", {data: results[0]})
+                            res.render("post", {data: results1[0]})
                         }
                     }
                 );
@@ -203,7 +196,7 @@ app.get("/markAsRead/:id", function(req, res) {
 app.get("/updatecoursetab", function (req, res) {
    
     
-    s = req.query.course.trim().split("\n");
+    let s = req.query.course.trim().split("\n");
     if(s.length==1){
         s=s[0].split("_");
 
@@ -217,9 +210,9 @@ app.get("/updatecoursetab", function (req, res) {
 
     }
     else{
-        for(i=0;i<s.length;i++)
+        for(let i=0;i<s.length;i++)
             s[i]=s[i].trim();
-        // console.log(s);
+
         if(s.length==4){
             req.session.course.course_id = s[0];
             req.session.course.batch = parseInt(s[1]);
@@ -256,7 +249,7 @@ app.get("/tests-and-assignments", function (req, res) {
                 connection.query(
                     "SELECT * FROM assignments WHERE course=? and f_id=?",
                     params,
-                    function (err, result2, fields) { 
+                    function (err2, result2, fields2) { 
                         if (err) {
                             console.error(err);
                             res.sendStatus(500);
@@ -290,6 +283,7 @@ app.get("/tests/:id", function(req, res){
     let test_id = req.params.id;
 
     // stub
+    var params = null;
     if (test_id[0] === 'T') {
         var str = test_id.split("&");
         params = [str[2], str[3], parseInt(str[1])/25625];
@@ -333,8 +327,8 @@ app.get("/resources", function (req, res) {
                     let color = req.session.msgStatusColor;
                     req.session.notifyMSG = null;
                     req.session.msgStatusColor = null;
-                    datetime = new Date();
-                    mdate = datetime.toISOString().slice(0, 10);
+                    let datetime = new Date();
+                    let mdate = datetime.toISOString().slice(0, 10);
                     res.render("resources", {
                         resources: result1,
                         m_date: mdate,
@@ -394,8 +388,7 @@ app.get("/admin", function (req, res) {
 app.get("/myclass", function (req, res) {
     req.session.classID = null;
     if (req.query.facultyid != null) {
-        l = req.query.facultyid;
-        console.log(l);
+        let l = req.query.facultyid;
     }
     else {
         l = req.session.faculty.id;
@@ -418,22 +411,10 @@ app.get("/myclass", function (req, res) {
 app.get("/myclass_students", function (req, res) {
     var success = false;
     var studlist = [];
-    l=req.session.faculty.id;
-    classID = req.session.classID;
-
-    // connection.query("SELECT classid FROM advisor_class WHERE advisor_id = ?;", [l], function(error,results,fields){
-    //     if(error) console.log(error);
-    //     else if(results[0].classid){
-    //         classID = results[0].classid;
-    //     }
-    //     else{
-    //         classID = "No Class";
-    //     }
-    // });
+    let l=req.session.faculty.id;
+    let classID = req.session.classID;
 
     connection.query(
-        // SELECT * FROM student_det S INNER JOIN parent_det P ON S.roll_number = P.roll_number where S.advisor_id = ?;
-
         "select roll_number from student_det where advisor_id = ? order by roll_number;",
         [l],
         function (error, results, fields) {
@@ -459,7 +440,7 @@ app.get("/myclass_students", function (req, res) {
 });
 
 app.get("/det_student_detail_info", function (req, res) {
-    rno = req.query.rollno;
+    var rno = req.query.rollno;
     var stud_info = {};
     connection.query(
         "SELECT * FROM student_det S INNER JOIN parent_det P ON S.roll_number = P.roll_number where S.roll_number = ?;",
@@ -480,8 +461,9 @@ app.get("/temp", function (req, res) {
 });
 
 app.get("/courseinfo", function (req, res) {
-    console.log(req.session.course.ismentor);
-    ccode=req.session.course.course_id;
+    var success = false;
+    var studlist = [];
+    var ccode=req.session.course.course_id;
     connection.query(
         "select * from course_list where course_code='"+ccode+"';",
         function (error, results, fields) {
@@ -547,61 +529,61 @@ app.get("/reg_students", function (req, res) {
 
 app.get("/mark_grade", function (req, res) {
     
-    ttype=req.query.testtype;
-    tnum=req.query.testnum;
-    add_msg=req.query.addmsg;
-    dcname=req.session.course.course_id+" ";
+    let ttype=req.query.testtype;
+    let tnum=req.query.testnum;
+    let add_msg=req.query.addmsg;
+    
     dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
     dcname+=req.session.course.dept+" ";
     dcname+=req.session.course.section;
 
 
-    cname=req.session.course.course_id+"_";
+    let cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
-    u="";
+    let u="";
     if(req.query.updatemsg!=null)
-    u=req.query.updatemsg;
+        u=req.query.updatemsg;
     connection.query(
         "select ass_name from assessment_list where course_code_full= ?;",
         [cname],
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length >= 1) {
-                ass_list=[];
-                ass_name=req.query.assname;
+                let ass_list=[];
+                let ass_name=req.query.assname;
                 if(ass_name!=null){
                     ass_name=fnreq.ass_to_short(ass_name);
                 }
                 for(i in results){
-                    assessment=results[i]['ass_name'];
+                    let assessment=results[i]['ass_name'];
                     if(ass_name==null)
                         ass_name=assessment;
                     
-                    ans=fnreq.ass_to_full(assessment);
+                    var ans=fnreq.ass_to_full(assessment);
                     ass_list.push(ans);
 
 
                 }
                 
-                current_ass=ass_name;
+                var current_ass=ass_name;
                 current_ass=fnreq.ass_to_full(current_ass);
                     
 
-                tablename="course_"+cname;
-                q="select roll_number,"+ass_name+" from "+tablename+"_student_academic_info;"
+                var tablename="course_"+cname;
+                var q="select roll_number,"+ass_name+" from "+tablename+"_student_academic_info;"
                 
                 connection.query(
                     q,
-                    function (error, results, fields) {
-                        if (error) console.log(error);
-                        else if (results.length >= 1) {
+                    function (error1, results1, fields) {
+                        if (error1) console.log(error1);
+                        else if (results1.length >= 1) {
                             smark=[]
-                            for(i=0;i<results.length;i++)
+                            for(i=0;i<results1.length;i++)
                             {
-                                smark.push([ results[i]['roll_number'] , results[i][ass_name]]);
+                                smark.push([ results1[i]['roll_number'] , results1[i][ass_name]]);
                             }
                             res.render("mark_grade",{
                                 addmsg:add_msg,
@@ -642,14 +624,13 @@ app.get("/mark_grade", function (req, res) {
 });
 
 app.get("/calculate_CA",function(req,res){
-    u=false;
-    uval="";
+    var u=false;
+    var uval="";
     if(req.query.update !=null)
         uval=req.query.update;
     if(uval.localeCompare("true")==0)
         u=true;
     console.log(u);
-    dcname=req.session.course.course_id+" ";
     dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
     dcname+=req.session.course.dept+" ";
@@ -661,7 +642,7 @@ app.get("/calculate_CA",function(req,res){
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
 
-    tbname="course_"+cname;
+    var tbname="course_"+cname;
     connection.query(
         "select ass_name,totalmarks,weightage from assessment_list where course_code_full=?;",
         [cname],
@@ -669,21 +650,21 @@ app.get("/calculate_CA",function(req,res){
             if (error) console.log(error);
             else{
 
-                ass_wt=[];
-                ca_total=0;
+                let ass_wt=[];
+                let ca_total=0;
                 for(i=0;i<results.length;i++){
                     if(results[i]['ass_name'].localeCompare("CA")==0)
                     {
                         ca_total=results[i]['totalmarks'];
                         continue;
                     }
-                    r=fnreq.ass_to_full(results[i]['ass_name']);
+                    var r=fnreq.ass_to_full(results[i]['ass_name']);
                     ass_wt.push([r,results[i]['totalmarks'],results[i]['weightage']]);
                 }
                 connection.query(
                     "select roll_number,CA from "+tbname+"_student_academic_info;",
-                    function (error, result_mark, fields) {
-                        if (error) console.log(error);
+                    function (error1, result_mark, fields1) {
+                        if (error1) console.log(error1);
                         else {
                             
                             res.render("calculate_CA",{
@@ -704,7 +685,7 @@ app.get("/calculate_CA",function(req,res){
 });
 
 app.get("/calculate_grade",function(req,res){
-    mentor=req.session.course.ismentor;
+    var mentor=req.session.course.ismentor;
     dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
     dcname+=req.session.course.dept+" ";
@@ -726,8 +707,8 @@ app.get("/calculate_grade",function(req,res){
                 tbname="course_"+cname+"student_academic_info";
                 connection.query(
                     "select roll_number,total,grade from "+tbname+" order by roll_number;",
-                    function (error, stud_grades, fields) {
-                        if (error) console.log(error);
+                    function (error1, stud_grades, fields1) {
+                        if (error1) console.log(error1);
                         else{
                             res.render("calculate_grade",{
                                 grade_cutoff:cutoff,
@@ -768,11 +749,11 @@ app.get("/view_edit_cutoff",function(req,res){
                 q="select total from "+tbname+";"
                 connection.query(
                     q,
-                    function (error, totalm, fields) {
-                        if (error) console.log(error);
+                    function (error1, totalm, fields1) {
+                        if (error1) console.log(error1);
                         else{
                             console.log(totalm);
-                            f=fnreq.mma(totalm);
+                            let f=fnreq.mma(totalm);
                             console.log(f);
                             res.render("view_edit_cutoff",{
                                 grade_cutoff:cutoff,
@@ -793,12 +774,13 @@ app.get("/view_edit_cutoff",function(req,res){
 });
 
 app.get("/filter_data",function(req,res){
-    filtype=req.query.option;
+    var filtype=req.query.option;
     if(req.query.lb!=null)
-    x=req.query.lb;
+        var x=req.query.lb;
 
     if(req.query.ub!=null)
-    y=req.query.ub;
+        var y=req.query.ub;
+
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
@@ -849,9 +831,6 @@ app.get("/filter_data",function(req,res){
     });
 });
 
-app.get("/get_grade",function(req,res){
-
-});
 
 app.get("/feedback",function(req,res){
     
@@ -887,15 +866,15 @@ app.get("/feedback",function(req,res){
 
 
 app.get("/det_student_info", function (req, res) {
-    rno = req.query.rollno;
-    var stud_info={};
+    var rno = req.query.rollno;
+
     connection.query(
         "select * from student where roll_number= ?;",
         [rno],
-        function (error, results, fields) {
+        function (error, students, fields) {
             if (error) console.log(error);
-            else if (results.length == 1) {
-                res.send({ resp: true, rec: results[0] });
+            else if (students.length == 1) {
+                res.send({ resp: true, rec: students[0] });
             } else {
                 res.send({resp:false,rec:{}});
             }
@@ -904,17 +883,15 @@ app.get("/det_student_info", function (req, res) {
 });
 
 app.get("/get_quiz_marks", function (req, res) {
-    rno = req.query.rollno;
-    var stud_info={};
+    var rno = req.query.rollno;
+
     if(req.query.course!=null)
-    {   cname=req.query.course;
-        
-    }
+        cname=req.query.course;
     else{
-    cname=req.session.course.course_id+"_";
-    cname+=req.session.course.batch+"_";
-    cname+=req.session.course.dept+"_";
-    cname+=req.session.course.section;  
+        cname=req.session.course.course_id+"_";
+        cname+=req.session.course.batch+"_";
+        cname+=req.session.course.dept+"_";
+        cname+=req.session.course.section;  
     }
     tablename="course_"+cname;
     q="select * from "+tablename+"_student_academic_info where roll_number=?;";
@@ -925,10 +902,10 @@ app.get("/get_quiz_marks", function (req, res) {
             
             if (error) console.log(error);
             else if (results.length == 1) {
-                marks={}
-                for(k in results[0]){
+                let marks={};
+                for(let k in results[0]){
                     if(k.startsWith("Q")){
-                        k1=k.slice(1,k.length)
+                        let k1=k.slice(1,k.length)
                         marks[k1]=results[0][k];
                     }
                 }
@@ -945,8 +922,8 @@ app.get("/get_quiz_marks", function (req, res) {
 });
 
 app.get("/get_assignment_marks", function (req, res) {
-    rno = req.query.rollno;
-    var stud_info={};
+    var rno = req.query.rollno;
+
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
@@ -978,9 +955,8 @@ app.get("/get_assignment_marks", function (req, res) {
 });
 
 app.get("/get_periodical_marks", function (req, res) {
-    rno = req.query.rollno;
+    var rno = req.query.rollno;
     
-    var stud_info={};
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
@@ -1024,12 +1000,12 @@ app.get("/get_attendance_list", function (req, res) {
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
     tablename="course_"+cname;
-    d=req.query.attdate;
-    s=req.query.speriod;
-    ep=req.query.eperiod;
-    u="";
+    let d=req.query.attdate;
+    let s=req.query.speriod;
+    let ep=req.query.eperiod;
+    let u="";
     if(req.query.updatemsg!=null)
-    u=req.query.updatemsg;
+        u=req.query.updatemsg;
     
     console.log(d+" "+s+" "+ep);
     
@@ -1041,7 +1017,6 @@ app.get("/get_attendance_list", function (req, res) {
             if (error) console.log(error);
             else if (results.length > 0) {
                 success = true;
-                //console.log(results);
                 for(i=0;i<results.length;i++)
                 {
                     results[i]['att_date']=d;
@@ -1060,16 +1035,16 @@ app.get("/get_attendance_list", function (req, res) {
                 q= "select distinct roll_number from "+tablename+"_attendance;"
                 connection.query(
                     q,
-                    function (error, results, fields) {
-                        if (error) console.log(error);
-                        else if (results.length > 0) {
+                    function (error1, results1, fields1) {
+                        if (error1) console.log(error1);
+                        else if (results1.length > 0) {
                             success = true;
-                            studlist = results;
-                            att=[];
-                            for(i=0;i<results.length;i++)
+                            studlist = results1;
+                            let att=[];
+                            for(i=0;i<results1.length;i++)
                             {
                                 o={}
-                                o['roll_number']=results[i]['roll_number'];
+                                o['roll_number']=results1[i]['roll_number'];
                                 o['att_date']=d;
                                 o['s_period']=s;
                                 o['e_period']=ep;
@@ -1078,9 +1053,9 @@ app.get("/get_attendance_list", function (req, res) {
                                 q="insert into "+tablename+"_attendance values(?,?,?,?,?);";
                                 connection.query(q,
                                         [o['roll_number'],d,s,ep,0],
-                                        function (error, resultinsert, fields) {
-                                                        if (error){
-                                                            console.log(error);
+                                        function (error1, resultinsert, fields1) {
+                                                        if (error1){
+                                                            console.log(error1);
                                                             success = false;
                                                             res.render("attendance", {
                                                                 status: true,
@@ -1126,7 +1101,7 @@ app.get("/get_attendance_list", function (req, res) {
 app.get("/get_attendance", function (req, res) {
     
     rno = req.query.rollno;
-    var stud_info={};
+
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
@@ -1189,15 +1164,15 @@ app.get("/leave-management", (req, res) => {
     connection.query(
         "select * from leave_records where f_id=? order by id desc;",
         [req.session.faculty.id],
-        (err, records, fields) => {
-            if (err) {
-                console.log(err);
+        (error, records, fields) => {
+            if (error) {
+                console.log(error);
                 res.sendStatus(500);
             } else {
                 connection.query(
                     "select * from faculty_leaves where f_id=?;",
                     [req.session.faculty.id],
-                    (err, leaves, fields) => {
+                    (err, leaves, fields1) => {
                         if (err) {
                             console.log(err);
                             res.sendStatus(500);
@@ -1234,13 +1209,13 @@ app.post("/login", function (req, res) {
             function (error, results, fields) {
                 if (error) console.log(error);
                 else if (results.length > 0) {
-                    message = "";
+                    var message = "";
                     req.session.loggedin = true;
                     req.session.email = email;
                     connection.query(
                         "select * from faculty where emailID = ?",
                         [email],
-                        function (err, rows, fields) {
+                        function (err, rows, fields1) {
                             req.session.faculty = rows[0];
                             res.redirect("/");
                         }
@@ -1257,7 +1232,7 @@ app.post("/login", function (req, res) {
 
 app.post("/forgotPassword", function (req, res) {
     let email = req.body.email;
-    // console.log(email);
+
     connection.query(
         "select * from login where email = ?",
         [email],
@@ -1309,7 +1284,7 @@ app.post("/forgotPassword", function (req, res) {
             }
         }
     )
-    // res.send("Hi there!");
+
 })
 
 app.post("/updateProfile", function (req, res) {
@@ -1333,7 +1308,7 @@ app.post("/updateProfile", function (req, res) {
                 connection.query(
                     "select * from faculty where emailID = ?",
                     [email],
-                    function (err, rows, fields) {
+                    function (err, rows, fields1) {
                         req.session.faculty = rows[0];
                         req.session.notifyMSG = "Profile updated successfully";
                         req.session.msgStatusColor = "bg-success";
@@ -1413,43 +1388,8 @@ app.post("/addNewFaculty", function (req, res) {
                 connection.query(
                     "INSERT INTO login VALUES(?,?)",
                     [f.email, code],
-                    function (err, result, fields) {
-                        if (err) console.log(error);
-                        // else {
-                        //     var transporter = nodemailer.createTransport({
-                        //         service: "gmail",
-                        //         auth: {
-                        //             user: "harishcse18501@gmail.com",
-                        //             pass: pass.GPassword,
-                        //         },
-                        //     });
-
-                        //     var mailOptions = {
-                        //         from: "harishcse18501@gmail.com",
-                        //         to: f.email,
-                        //         subject:
-                        //             "Faculty Dashboard - User account created.",
-                        //         text:
-                        //             "Greetings!\n\tAdmin Harry has created an account for you in the Faculty Dashboard application.\n\nEmail id: " +
-                        //             f.email +
-                        //             "\nPassword: " +
-                        //             code +
-                        //             "\nThis password is randomly generated. You can change your password after logging in. \nHave a great day!\nRegards, Admin.",
-                        //     };
-
-                        //     transporter.sendMail(
-                        //         mailOptions,
-                        //         function (error, info) {
-                        //             if (error) {
-                        //                 console.log(error);
-                        //             } else {
-                        //                 console.log(
-                        //                     "Email sent: " + info.response
-                        //                 );
-                        //             }
-                        //         }
-                        //     );
-                        // }
+                    function (err1, result1, fields1) {
+                        if (err1) console.log(err1);
                     }
                 );
             }
@@ -1459,7 +1399,7 @@ app.post("/addNewFaculty", function (req, res) {
 });
 
 app.post("/addNewTest", function(req, res){
-    // console.log(req.body);
+
     req.session.assignment_last_active = false;
     connection.query(
         "INSERT INTO tests(name, date,time, instructions, course, f_id) VALUES(?,?,?,?,?,?)",
@@ -1516,7 +1456,7 @@ app.post("/tests/cancelTest/:id", function(req, res){
 
 
 app.post("/addNewAssignment", function(req, res){
-    // console.log(req.body);
+
     req.session.assignment_last_active = true;
     connection.query(
         "INSERT INTO assignments(name, date,time, instructions, course, f_id) VALUES(?,?,?,?,?,?)",
@@ -1536,10 +1476,10 @@ app.post("/addNewAssignment", function(req, res){
 });
 
 app.post("/addNewResource", function (req, res) {
-    // console.log(req.body);
-    datetime = new Date();
-    mdate = datetime.toISOString().slice(0, 10);
-    // console.log(mdate);
+
+    let datetime = new Date();
+    let mdate = datetime.toISOString().slice(0, 10);
+
     connection.query(
         "INSERT INTO resources(name, modified_date, instructions, course) VALUES(?,?,?,?);",
         [req.body.name, mdate, req.body.instructions, req.session.course.course_id],
@@ -1559,12 +1499,12 @@ app.post("/addNewResource", function (req, res) {
 });
 
 app.post("/add_assessment", function (req, res) {
-    console.log("assessment");
-    ttype = req.body.testtype;
-    tnum = req.body.testnum;
-    tmarks = req.body.testmark;
-    colname = ttype[0] + tnum;
-    cname = req.session.course.course_id + "_";
+
+    var ttype = req.body.testtype;
+    var tnum = req.body.testnum;
+    var tmarks = req.body.testmark;
+    var colname = ttype[0] + tnum;
+    var cname = req.session.course.course_id + "_";
     cname += req.session.course.batch + "_";
     cname += req.session.course.dept + "_";
     cname += req.session.course.section;
@@ -1591,17 +1531,17 @@ app.post("/add_assessment", function (req, res) {
                     colname +
                     " float default 0.0;";
                 console.log("ok");
-                connection.query(q, function (error, results, fields) {
-                    if (error) {
-                        console.log(error);
+                connection.query(q, function (error1, results, fields1) {
+                    if (error1) {
+                        console.log(error1);
                         var msg = encodeURIComponent(
                             "Sorry assessment is already available"
                         );
                         res.redirect("/mark_grade?addmsg=" + msg+"&assname="+assessment);
                     } else {
                         console.log("ok");
-                        var msg = encodeURIComponent("Added successfully");
-                        res.redirect("/mark_grade?addmsg=" + msg+"&assname="+assessment);
+                        var msg1 = encodeURIComponent("Added successfully");
+                        res.redirect("/mark_grade?addmsg=" + msg1+"&assname="+assessment);
                     }
                 });
             }
@@ -1615,13 +1555,13 @@ app.post("/get_ass_marks", function (req, res) {
 });
 
 app.post("/update_marks", function (req, res) {
-    roll_number=req.body.roll_number;
+    var roll_number=req.body.roll_number;
     console.log("update marks");
-    ass_name=req.body.assignment;
-    a=req.body.assignment;;
+    var ass_name=req.body.assignment;
+    var a=req.body.assignment;;
     ass_name=fnreq.ass_to_short(ass_name);
-    m=req.body.marks;
-    cname=req.session.course.course_id+"_";
+    var m=req.body.marks;
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
@@ -1639,7 +1579,6 @@ app.post("/update_marks", function (req, res) {
             }
              else {
                 console.log("ok");
-                var msg = encodeURIComponent("Added successfully");
                 res.redirect("/mark_grade?updatemsg=Updated successfully&assname="+a);
             }
         }
@@ -1648,10 +1587,9 @@ app.post("/update_marks", function (req, res) {
 
 app.post("/update_CA_weightage", function (req, res) {
     
-    console.log("update CA weightage");
-    ass_name=req.body.assname;
-    ass_name=fnreq.ass_to_short(ass_name);
-    w=req.body.weight;
+    var ass_name=req.body.assname;
+    var ass_name=fnreq.ass_to_short(ass_name);
+    var w=req.body.weight;
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
@@ -1671,7 +1609,6 @@ app.post("/update_CA_weightage", function (req, res) {
             }
              else {
                 console.log("ok");
-                var msg = encodeURIComponent("Added successfully");
                 res.redirect("/calculate_CA?update=true");
             }
         }
@@ -1698,19 +1635,19 @@ app.post("/re_calc_CA", function (req, res) {
                 ca_total=0;
                 for(i=0;i<results.length;i++){
                     
-                    r=results[i]['ass_name'];
-                    t=results[i]['totalmarks'];
-                    w=results[i]['weightage'];
+                    let r=results[i]['ass_name'];
+                    let t=results[i]['totalmarks'];
+                    let w=results[i]['weightage'];
                     if(w==0)
-                    continue;
+                        continue;
 
                     ass_wt[r]=w/t;
                     ca_total+=w;
                 }
                 connection.query(
                     "select * from "+tbname+";",
-                    function (error, result_mark, fields) {
-                        if (error) console.log(error);
+                    function (error1, result_mark, fields1) {
+                        if (error1) console.log(error1);
                         else {
 
                             m=fnreq.rc_CA(result_mark,ass_wt);
@@ -1720,9 +1657,9 @@ app.post("/re_calc_CA", function (req, res) {
                             connection.query(
                                 q,
                                 [ca_total,cname],
-                                function (error, results, fields) {
-                                    if (error){
-                                        console.log(error);
+                                function (errorx, resultsx, fieldsx) {
+                                    if (errorx){
+                                        console.log(errorx);
                                         
                                     }
                                      else {
@@ -1733,16 +1670,16 @@ app.post("/re_calc_CA", function (req, res) {
                             );
                             console.log(m);
                             q="update "+tbname+" set CA=? where roll_number=?";
-                            ct=0;
+                            let ct=0;
                             for(var r in m)
                             {
                                 ct+=1;
                                 connection.query(
                                     q,
                                     [m[r],r],
-                                    function (error, results, fields) {
-                                        if (error){
-                                            console.log(error);
+                                    function (error2, results2, fields2) {
+                                        if (error2){
+                                            console.log(error2);
                                             
                                         }
                                          else {
@@ -1762,10 +1699,10 @@ app.post("/re_calc_CA", function (req, res) {
 });
 
 app.post("/changeurl", function (req, res) {
-    ftype=req.body.filenum;
-    url=req.body.url;
-    ccode=req.session.course.course_id;
-    colname="";
+    var ftype=req.body.filenum;
+    var url=req.body.url;
+    var ccode=req.session.course.course_id;
+    var colname="";
     if(ftype==1)
         colname="course_details";
     else if(ftype==2)
@@ -1796,14 +1733,14 @@ app.post("/changeurl", function (req, res) {
 
 
 app.post("/update_attendance", function (req, res) {
-    roll_number=req.body.roll_number;
+    var roll_number=req.body.roll_number;
     console.log("update att");
-    r=req.body.roll_number;
-    d=req.body.attdate;
-    s=req.body.speriod;
-    ep=req.body.eperiod;
-    c=req.body.classes;
-    cname=req.session.course.course_id+"_";
+    let r=req.body.roll_number;
+    let d=req.body.attdate;
+    let s=req.body.speriod;
+    let ep=req.body.eperiod;
+    let c=req.body.classes;
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
@@ -1823,14 +1760,13 @@ app.post("/update_attendance", function (req, res) {
                 connection.query(
                     q,
                     [c,d,s,ep],
-                    function (error, results, fields) {
-                        if (error){
-                            console.log(error);
+                    function (error1, results1, fields1) {
+                        if (error1){
+                            console.log(error1);
                             res.redirect("/get_attendance_list?updatemsg=error&attdate="+d+"&speriod="+s+"&eperiod="+ep);
                         }
                          else {
                             console.log("ok");
-                            var msg = encodeURIComponent("Added successfully");
                             res.redirect("/get_attendance_list?updatemsg=Updated successfully&attdate="+d+"&speriod="+s+"&eperiod="+ep);
                         }
                     }
@@ -1841,14 +1777,13 @@ app.post("/update_attendance", function (req, res) {
                 connection.query(
                     q,
                     [r,d,s,ep,c],
-                    function (error, results, fields) {
-                        if (error){
-                            console.log(error);
+                    function (error2, results2, fields2) {
+                        if (error2){
+                            console.log(error2);
                             res.redirect("/get_attendance_list?updatemsg=error&attdate="+d+"&speriod="+s+"&eperiod="+ep);
                         }
                          else {
                             console.log("ok");
-                            var msg = encodeURIComponent("Added successfully");
                             res.redirect("/get_attendance_list?updatemsg=Updated successfully&attdate="+d+"&speriod="+s+"&eperiod="+ep);
                         }
                     }
@@ -1859,9 +1794,8 @@ app.post("/update_attendance", function (req, res) {
 });
 
 app.post("/changecutoff",function(req,res){
-    mark=req.body.mark;
-    console.log("inside change");
-    grades=['O','A+','A','B+','B','C','P'];
+    var mark=req.body.mark;
+    var grades=['O','A+','A','B+','B','C','P'];
     
     
 
@@ -1879,10 +1813,6 @@ app.post("/changecutoff",function(req,res){
                 function (error, results, fields) {
                     if (error){
                         console.log(error);
-                        
-                    }
-                    else {
-                       
                     }
                 }
             );
@@ -1905,8 +1835,8 @@ app.post("/re_calc_grade",function(req,res){
                 console.log(error);
             }
             else {
-                g=[];
-                marklist=[];
+                let g=[];
+                let marklist=[];
                 for(i=0;i<results.length;i++)
                 {
                     g.push(results[i]['grade']);
@@ -1920,27 +1850,24 @@ app.post("/re_calc_grade",function(req,res){
                 q="select roll_number,total,grade from "+tbname+";";
                 connection.query(
                     q,
-                    function (error, rollno, fields) {
-                        if (error){
-                            console.log(error);
+                    function (error1, rollno, fields1) {
+                        if (error1){
+                            console.log(error1);
                         }
                         else {
                             
                             for(i=0;i<rollno.length;i++)
                             {
                                 console.log(marklist);
-                                j=fnreq.cgrade(rollno[i]['total'],marklist,g);
+                                let j=fnreq.cgrade(rollno[i]['total'],marklist,g);
                                 if(j!=rollno[i]['grade'])
                                 {
                                     q="update "+tbname+" set grade='"+j+"' where roll_number='"+rollno[i]['roll_number']+"';";
                                     connection.query(
                                         q,
-                                        function (error, rollno, fields) {
-                                            if (error){
-                                                console.log(error);
-                                            }
-                                            else {
-                                                
+                                        function (error2, rollno2, fields2) {
+                                            if (error2){
+                                                console.log(error2);
                                             }
                                         }
                                     );

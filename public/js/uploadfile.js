@@ -1,5 +1,4 @@
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
 var firebaseConfig = {
     apiKey: "AIzaSyBAaLEREKkojzCinpiQyiiplekNbkPeRrc",
     authDomain: "faculty-dashboard-75962.firebaseapp.com",
@@ -9,9 +8,9 @@ var firebaseConfig = {
     appId: "1:108331010859:web:acab56a98167d87139936e",
     measurementId: "G-HMD6735S2Z"
 };
-// Initialize Firebase
+
 firebase.initializeApp(firebaseConfig);
-//firebase.analytics();
+
 
 function getCookie(name) {
     let cookieValue = null;
@@ -19,7 +18,7 @@ function getCookie(name) {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
+
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -56,23 +55,16 @@ function getfile()
         filetype="course_syll";
     }
     console.log(foldername+"/"+filetype);
-    uploadfile(); // call below written function
+    uploadfile();
 }
 function uploadfile()
 {
-    // select unique name for everytime when image uploaded
-    // Date.now() is function that give current timestamp
-    
-
-    // make ref to your firebase storage and select images folder
     var storageRef = firebase.storage().ref(foldername+ filetype);
 
-    
-    // put file to firebase 
+
     var uploadTask = storageRef.put(selectedFile);
 
-    // all working for progress bar that in html
-    // to indicate image uploading... report
+
     uploadTask.on('state_changed', function(snapshot){
       var progress = 
        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -89,11 +81,11 @@ function uploadfile()
     }, function(error) {console.log(error);
     }, function() {
 
-         // get the uploaded image url back
+
          uploadTask.snapshot.ref.getDownloadURL().then(
           function(downloadURL) {
 
-         // You get your url from here
+
           console.log('File available at', downloadURL);
 
         // print the image url 

@@ -1,5 +1,3 @@
-// const { response } = require("express");
-
 Request  = require("request");
 fnreq = require("../functionreq.js");
 chkvalid = require("../public/js/checkvalid.js");
@@ -195,6 +193,7 @@ describe("server",()=>{
         });
 
     });
+   
     
     //positive case for updatecourse
     describe("GET /",()=>{

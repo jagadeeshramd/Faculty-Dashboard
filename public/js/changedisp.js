@@ -1,4 +1,4 @@
-x=0;
+let x=0;
 
 function changedisp(){
     
