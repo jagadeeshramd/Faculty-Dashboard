@@ -1,7 +1,7 @@
 function getstudentinfo(ele){
     var rno=ele.innerHTML;
     rno=rno.trim()
-    data={rollno:rno};
+    var data={rollno:rno};
     console.log("Inside getstudentinfo"+rno);
 
     $.get('det_student_info',data,function(rdata,status){
@@ -63,7 +63,7 @@ function disprecord(record){
 
 
 function dispquiz(record){
-    ul=document.getElementById("quiz");
+    var ul=document.getElementById("quiz");
   
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
@@ -74,7 +74,7 @@ function dispquiz(record){
     li.textContent = "Quiz: ";
     ul.appendChild(li);
    
-    for(r in record){
+    for(var r in record){
         li = document.createElement("li");
         li.className = 'list-group-item';
         li.setAttribute('id','quiz-mark');

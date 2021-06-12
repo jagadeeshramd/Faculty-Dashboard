@@ -61,18 +61,21 @@ connection.connect(function (err) {
 
 //functions required =============================================================
 
+function getGreetingMessage() {
+    let date = new Date();
+    let hours = date.getHours();
+    let msg = "";
+    if (hours >= 3 && hours < 11) msg = "Good morning";
+    else if (hours >= 11 && hours < 16) msg = "Good afternoon";
+    else if (hours >= 16 && hours < 21) msg = "Good evening";
+    else msg = "Good night";
+    return msg;
+}
+
 // GET methods ===================================================================
 app.get("/", function (req, res) {
     if (req.session.loggedin) {
-        let date = new Date();
-        let hours = date.getHours();
-        let msg = "";
-        if (hours >= 3 && hours < 11) msg = "Good morning";
-        else if (hours >= 11 && hours < 16) msg = "Good afternoon";
-        else if (hours >= 16 && hours < 21) msg = "Good evening";
-        else msg = "Good night";
-
-        let wel = msg + ", " + req.session.faculty.name + "!";
+        let wel = getGreetingMessage() + ", " + req.session.faculty.name + "!";
         let tl = "https://raw.githubusercontent.com/HarishK501/my-sample/master/faculty-timetables/";
         let tl_file = _.lowerCase(req.session.faculty.name) + ".jpg";
 
@@ -525,7 +528,7 @@ app.get("/reg_students", function (req, res) {
 app.get("/mark_grade", function (req, res) {
     let add_msg=req.query.addmsg;
     
-    dcname=req.session.course.course_id+" ";
+    var dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
     dcname+=req.session.course.dept+" ";
     dcname+=req.session.course.section;
@@ -549,7 +552,7 @@ app.get("/mark_grade", function (req, res) {
                 if(ass_name!=null){
                     ass_name=fnreq.ass_to_short(ass_name);
                 }
-                for(i in results){
+                for(var i in results){
                     let assessment=results[i]['ass_name'];
                     if(ass_name==null)
                         ass_name=assessment;
@@ -572,7 +575,7 @@ app.get("/mark_grade", function (req, res) {
                     function (error1, results1, fields1) {
                         if (error1) console.log(error1);
                         else if (results1.length >= 1) {
-                            smark=[]
+                            var smark=[];
                             for(i=0;i<results1.length;i++)
                             {
                                 smark.push([ results1[i]['roll_number'] , results1[i][ass_name]]);
@@ -628,7 +631,7 @@ app.get("/calculate_CA",function(req,res){
     dcname+=req.session.course.dept+" ";
     dcname+=req.session.course.section;
 
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
@@ -688,7 +691,7 @@ app.get("/calculate_grade",function(req,res){
     cname+=req.session.course.batch+"_";
     
 
-    tbname="course_"+cname+"grade_cutoff";
+    var tbname="course_"+cname+"grade_cutoff";
     connection.query(
         "select * from "+tbname+" order by marks desc;",
         function (error, cutoff, fields) {
@@ -720,7 +723,7 @@ app.get("/calculate_grade",function(req,res){
 });
 
 app.get("/view_edit_cutoff",function(req,res){
-    mentor=req.session.course.ismentor;
+    var mentor=req.session.course.ismentor;
     dcname=req.session.course.course_id+" ";
     dcname+=req.session.course.batch+" ";
     dcname+=req.session.course.dept+" ";
@@ -738,7 +741,7 @@ app.get("/view_edit_cutoff",function(req,res){
                 cname+=req.session.course.dept+"_";
                 cname+=req.session.course.section;
                 tbname="course_"+cname+"_student_academic_info";
-                q="select total from "+tbname+";"
+                var q="select total from "+tbname+";"
                 connection.query(
                     q,
                     function (error1, totalm, fields1) {
@@ -810,7 +813,7 @@ app.get("/filter_data",function(req,res){
         console.log(result);
         if(result!=null){
         
-        f=fnreq.mma(result);
+        var f=fnreq.mma(result);
         res.send({
             comp:true,
             marks:result,
@@ -885,7 +888,7 @@ app.get("/get_quiz_marks", function (req, res) {
         cname+=req.session.course.dept+"_";
         cname+=req.session.course.section;  
     }
-    tablename="course_"+cname;
+    var tablename="course_"+cname;
     q="select * from "+tablename+"_student_academic_info where roll_number=?;";
     connection.query(
         q,
@@ -928,10 +931,10 @@ app.get("/get_assignment_marks", function (req, res) {
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length == 1) {
-                marks={}
-                for(k in results[0]){
+                var marks={};
+                for(var k in results[0]){
                     if(k.startsWith("A")){
-                        k1=k.slice(1,k.length);
+                        var k1=k.slice(1,k.length);
                         marks[k1]=results[0][k];
                     }
                 }
@@ -1008,7 +1011,7 @@ app.get("/get_attendance_list", function (req, res) {
         function (error, results, fields) {
             if (error) console.log(error);
             else if (results.length > 0) {
-                success = true;
+                var success = true;
                 for(i=0;i<results.length;i++)
                 {
                     results[i]['att_date']=d;
@@ -1023,7 +1026,7 @@ app.get("/get_attendance_list", function (req, res) {
             } 
             else 
             {
-                success = false;
+                var success = false;
                 q= "select distinct roll_number from "+tablename+"_attendance;"
                 connection.query(
                     q,
@@ -1031,11 +1034,10 @@ app.get("/get_attendance_list", function (req, res) {
                         if (error1) console.log(error1);
                         else if (results1.length > 0) {
                             success = true;
-                            studlist = results1;
                             let att=[];
                             for(i=0;i<results1.length;i++)
                             {
-                                o={}
+                                var o={};
                                 o['roll_number']=results1[i]['roll_number'];
                                 o['att_date']=d;
                                 o['s_period']=s;
@@ -1092,7 +1094,7 @@ app.get("/get_attendance_list", function (req, res) {
 
 app.get("/get_attendance", function (req, res) {
     
-    rno = req.query.rollno;
+    var rno = req.query.rollno;
 
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
@@ -1501,7 +1503,7 @@ app.post("/add_assessment", function (req, res) {
     cname += req.session.course.dept + "_";
     cname += req.session.course.section;
 
-    assessment=colname;
+    var assessment=colname;
     assessment=fnreq.ass_to_full(assessment);
                     
     connection.query(
@@ -1623,8 +1625,8 @@ app.post("/re_calc_CA", function (req, res) {
             if (error) console.log(error);
             else{
 
-                ass_wt={};
-                ca_total=0;
+                var ass_wt={};
+                var ca_total=0;
                 for(i=0;i<results.length;i++){
                     
                     let r=results[i]['ass_name'];
@@ -1642,9 +1644,9 @@ app.post("/re_calc_CA", function (req, res) {
                         if (error1) console.log(error1);
                         else {
 
-                            m=fnreq.rc_CA(result_mark,ass_wt);
+                            var m=fnreq.rc_CA(result_mark,ass_wt);
                             
-                            q="update assessment_list set totalmarks=? where course_code_full=? and ass_name='CA'";
+                            var q="update assessment_list set totalmarks=? where course_code_full=? and ass_name='CA'";
 
                             connection.query(
                                 q,
@@ -1814,7 +1816,6 @@ app.post("/changecutoff",function(req,res){
 });
 
 app.post("/re_calc_grade",function(req,res){
-    mark=req.body.mark;
     cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     tbname="course_"+cname+"grade_cutoff";

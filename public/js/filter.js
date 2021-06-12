@@ -118,7 +118,7 @@ function applyfilter(){
 }
 
 function nofilter(){
-    data={
+    var data={
         option:8
     };
     $.get('filter_data',data,function(data_r,status){
@@ -140,10 +140,10 @@ function changegraph(obj){
         myChart.destroy();
     }
     
-    marks=[];
-    for(i=0;i<obj.length;i++)
+    var marks=[];
+    for(var i of obj)
     {
-        marks.push(obj[i]['total']);
+        marks.push(i['total']);
     }
 
 }
@@ -152,17 +152,17 @@ function updatecutoff(){
     var marks=[];
     var o=document.getElementById("O").value;
     marks.push(o);
-    a1=document.getElementById("A+").value;
+    var a1=document.getElementById("A+").value;
     marks.push(a1);
-    a=document.getElementById("A").value;
+    var a=document.getElementById("A").value;
     marks.push(a);
-    b1=document.getElementById("B+").value;
+    var b1=document.getElementById("B+").value;
     marks.push(b1);
-    b=document.getElementById("B").value;
+    var b=document.getElementById("B").value;
     marks.push(b);
-    c=document.getElementById("C").value;
+    var c=document.getElementById("C").value;
     marks.push(c);
-    p=document.getElementById("P").value;
+    var p=document.getElementById("P").value;
     marks.push(p);
 
     var f=0;

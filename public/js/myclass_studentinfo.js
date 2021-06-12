@@ -1,7 +1,7 @@
 function getInfo(ele){
     var rno=ele.innerHTML;
     rno=rno.trim()
-    data={rollno:rno};
+    var data={rollno:rno};
     console.log("Inside getDetailInfo"+rno);
 
     $.get('det_student_detail_info',data,function(rdata,status){
