@@ -1706,7 +1706,7 @@ app.post("/changeurl", function (req, res) {
         colname="course_syllabus";
 
     
-    q="update course_list set "+colname+"='"+url+"' where course_code='"+ccode+"';"
+    var q="update course_list set "+colname+"='"+url+"' where course_code='"+ccode+"';"
     console.log(q);
     connection.query(
         q,
@@ -1736,7 +1736,7 @@ app.post("/update_attendance", function (req, res) {
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
-    tablename="course_"+cname+"_attendance";
+    var tablename="course_"+cname+"_attendance";
     var q="select * from "+tablename+" where att_date='"+d+"' and s_period="+s+" and e_period="+ep+" and roll_number='"+r+"';";
     console.log(q);
     connection.query(
