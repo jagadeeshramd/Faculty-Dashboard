@@ -19,8 +19,6 @@ function rc_grade(){
         csrfmiddlewaretoken: csrftoken
     };
     $.post('re_calc_grade',data,function(rdata,status){
-        console.log(status);
-        console.log(rdata+" "+rdata['res']+" "+(rdata['res']));
         if(status.localeCompare("success")==0){
             if(rdata['res'])
             {

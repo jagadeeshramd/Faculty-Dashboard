@@ -16,7 +16,6 @@ function getCookie(name) {
 }
 
 function changefilter(x){
-    console.log(x.value);
     if(x.value==0 || x.value==1)
     {
         $('#lower-bound-grp').show();
@@ -107,7 +106,6 @@ function applyfilter(){
             ub:y
         };
     }
-    console.log(val);
     $.get('filter_data',val,function(rdata,status){
         if(rdata['comp']){
             document.getElementById("maxm").innerHTML=rdata['maxmark'];
@@ -142,7 +140,6 @@ function changegraph(obj){
         myChart.destroy();
     }
     
-    console.log(obj);
     marks=[];
     for(i=0;i<obj.length;i++)
     {

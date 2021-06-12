@@ -59,7 +59,6 @@ exports.rc_CA = function recalc_CA(result_mark, ass_wt) {
 
 exports.cgrade = function calcgrade(x, lm, g) {
 
-    console.log(x, lm, g);
     var l = 0;
     var r = lm.length - 1;
     var ind = -1;
