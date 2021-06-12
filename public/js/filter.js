@@ -124,17 +124,19 @@ function changegraph(obj){
         myChart.destroy();
     }
     
-    marks=[];
-    for(i=0;i<obj.length;i++)
+    var marks=[];
+    for(var i=0;i<obj.length;i++)
     {
         marks.push(obj[i]['total']);
     }
     
     var dataValues = marks;
     var dataLabels = [];
-    for(i=0;i<dataValues.length;i++)
-    dataLabels.push('');
-    var myChart = new Chart(ctx, {
+    for(var i=0;i<dataValues.length;i++)
+    {
+        dataLabels.push('');
+    }
+    myChart = new Chart(ctx, {
     type: 'bar',
     data: {
         labels: dataLabels,
