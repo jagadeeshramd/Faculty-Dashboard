@@ -2,9 +2,8 @@ function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
+        for (let i of cookies) {
+            const cookie = i.trim();
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -21,9 +20,9 @@ function rc_grade(){
     };
     $.post('re_calc_grade',data,function(rdata,status){
         console.log(status);
-        console.log(rdata+" "+rdata['res']+" "+(rdata['res']==true));
+        console.log(rdata+" "+rdata['res']+" "+(rdata['res']));
         if(status.localeCompare("success")==0){
-            if(rdata['res']==true)
+            if(rdata['res'])
             {
                 document.getElementById("err-content").innerHTML="Sucessfully Updated. Reload!!!";
             }

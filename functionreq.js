@@ -43,13 +43,13 @@ exports.ass_to_short = function ass_to_short(ass_name) {
 
 exports.rc_CA = function recalc_CA(result_mark, ass_wt) {
     var m = {};
-    for (var i = 0; i < result_mark.length; i++) {
+    for (var i of result_mark) {
 
-        var r = result_mark[i]['roll_number'];
+        var r = i['roll_number'];
         var ca = 0;
         for (var k in ass_wt) {
-            if (result_mark[i][k] != null)
-                ca += result_mark[i][k] * ass_wt[k];
+            if (i[k] != null)
+                ca += i[k] * ass_wt[k];
         }
         m[r] = ca.toFixed(2);
 

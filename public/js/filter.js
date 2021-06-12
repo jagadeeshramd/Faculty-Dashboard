@@ -3,8 +3,8 @@ function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
+        for (let i of cookies) {
+            const cookie = i.trim();
             // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -207,7 +207,7 @@ function updatecutoff(){
     $.post('changecutoff',data,function(rdata,status){
         
         if(status.localeCompare("success")==0){
-            if(rdata['res']==true)
+            if(rdata['res'])
             {
                 document.getElementById("err-content").innerHTML="Sucessfully Updated!!!";
             }

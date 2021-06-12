@@ -442,7 +442,6 @@ app.get("/myclass_students", function (req, res) {
 
 app.get("/det_student_detail_info", function (req, res) {
     var rno = req.query.rollno;
-    var stud_info = {};
     connection.query(
         "SELECT * FROM student_det S INNER JOIN parent_det P ON S.roll_number = P.roll_number where S.roll_number = ?;",
         [rno],
@@ -1202,7 +1201,7 @@ app.post("/login", function (req, res) {
             function (error, results, fields) {
                 if (error) console.log(error);
                 else if (results.length > 0) {
-                    var message = "";
+                    
                     req.session.loggedin = true;
                     req.session.email = email;
                     connection.query(
@@ -1551,7 +1550,7 @@ app.post("/update_marks", function (req, res) {
     var roll_number=req.body.roll_number;
     console.log("update marks");
     var ass_name=req.body.assignment;
-    var a=req.body.assignment;;
+    var a=req.body.assignment;
     ass_name=fnreq.ass_to_short(ass_name);
     var m=req.body.marks;
     var cname=req.session.course.course_id+"_";
