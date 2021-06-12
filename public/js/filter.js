@@ -192,17 +192,11 @@ function updatecutoff(){
     };
     $.post('changecutoff',data,function(rdata,status){
         
-        if(status.localeCompare("success")==0){
-            if(rdata['res'])
-            {
-                document.getElementById("err-content").innerHTML="Sucessfully Updated!!!";
-            }
-            else{
-                document.getElementById("err-content").innerHTML="Overlapping Cutoff Values. Error!!!";
-    
-            }
-        }
-        else{
+        if(status.localeCompare("success")==0 && rdata['res']){
+            document.getElementById("err-content").innerHTML="Sucessfully Updated!!!";
+        } else if (status.localeCompare("success")==0){
+            document.getElementById("err-content").innerHTML="Overlapping Cutoff Values. Error!!!";
+        } else{
             document.getElementById("err-content").innerHTML="Overlapping Cutoff Values. Error!!!";
         }
         $('#errormodal').modal('show');
