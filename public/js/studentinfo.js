@@ -97,7 +97,7 @@ function dispassignment(record){
     li.textContent = "Assignment: ";
     ul.appendChild(li);
 
-    for(r in record){
+    for(var r in record){
         li = document.createElement("li");
         li.className = 'list-group-item';
         li.setAttribute('id','ass-mark');
@@ -107,7 +107,7 @@ function dispassignment(record){
 }
 
 function dispper(record){
-    ul=document.getElementById("periodical");
+    var ul=document.getElementById("periodical");
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
       }
@@ -118,7 +118,7 @@ function dispper(record){
     li.textContent = "Periodical: ";
     ul.appendChild(li);
 
-  for(r in record){
+  for(var r in record){
         li = document.createElement("li");
         li.className = 'list-group-item';
         li.setAttribute('id','per-mark');
