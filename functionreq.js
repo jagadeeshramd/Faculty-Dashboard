@@ -43,7 +43,6 @@ exports.ass_to_short = function ass_to_short(ass_name) {
 
 exports.rc_CA = function recalc_CA(result_mark, ass_wt) {
     var m = {};
-    var l = result_mark.length;
     for (var i = 0; i < result_mark.length; i++) {
 
         var r = result_mark[i]['roll_number'];
@@ -66,7 +65,7 @@ exports.cgrade = function calcgrade(x, lm, g) {
     var ind = -1;
 
     while (l <= r) {
-        m = Math.floor((l + r) / 2);
+        var m = Math.floor((l + r) / 2);
         if (m == (lm.length - 1)) {
             if (x >= lm[m]) {
                 ind = m;
