@@ -1,20 +1,3 @@
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i of cookies) {
-            const cookie = i.trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 function changefilter(x){
     if(x.value==0 || x.value==1)
     {
@@ -134,6 +117,7 @@ function nofilter(){
 
 function changegraph(obj){
     var myChart;
+    console.log("Change graph");
     document.getElementById("graph-status").style.display="none";
     if(myChart)
     {
@@ -145,7 +129,41 @@ function changegraph(obj){
     {
         marks.push(obj[i]['total']);
     }
-
+    
+    var dataValues = marks;
+    var dataLabels = [];
+    for(i=0;i<dataValues.length;i++)
+    dataLabels.push('');
+    var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: dataLabels,
+        datasets: [{
+        label: 'Students Marks',
+        data: dataValues,
+        backgroundColor: '#2a26ff',
+        }]
+    },
+    options: {
+        scales: {
+        xAxes: [{
+            display: false,
+            barPercentage: 1.1
+            
+        }, {
+            display: true,
+            ticks: {
+                autoSkip: false,
+            }
+        }],
+        yAxes: [{
+            ticks: {
+            beginAtZero:true
+            }
+        }]
+        }
+    }
+    });
 }
 
 function updatecutoff(){
