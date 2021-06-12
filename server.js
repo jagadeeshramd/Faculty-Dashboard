@@ -1035,37 +1035,30 @@ app.get("/get_attendance_list", function (req, res) {
                         else if (results1.length > 0) {
                             success = true;
                             let att=[];
-                            for(i=0;i<results1.length;i++)
+                            for(var x of results1)
                             {
                                 var o={};
-                                o['roll_number']=results1[i]['roll_number'];
+                                o['roll_number']=x['roll_number'];
                                 o['att_date']=d;
                                 o['s_period']=s;
                                 o['e_period']=ep;
                                 o['classes']=0;
                                 att.push(o);
                                 q="insert into "+tablename+"_attendance values(?,?,?,?,?);";
-                                connection.query(q,
-                                        [o['roll_number'],d,s,ep,0],
-                                        function (error2, resultinsert, fields2) {
-                                                        if (error2){
-                                                            console.log(error2);
-                                                            success = false;
-                                                            res.render("attendance", {
-                                                                status: true,
-                                                                attlist: [],
-                                                                isstatic:true,
-                                                                addmsg:"",
-                                                                update:u
-                                                            });
-                                                        }
-                                                        else {
-                                                            console.log(i);
-                                                            console.log("ok");
-                                                            
-                                                        }
-                                                    }
-                                                );
+                                connection.query(
+                                    q,
+                                    [o['roll_number'],d,s,ep,0],
+                                    function (error2, resultinsert, fields2) {
+                                        if (error2){
+                                            console.log(error2);
+                                            success = false;
+                                        }
+                                        else {
+                                            console.log(i);
+                                            console.log("ok");
+                                        }
+                                    }
+                                );
                             }
                             res.render("attendance", {
                                 status: true,
