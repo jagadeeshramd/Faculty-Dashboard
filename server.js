@@ -952,7 +952,7 @@ app.get("/get_assignment_marks", function (req, res) {
 app.get("/get_periodical_marks", function (req, res) {
     var rno = req.query.rollno;
     
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
@@ -990,7 +990,7 @@ app.get("/attendance", function (req, res) {
 
 app.get("/get_attendance_list", function (req, res) {
     
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
@@ -1583,12 +1583,12 @@ app.post("/update_CA_weightage", function (req, res) {
     var ass_name=req.body.assname;
     ass_name=fnreq.ass_to_short(ass_name);
     var w=req.body.weight;
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
     
-    q="update assessment_list set weightage=? where course_code_full=? and ass_name=?;";
+    var q="update assessment_list set weightage=? where course_code_full=? and ass_name=?;";
 
     
                     
@@ -1737,7 +1737,7 @@ app.post("/update_attendance", function (req, res) {
     cname+=req.session.course.dept+"_";
     cname+=req.session.course.section;
     tablename="course_"+cname+"_attendance";
-    q="select * from "+tablename+" where att_date='"+d+"' and s_period="+s+" and e_period="+ep+" and roll_number='"+r+"';";
+    var q="select * from "+tablename+" where att_date='"+d+"' and s_period="+s+" and e_period="+ep+" and roll_number='"+r+"';";
     console.log(q);
     connection.query(
         q,
@@ -1796,7 +1796,7 @@ app.post("/changecutoff",function(req,res){
         for(var i=0;i<mark.length;i++){
 
            
-            cname=req.session.course.course_id+"_";
+            var cname=req.session.course.course_id+"_";
             cname+=req.session.course.batch+"_";
             var tbname="course_"+cname+"grade_cutoff";
             var q="update "+tbname+" set marks="+mark[i]+" where grade='"+grades[i]+"';";
@@ -1815,7 +1815,7 @@ app.post("/changecutoff",function(req,res){
 });
 
 app.post("/re_calc_grade",function(req,res){
-    cname=req.session.course.course_id+"_";
+    var cname=req.session.course.course_id+"_";
     cname+=req.session.course.batch+"_";
     var tbname="course_"+cname+"grade_cutoff";
     var q="select * from "+tbname+" order by marks;";
