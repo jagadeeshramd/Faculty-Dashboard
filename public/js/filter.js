@@ -101,7 +101,7 @@ function applyfilter(){
 }
 
 function nofilter(){
-    data={
+    var data={
         option:8
     };
     $.get('filter_data',data,function(data_r,status){
@@ -170,38 +170,27 @@ function updatecutoff(){
     var marks=[];
     var o=document.getElementById("O").value;
     marks.push(o);
-    a1=document.getElementById("A+").value;
+    var a1=document.getElementById("A+").value;
     marks.push(a1);
-    a=document.getElementById("A").value;
+    var a=document.getElementById("A").value;
     marks.push(a);
-    b1=document.getElementById("B+").value;
+    var b1=document.getElementById("B+").value;
     marks.push(b1);
-    b=document.getElementById("B").value;
+    var b=document.getElementById("B").value;
     marks.push(b);
-    c=document.getElementById("C").value;
+    var c=document.getElementById("C").value;
     marks.push(c);
-    p=document.getElementById("P").value;
+    var p=document.getElementById("P").value;
     marks.push(p);
 
     var f=0;
-    for(i=1;i<marks.length;i++)
+    for(var i=1;i<marks.length;i++)
     {
         var x=marks[i-1];
         
-        if(x==0)
-        {
-            if(x<marks[i])
-            {
-                f=1;
-                break;
-            }
-        }
-        else{
-            if(x<=marks[i])
-            {
-                f=1;
-                break;
-            }
+        if((x==0 && x<marks[i]) || x<=marks[i]) {
+            f=1;
+            break;
         }
     }
     
@@ -215,23 +204,17 @@ function updatecutoff(){
     else{
         document.getElementById("err-content").innerHTML="Sucessfully Updated!!!";
         const csrftoken = getCookie('csrftoken');
-    data={
+    var data={
         mark: marks,
         csrfmiddlewaretoken: csrftoken
     };
     $.post('changecutoff',data,function(rdata,status){
         
-        if(status.localeCompare("success")==0){
-            if(rdata['res'])
-            {
-                document.getElementById("err-content").innerHTML="Sucessfully Updated!!!";
-            }
-            else{
-                document.getElementById("err-content").innerHTML="Overlapping Cutoff Values. Error!!!";
-    
-            }
-        }
-        else{
+        if(status.localeCompare("success")==0 && rdata['res']){
+            document.getElementById("err-content").innerHTML="Sucessfully Updated!!!";
+        } else if (status.localeCompare("success")==0){
+            document.getElementById("err-content").innerHTML="Overlapping Cutoff Values. Error!!!";
+        } else{
             document.getElementById("err-content").innerHTML="Overlapping Cutoff Values. Error!!!";
         }
         $('#errormodal').modal('show');

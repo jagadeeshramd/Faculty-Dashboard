@@ -1,6 +1,6 @@
 function rc_grade(){
     const csrftoken = getCookie('csrftoken');
-    data={
+    var data={
         csrfmiddlewaretoken: csrftoken
     };
     $.post('re_calc_grade',data,function(rdata,status){

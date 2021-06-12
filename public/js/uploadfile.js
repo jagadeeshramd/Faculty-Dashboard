@@ -89,7 +89,7 @@ function uploadfile()
           console.log('File available at', downloadURL);
 
         // print the image url 
-        data={
+        var data={
             'url':downloadURL,
             'filenum':filenum,
             csrfmiddlewaretoken: csrftoken
