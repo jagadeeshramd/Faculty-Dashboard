@@ -64,7 +64,6 @@ function disprecord(record){
 
 function dispquiz(record){
     ul=document.getElementById("quiz");
-    var c = ul.childNodes;
   
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
@@ -76,7 +75,7 @@ function dispquiz(record){
     ul.appendChild(li);
    
     for(r in record){
-        var li = document.createElement("li");
+        li = document.createElement("li");
         li.className = 'list-group-item';
         li.setAttribute('id','quiz-mark');
         li.textContent = "Quiz "+r+": "+record[r];
@@ -86,7 +85,7 @@ function dispquiz(record){
 
 function dispassignment(record){
     ul=document.getElementById("assignment");
-    var c = ul.childNodes;
+
   
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
@@ -99,7 +98,7 @@ function dispassignment(record){
     ul.appendChild(li);
 
     for(r in record){
-        var li = document.createElement("li");
+        li = document.createElement("li");
         li.className = 'list-group-item';
         li.setAttribute('id','ass-mark');
         li.textContent = "Assignment "+r+": "+record[r];
@@ -120,7 +119,7 @@ function dispper(record){
     ul.appendChild(li);
 
   for(r in record){
-        var li = document.createElement("li");
+        li = document.createElement("li");
         li.className = 'list-group-item';
         li.setAttribute('id','per-mark');
         li.textContent = "Periodical "+r+": "+record[r];
