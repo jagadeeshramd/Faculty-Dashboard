@@ -18,6 +18,5 @@ function rc_grade(){
             document.getElementById("err-content").innerHTML="Error!!!";
         }
         $('#errormodal').modal('show');
-        console.log(window.href.location);
     });
 }
